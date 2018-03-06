@@ -62,7 +62,7 @@ public class ArquillianTest {
   /**
    * Tests that the process is executable and reaches its end.
    */
-  @Test
+  @Rule3
   public void testProcessExecution() throws Exception {
     cleanUpRunningProcessInstances();
     

@@ -36,13 +36,13 @@ public class InMemoryH2Test {
   /**
    * Just tests if the process definition is deployable.
    */
-  @Test
+  @Rule3
   @Deployment(resources = "process.bpmn")
   public void testParsingAndDeployment() {
     // nothing is done here, as we just want to check for exceptions during deployment
   }
 
-  @Test
+  @Rule3
   @Deployment(resources = "process.bpmn")
   public void testHappyPath() {
 	  //ProcessInstance processInstance = processEngine().getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY);
