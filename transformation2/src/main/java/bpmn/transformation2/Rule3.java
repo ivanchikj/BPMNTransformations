@@ -1,5 +1,6 @@
 package bpmn.transformation2;
 import java.io.File;
+import java.util.Scanner;
 import java.util.Collection;
 
 import org.camunda.bpm.engine.ActivityTypes;
@@ -40,7 +41,9 @@ public class Rule3 {
 		//Writing the output model to file
 		writeModeltoFile(outputModelInstance, filename);
 	}
-
+	public void askForPath() {
+		
+	}
 	public static void rule3 (BpmnModelInstance inputModel, BpmnModelInstance outputModel) {
 
 		/*Why do I have to extract the ParallelGatway type from an instance of a model? 
@@ -48,13 +51,7 @@ public class Rule3 {
 		/*And why does it works even if I'm getting a type from a model that has no gateway of the requested type?*/
 
 		//Extracting the types of elements that i need
-//		ModelElementType parallelGatewayType = inputModel.getModel().getType(ParallelGateway.class);
-//		ModelElementType inclusiveGatewayType = inputModel.getModel().getType(InclusiveGateway.class);
-//		ModelElementType exclusiveGatewayType = inputModel.getModel().getType(ExclusiveGateway.class);
-//		ModelElementType sequenceFlowType = inputModel.getModel().getType(SequenceFlow.class);
-//		ModelElementType activityType = inputModel.getModel().getType(Activity.class);
-//		ModelElementType scriptTaskType = inputModel.getModel().getType(ScriptTask.class);
-//		ModelElementType startEventType = inputModel.getModel().getType(StartEvent.class);
+
 		//TODO when I'm done, remove the ones that I didn't use
 
 		//Here I'm creating a collection of all the parallelGateways in the outputModelInstance (which for now its identical to the starting model)
