@@ -22,6 +22,7 @@ public class Rule3 {
 		//String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2 Parallel_R1R3.bpmn.xml"
 		//String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
 		//TODO having a way to use all of the bpmn files that are found inside a single folder.
+		//TODO make a report containing informations about each generated file.
 		File bpmnFile = new File(path);
 
 		String filename = bpmnFile.getName().replace(".bpmn.xml", ""); //this variable is used later to replace it with the new one more easily. 
@@ -117,6 +118,7 @@ public class Rule3 {
 		//Write to file
 		File file = new File("/Users/rubenfolini/Desktop/Archive/Parallel/" + filename + "RULE 3" + ".bpmn.xml");
 		//TODO I will have to find a way to automatically append to the filename the rules that have been applied. For now this works because I only have one.
+		//Probably a class variable will be enough.
 		Bpmn.writeModelToFile(file, ModelInstance);
 	}
 

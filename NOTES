@@ -1,0 +1,21 @@
+
+
+TODO: Vedere in che modo la regola 3 dev'essere modificata per adeguarsi a diversi grafici, guardando i paper che mi ha dato oggi ana (7 marzo)
+
+
+IDEA: usare metodi visti a SoftQuality per rappresentare algoritmo di ogni regola. Questa è roba che posso mettere nella tesi.
+
+IDEA: provare a scrivere qualche test per il programma
+
+IDEA: scrivere javadoc per i miei metodi, quando saranno finiti.
+
+
+------ Domande ------
+
+Is it a good idea to break down RULE3 into smaller methods? The code would be easier to understand, is it better to create many small methods or a single big one?
+
+-
+
+Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni sembrano esserci.
+
+-
