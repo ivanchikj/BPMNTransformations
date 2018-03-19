@@ -3,36 +3,42 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.Collection;
 
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ConditionExpression;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 
 public class Rule3 {
 
 	public static void main(String[] args) {
 
+		//TODO having a way to use all of the bpmn files that are found inside a single folder.
+		//TODO have a way to let the user provide some parameters when launching the program, for example choosing which rules to apply, in which order, where to output the files, if we want to have a single file as input or a whole folder... etc...
+		//TODO make a report containing informations about each generated file.
+		//TODO find a way to organize the program in multiple classes. I don't really have objects, so am I just complicating things by having multiple classes?
+
 		//String path = askForPath(); //Unlock this to ask the user for a path
 
 		String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
 		//String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2 Parallel_R1R3.bpmn.xml"
 		//String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
-		//TODO having a way to use all of the bpmn files that are found inside a single folder.
-		//TODO make a report containing informations about each generated file.
+
+
 		File bpmnFile = new File(path);
 
-		String filename = bpmnFile.getName().replace(".bpmn.xml", ""); //this variable is used later to replace it with the new one more easily. 
+		String filename = bpmnFile.getName().replace(".bpmn.xml", ""); //this variable is used later to replace the filename with the new one more easily. 
 
-		//Creating input and output models
+		//Creating output model
 		BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
-		//Applying rule 3 to outputModelInstance:
 		rule3(inputModelInstance);
-		//TODO I don't need outputModelInstance, i can just save the old instance as a different file.
 
 		//Writing the output model to file
 		writeModeltoFile(inputModelInstance, filename);
@@ -48,9 +54,14 @@ public class Rule3 {
 		return filePath;
 	}
 
+
+	public static void rule1(BpmnModelInstance inputModel) {} //TODO
+	public static void rule2(BpmnModelInstance inputModel) {} //TODO
+
+	//TODO javadoc of rule 3? How do I do a javadoc?
 	public static void rule3 (BpmnModelInstance inputModel) {
 		//TODO decide on this:
-		//Here I'm creating a collection of all the Gateways in the inputModelInstance
+		//Here I'm creating a collection of all the Gateways in the inputModel
 		Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
 
 		//The following counters serves us to understand if I'm reading the inputModel correctly.
@@ -110,6 +121,42 @@ public class Rule3 {
 			}
 		}
 	}
+
+	//TODO javadoc of this? Explaining the rule4
+	public static void rule4 (BpmnModelInstance inputModel) {
+		//Part1: from paraGateway to double output
+		//Here I'm creating a collection of all the Gateways in the inputModel
+		Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
+
+		//The following counter serves me to understand if I'm reading the inputModel correctly.
+		int parallelGatewayCounter = 0;
+
+		//The idea behind the first part of rule4
+		//basically for each ParaGat i want to get the incoming flows, the outgoing flows, and then connect the parent elements to the child elements directly.
+		for(Gateway oldGateway : GatewayInstances){ 
+			if (oldGateway instanceof ParallelGateway || oldGateway instanceof ExclusiveGateway) {
+				//				Collection<SequenceFlow> outgoingFlows = oldGateway.getOutgoing();
+				//				for (SequenceFlow outgoingFlow : outgoingFlows) {
+				//				outgoingFlow.setSource((FlowNode) oldGateway.getPreviousNodes()); //the source of the outgoing flow will be the parent element of the gateway.
+				//					outgoingFlow.setTarget(arg0);
+				//					//outgoingFlow.getChildElementsByType(UserTask.class); //TODO ask Ana, why I can put UserTask but not class? I fear I will have to write the same method for every task type.
+				//				}
+				Collection<SequenceFlow> incomingFlows = oldGateway.getIncoming();
+				for (SequenceFlow incomingFlow : incomingFlows ) {
+					incomingFlow.setTarget((FlowNode) oldGateway.getOutgoing()); //TODO test this casting to see if it works.
+				}
+				//TODO
+
+			}
+		}
+
+		//Part2: from exclGateway to double input
+
+		//Part3: from inclGateway to double output
+	}
+
+
+
 	public static void writeModeltoFile (BpmnModelInstance ModelInstance, String filename) {
 		//Validate Model
 		//Bpmn.validateModel(ModelInstance);
