@@ -111,6 +111,8 @@ public class Rule3 {
 		if ((parallelGatewayCounter == 0) && (exclusiveGatewayCounter == 0)) {
 		    System.out.println("I tried applying rule 3 but I haven't found any parallel or exclusive gateways");
 		} else {
+		    
+		    //
 		    String outputMsg = "I applied rule 3 on " + (int)(exclusiveGatewayCounter+parallelGatewayCounter) + " gateways";
 		    System.out.println(outputMsg);
 		    Main.report.concat("\n");
@@ -145,66 +147,8 @@ public class Rule3 {
 	// exclusive gateway ("D"). (But not more than one i guess ? ASKANA)
     }
 
-    // TODO javadoc of this? Explaining the rule4
-    public static void rule4(BpmnModelInstance inputModel) {
-	// Part1: from paraGateway to double input
-	// Here I'm creating a collection of all the Gateways in the inputModel
-	Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
 
-	// The following counter serves me to understand if I'm reading the inputModel
-	// correctly.
-	int parallelGatewayCounter = 0;
-
-	// The idea behind the first part is
-	// basically for each ParaGat i want to get the incoming flows, the outgoing
-	// flows, and then change the target of the incoming flows to the target of the
-	// outgoing flows
-	// to connect the parent elements to the child elements directly.
-	for (Gateway oldGateway : GatewayInstances) {
-	    if (oldGateway instanceof ParallelGateway /* || oldGateway instanceof ExclusiveGateway */) {
-		// Collection<SequenceFlow> outgoingFlows = oldGateway.getOutgoing();
-		// for (SequenceFlow outgoingFlow : outgoingFlows) {
-		// outgoingFlow.setSource((FlowNode) oldGateway.getPreviousNodes()); //the
-		// source of the outgoing flow will be the parent element of the gateway.
-		// outgoingFlow.setTarget(arg0);
-		// //outgoingFlow.getChildElementsByType(UserTask.class); //TODO ask Ana,
-		// why I
-		// can put UserTask but not class? I fear I will have to write the same
-		// method
-		// for every task type.
-		// }
-		Collection<SequenceFlow> incomingFlows = oldGateway.getIncoming();
-		for (SequenceFlow incomingFlow : incomingFlows) {
-		    incomingFlow.setTarget((FlowNode) oldGateway.getOutgoing()); // TODO
-		}
-		// TODO
-	    }
-	}
-
-	// Part2: from exclusiveGateway to double output
-
-	// Part3: from inclGateway to double output
-    }
-
-    public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename) {
-	// Validate Model
-	// Bpmn.validateModel(ModelInstance);
-	// TODO use also Ana's test at
-	// https://github.com/camunda/camunda-engine-unittest
-
-	// Write to file
-	File file = new File("/Users/rubenfolini/Desktop/Archive/Parallel/" + filename + rulesApplied + ".bpmn.xml");
-	// TODO I will have to find a way to automatically append to the filename the
-	// rules that have been applied. For now this works because I only have one.
-	Bpmn.writeModelToFile(file, ModelInstance);
-    }
-    public static void writeReportToFile() {
-	//The idea is to update the report every time i do something
-	//and then save it at the end. But is that considered bad practice?
-	//The report variable would need to be modified
-	//by many different methods
-
-    }
+    
 
 
 }

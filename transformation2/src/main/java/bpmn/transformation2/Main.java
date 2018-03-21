@@ -18,8 +18,8 @@ import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 public class Main {
 
     // this keeps track of the rules that have been applied, in the right order.
-    public String rulesApplied = "";
-    public String report = ""; //TODO public should be avoided, right?
+    public static String rulesApplied = "";
+    public static String report = ""; //TODO public should be avoided, right?
 
     public static void main(String[] args) {
 	// TODO having a way to use all of the bpmn files that are found inside a single
@@ -28,13 +28,12 @@ public class Main {
 	// program, for example choosing which rules to apply, in which order, where to
 	// output the files, if we want to have a single file as input or a whole
 	// folder... etc...
-	// TODO make a report containing informations about each generated file.
 
 	// TODO / ASKANA find a way to organize the program in multiple classes. I don't really
 	// have objects, so am I just complicating things by having multiple classes?
 
 	String path = askForPath(); //Unlock this to ask the user for a path
-
+	
 	// Used to test R3
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
 	// String path ="/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
@@ -51,7 +50,7 @@ public class Main {
 	// Creating output model
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
-	rule3(inputModelInstance);
+	Rule3.rule3(inputModelInstance);
 
 	// Writing the output model to file
 	writeModeltoFile(inputModelInstance, filename);
@@ -67,5 +66,24 @@ public class Main {
 	return filePath;
     }
 
+    	//The idea is to update the report every time i do something
+  	//and then save it at the end. But is that considered bad practice?
+  	//The report variable would need to be modified
+  	//by many different methods
+    public static void writeReportToFile() {
+	
+    }
+    public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename) {
+	// Validate Model
+	// Bpmn.validateModel(ModelInstance);
+	// TODO use also Ana's test at
+	// https://github.com/camunda/camunda-engine-unittest
+
+	// Write to file
+	File file = new File("/Users/rubenfolini/Desktop/Archive/Parallel/" + filename + rulesApplied + ".bpmn.xml");
+	// TODO I will have to find a way to automatically append to the filename the
+	// rules that have been applied. For now this works because I only have one.
+	Bpmn.writeModelToFile(file, ModelInstance);
+    }
 
 }
