@@ -1,19 +1,14 @@
 package bpmn.transformation2;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
-import java.util.Collection;
-
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.Query;
-import org.camunda.bpm.model.bpmn.instance.ConditionExpression;
-import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.Gateway;
-import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.joda.time.LocalDate;
 
 public class Main {
 
@@ -21,7 +16,7 @@ public class Main {
     public static String rulesApplied = "";
     public static String report = ""; //TODO public should be avoided, right?
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 	// TODO having a way to use all of the bpmn files that are found inside a single
 	// folder.
 	// TODO have a way to let the user provide some parameters when launching the
@@ -38,7 +33,14 @@ public class Main {
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
 	// String path ="/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
 	// String path ="/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
+	
+	// Used to test R3partb
+	// TODO create ad hoc xml file with camunda modeler
+	
+	//figuring out the folder in which the file is located
+	String folderPath = getFolderFromPath(path);
 
+	
 	//reading a file 
 	File bpmnFile = new File(path);
 
@@ -53,8 +55,8 @@ public class Main {
 	Rule3.rule3(inputModelInstance);
 
 	// Writing the output model to file
-	writeModeltoFile(inputModelInstance, filename);
-	writeReportToFile();
+	writeModeltoFile(inputModelInstance, filename, folderPath);
+	writeReportToFile(report,folderPath);
     }
     // This lets the user decide the path of the file
     // TODO provide exceptions? What happens if it's not the correct path?
@@ -65,22 +67,32 @@ public class Main {
 	reader.close();
 	return filePath;
     }
-
+    //This method finds the path of the folder of the file. Used to save 
+    public static String getFolderFromPath(String path) {
+	int index=path.lastIndexOf('/');
+	String folderpath = path.substring(0,index);
+	return folderpath;
+    }
+    	//ASKANA
     	//The idea is to update the report every time i do something
   	//and then save it at the end. But is that considered bad practice?
-  	//The report variable would need to be modified
+  	//The "report" variable would need to be modified
   	//by many different methods
-    public static void writeReportToFile() {
+    public static void writeReportToFile(String report, String folderPath) throws IOException {
+	LocalDate timestamp = LocalDate.now();
+	BufferedWriter writer = new BufferedWriter( new PrintWriter(folderPath + "Report" + timestamp +".txt"));
+	writer.write(report);
+	writer.close( );
 	
     }
-    public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename) {
+    public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) {
 	// Validate Model
 	// Bpmn.validateModel(ModelInstance);
 	// TODO use also Ana's test at
 	// https://github.com/camunda/camunda-engine-unittest
 
 	// Write to file
-	File file = new File("/Users/rubenfolini/Desktop/Archive/Parallel/" + filename + rulesApplied + ".bpmn.xml");
+	File file = new File(folderPath + filename + rulesApplied + ".bpmn.xml");
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
 	Bpmn.writeModelToFile(file, ModelInstance);

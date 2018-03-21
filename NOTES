@@ -32,3 +32,7 @@ Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni
 
 What's a FlowNode? Are both tasks and gateways considered nodes?
 I'm having troubles getting an element that precedes the one at hand, or that follows it. Both using the methods "getChildElement" and getSuccedingNodes
+
+- 
+
+When I use methods to write to file, Eclipse suggests me to write "throws IO exceptions" which it does automatically, but what does that means? Can you suggest a good tutorial on (common) exceptions?

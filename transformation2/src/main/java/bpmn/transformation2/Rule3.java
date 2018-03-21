@@ -115,7 +115,7 @@ public class Rule3 {
 		    //
 		    String outputMsg = "I applied rule 3 on " + (int)(exclusiveGatewayCounter+parallelGatewayCounter) + " gateways";
 		    System.out.println(outputMsg);
-		    Main.report.concat("\n");
+		    Main.report.concat("" + '\n');
 		    Main.report.concat(outputMsg);
 		    Main.rulesApplied.concat("_R3");
 		}
