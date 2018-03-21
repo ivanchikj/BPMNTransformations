@@ -13,6 +13,13 @@ TODO: Voglio fare in modo di aggiungere le regole che sono state applicate ai fi
 Però non basta aver chiamato un metodo per decidere di aggiungere la regola al nome del file, devo anche assicurarmi che quel metodo abbia effettivamente fatto qualcosa.
 
 
+
+TODO: Guardare le R3 e R4 dal paper di Ana
+Vedi che la R3 tu hai fatto solo le prime due. Fai la terza.
+
+TODO: Fai la rule 4, dovrebbe essere abbastanza facile fare tutte e tre le parti, forse però conviene dividerle in 3 parti diverse. L'ordine in cui vengono applicate non dovrebbe contare perché sono tutte indipendenti, ma chiedi ad Ana per sicurezza. Ricordati di scrivere nel paper se l'ordine è importante e di spiegare che le hai divise per semplicità.
+
+
 ------ Domande ------
 
 Is it a good idea to break down RULE3 into smaller methods? The code would be easier to understand, is it better to create many small methods or a single big one?

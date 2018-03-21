@@ -22,63 +22,10 @@ import org.camunda.bpm.model.bpmn.instance.UserTask;
 
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 
-public class Rule3 {
-    // this keeps track of the rules that have been applied, in the right order.
-    private static String rulesApplied = "";
-
-    public static void main(String[] args) {
-
-	// TODO having a way to use all of the bpmn files that are found inside a single
-	// folder.
-	// TODO have a way to let the user provide some parameters when launching the
-	// program, for example choosing which rules to apply, in which order, where to
-	// output the files, if we want to have a single file as input or a whole
-	// folder... etc...
-	// TODO make a report containing informations about each generated file.
-	// TODO find a way to organize the program in multiple classes. I don't really
-	// have objects, so am I just complicating things by having multiple classes?
-
-	// String path = askForPath(); //Unlock this to ask the user for a path
-
-	String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
-	// String path =
-	// "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
-	// String path =
-	// "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
-
-	File bpmnFile = new File(path);
-
-	// this variable is used later to replace the filename with the new one more
-	// easily.
-	String filename = bpmnFile.getName().replace(".bpmn.xml", "");
-	// Will be used when naming the output file (inside method writeModeltoFile)
-
-	// Creating output model
-	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
-
-	rule3(inputModelInstance);
-
-	// Writing the output model to file
-	writeModeltoFile(inputModelInstance, filename);
-    }
-
-    // This lets the user decide the path of the file
-    // TODO provide exceptions? What happens if it's not the correct path?
-    public static String askForPath() {
-	Scanner reader = new Scanner(System.in);
-	System.out.println("Please enter the location of the bpmn file you wan to transform:");
-	String filePath = reader.next();
-	reader.close();
-	return filePath;
-    }
-
-    public static void rule1(BpmnModelInstance inputModel) {
-    } // TODO
-
-    public static void rule2(BpmnModelInstance inputModel) {
-    } // TODO
+public class Rule3 {	
 
     // TODO javadoc of rule 3? How do I do a javadoc?
+    // ASKANA rename this as 'applyRule' to avoid having the same name?
     public static void rule3(BpmnModelInstance inputModel) {
 	// TODO decide on this:
 	// Here I'm creating a collection of all the Gateways in the inputModel
@@ -162,29 +109,33 @@ public class Rule3 {
 		// be sure that the program actually didn't touch anything. For example
 		// comparing the old model with the new one.
 		if ((parallelGatewayCounter == 0) && (exclusiveGatewayCounter == 0)) {
-		    System.out
-			    .println("I tried applying rule 3 but I haven't found any parallel or exclusive gateways");
+		    System.out.println("I tried applying rule 3 but I haven't found any parallel or exclusive gateways");
 		} else {
-		    System.out.println("I applied rule 4");
-		    rulesApplied.concat("_R3");
+		    String outputMsg = "I applied rule 3 on " + (int)(exclusiveGatewayCounter+parallelGatewayCounter) + " gateways";
+		    System.out.println(outputMsg);
+		    Main.report.concat("\n");
+		    Main.report.concat(outputMsg);
+		    Main.rulesApplied.concat("_R3");
 		}
 	    }
 	}
     }
 
     // TODO integrate this into the first part of rule3
-    // it has to execute before the other part of rule3 because otherwise it will
-    // never be applicable
+    // NOTE that this has to execute before the other part of rule3 because
+    // otherwise it will never be applicable (no parallel gateways will be found)
     // TODO create some bpmn graphs to test this
     public static void rule3b(BpmnModelInstance inputModel) {
-	// create a collection of ParallelGateways ("A")
+	// create a collection of ParallelGateways ("A"):
 	Collection<ParallelGateway> parallelGatewayInstances = inputModel.getModelElementsByType(ParallelGateway.class);
+
+	//First i'looking for the necessary conditions to apply rule 3b
 	// FOR RULE 3B TO BE APPLICABLE:
 	// the parallel gateway can have 1 or more exclusive gateway as child elements
 	// (but only exclusive gateways; if there's something else, we stop and go to
 	// the next Parallel Gateway).
 	for (ParallelGateway parallelGateway : parallelGatewayInstances) {
-	    // ASKANA why is this a "query" instead of a collection as usual?
+	    // ASKANA why is this a "query" instead of a collection as usual? ASKANA what is a FlowNode?
 	    Query<FlowNode> succedingNodes = parallelGateway.getSucceedingNodes();
 	}
 	// the subsequent exclusive gateways ("B") have one or more conditional tasks as
@@ -227,7 +178,6 @@ public class Rule3 {
 		    incomingFlow.setTarget((FlowNode) oldGateway.getOutgoing()); // TODO
 		}
 		// TODO
-
 	    }
 	}
 
@@ -248,5 +198,13 @@ public class Rule3 {
 	// rules that have been applied. For now this works because I only have one.
 	Bpmn.writeModelToFile(file, ModelInstance);
     }
+    public static void writeReportToFile() {
+	//The idea is to update the report every time i do something
+	//and then save it at the end. But is that considered bad practice?
+	//The report variable would need to be modified
+	//by many different methods
+
+    }
+
 
 }
