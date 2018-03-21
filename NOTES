@@ -19,5 +19,9 @@ Is it a good idea to break down RULE3 into smaller methods? The code would be ea
 
 -
 
-Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni sembrano esserci.
+Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni sembrano esserci, ma nel viewer non compaiono.
 
+- 
+
+What's a FlowNode? Are both tasks and gateways considered nodes?
+I'm having troubles getting an element that precedes the one at hand, or that follows it. Both using the methods "getChildElement" and getSuccedingNodes
