@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.Query;
 import org.camunda.bpm.model.bpmn.instance.ConditionExpression;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
@@ -34,7 +35,9 @@ public class Rule3 {
 		File bpmnFile = new File(path);
 
 		String filename = bpmnFile.getName().replace(".bpmn.xml", ""); //this variable is used later to replace the filename with the new one more easily. 
-
+		
+		String rulesApplied = ""; //this keeps track of the rules that have been applied, in the right order. Will be used when naming the output file (inside method writeModeltoFile)
+		
 		//Creating output model
 		BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
@@ -111,30 +114,45 @@ public class Rule3 {
 						outgoingFlow.setConditionExpression(trueConditionExpression);
 					}
 				} else if (isExclusive){
-					//I use this just for counting. E.G. I know that in this model there are 6 ExlsusiveGateways so I expect C to go to 6
+					//I use this just for counting. E.G. I know that in this model there are 6 ExclusiveGateways so I expect C to go to 6
 					exclusiveGatewayCounter++;
 					System.out.println("Exclusive Gateway Number " + exclusiveGatewayCounter);
 				}
-				//I use this if I could not apply rule 3. TODO would be nice to have a way to be sure that the program actually didn't touch anything. I have to reorganize.	
+				//I use this if I could not apply rule 3. TODO would be nice to have a way to be sure that the program actually didn't touch anything. For example comparing the old model with the new one.	
 				if ((parallelGatewayCounter == 0) && (exclusiveGatewayCounter == 0)) {System.out.println("I tried applying rule 3 but I haven't found any parallel or exclusive gateways");}
-
 			}
 		}
+	}
+	//TODO integrate this into the first part of rule3
+	//it has to execute before the other part of rule3 because otherwise it will never be applicable
+	//TODO create some bpmn graphs to test this
+	public static void rule3b (BpmnModelInstance inputModel) {
+		//create a collection of ParallelGateways ("A")
+		Collection<ParallelGateway> parallelGatewayInstances = inputModel.getModelElementsByType(ParallelGateway.class);
+		//FOR RULE 3B TO BE APPLICABLE:
+		//the parallel gateway can have 1 or more exclusive gateway as child elements (but only exclusive gateways; if there's something else, we stop and go to the next Parallel Gateway).
+		for (ParallelGateway parallelGateway : parallelGatewayInstances) {
+			Query<FlowNode> succedingNodes = parallelGateway.getSucceedingNodes();
+		}
+		//the subsequent exclusive gateways ("B") have one or more conditional tasks as child element ("C"). 
+		
+		//Both those tasks and the exclusive gateway must be connected to another exclusive gateway ("D"). (But not more than one ? ASKANA)
 	}
 
 	//TODO javadoc of this? Explaining the rule4
 	public static void rule4 (BpmnModelInstance inputModel) {
-		//Part1: from paraGateway to double output
+		//Part1: from paraGateway to double input
 		//Here I'm creating a collection of all the Gateways in the inputModel
 		Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
 
 		//The following counter serves me to understand if I'm reading the inputModel correctly.
 		int parallelGatewayCounter = 0;
 
-		//The idea behind the first part of rule4
-		//basically for each ParaGat i want to get the incoming flows, the outgoing flows, and then connect the parent elements to the child elements directly.
+		//The idea behind the first part is
+		//basically for each ParaGat i want to get the incoming flows, the outgoing flows, and then change the target of the incoming flows to the target of the outgoing flows
+		//to connect the parent elements to the child elements directly.
 		for(Gateway oldGateway : GatewayInstances){ 
-			if (oldGateway instanceof ParallelGateway || oldGateway instanceof ExclusiveGateway) {
+			if (oldGateway instanceof ParallelGateway /*|| oldGateway instanceof ExclusiveGateway*/) {
 				//				Collection<SequenceFlow> outgoingFlows = oldGateway.getOutgoing();
 				//				for (SequenceFlow outgoingFlow : outgoingFlows) {
 				//				outgoingFlow.setSource((FlowNode) oldGateway.getPreviousNodes()); //the source of the outgoing flow will be the parent element of the gateway.
@@ -150,7 +168,7 @@ public class Rule3 {
 			}
 		}
 
-		//Part2: from exclGateway to double input
+		//Part2: from exclusiveGateway to double output 
 
 		//Part3: from inclGateway to double output
 	}
@@ -165,7 +183,6 @@ public class Rule3 {
 		//Write to file
 		File file = new File("/Users/rubenfolini/Desktop/Archive/Parallel/" + filename + "RULE 3" + ".bpmn.xml");
 		//TODO I will have to find a way to automatically append to the filename the rules that have been applied. For now this works because I only have one.
-		//Probably a class variable will be enough.
 		Bpmn.writeModelToFile(file, ModelInstance);
 	}
 

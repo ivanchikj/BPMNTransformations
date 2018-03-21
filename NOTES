@@ -9,6 +9,9 @@ IDEA: provare a scrivere qualche test per il programma
 
 IDEA: scrivere javadoc per i miei metodi, quando saranno finiti.
 
+TODO: Voglio fare in modo di aggiungere le regole che sono state applicate ai file di output nell'ordine in cui sono state applicate (ad esempio creando un file output_R3_R4.bpmn.xml).
+Però non basta aver chiamato un metodo per decidere di aggiungere la regola al nome del file, devo anche assicurarmi che quel metodo abbia effettivamente fatto qualcosa.
+
 
 ------ Domande ------
 
@@ -18,4 +21,3 @@ Is it a good idea to break down RULE3 into smaller methods? The code would be ea
 
 Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni sembrano esserci.
 
--
