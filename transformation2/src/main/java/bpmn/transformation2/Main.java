@@ -26,21 +26,23 @@ public class Main {
 
 	// TODO / ASKANA find a way to organize the program in multiple classes. I don't really
 	// have objects, so am I just complicating things by having multiple classes?
-
-	String path = askForPath(); //Unlock this to ask the user for a path
+	//UNLOCKTHIS:
+	//String path = askForPath(); //Unlock this to ask the user for a path
 	
 	// Used to test R3
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
 	// String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
 	
+	
+	
 	// Used to test R3partb
 	// TODO create ad hoc xml file with camunda modeler
 	
-	//figuring out the folder in which the file is located
-	String folderPath = getFolderFromPath(path);
-
 	
+	//Used to test R4Part1
+	String path = "/Users/rubenfolini/Desktop/Test.bpmn.xml";
+
 	//reading a file 
 	File bpmnFile = new File(path);
 
@@ -51,9 +53,12 @@ public class Main {
 
 	// Creating output model
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
-
-	Rule3.applyRule(inputModelInstance);
-
+	
+	Rule4.applyRule(inputModelInstance);
+	
+	//figuring out the folder in which the file is located
+	String folderPath = getFolderFromPath(path);
+		
 	// Writing the output model to file
 	writeModeltoFile(inputModelInstance, filename, folderPath);
 	writeReportToFile(report,folderPath);
@@ -70,7 +75,7 @@ public class Main {
     //This method finds the path of the folder of the file. Used to save 
     public static String getFolderFromPath(String path) {
 	int index=path.lastIndexOf('/');
-	String folderpath = path.substring(0,index);
+	String folderpath = path.substring(0,index+1);
 	return folderpath;
     }
     	//ASKANA
@@ -92,7 +97,10 @@ public class Main {
 	// https://github.com/camunda/camunda-engine-unittest
 
 	// Write to file
-	File file = new File(folderPath + filename + rulesApplied + ".bpmn.xml");
+	// TODO "rulesApplied" never gets updated. Why? Shoul i provide get and set methods? I guess there's a simpler way.
+	String location = folderPath + filename + rulesApplied + "RULE4TEST" + ".bpmn.xml";
+	File file = new File(location);
+	System.out.println(location);
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
 	Bpmn.writeModelToFile(file, ModelInstance);

@@ -17,7 +17,6 @@ public class Trial {
 	String folderPath = "/Users/rubenfolini/Desktop/";
 	writeReportToFile(prova, folderPath);
     }
-    
     public static void writeReportToFile(String report, String folderPath) throws IOException {
 	LocalDateTime timestamp = LocalDateTime.now();
 	BufferedWriter writer = new BufferedWriter( new PrintWriter(folderPath + "Report" + timestamp +".txt"));

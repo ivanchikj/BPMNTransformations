@@ -18,7 +18,12 @@ IDEA: fai anche un sommario per il report
 
 IDEA: molte volte nei miei algoritmi do per scontato che i bpmn in input siano 'corretti'. Se non è così, alcune assumption che faccio potrebbero non essere vere e i miei metodi avere dei problemi.
 Quindi potrei mettere un check anche al momento dell'importazione che dice all'utente che il suo bpmn non è valido e quindi il programma viene terminato (oppure che il programma viene eseguito ugualmente ma che i risultati potrebbero non essere validi, questo andrà scritto anche nel report)
------- Domande ------
+
+------------------------ Cose da ricordare --------------
+
+La regola 3 andrebbe applicata prima della regola 4? Altrimenti come faccio a trovare i parallel se li ho tolti?
+
+------------------------ Domande ------------------------
 
 Is it a good idea to break down RULE3 into smaller methods? The code would be easier to understand, is it better to create many small methods or a single big one?
 
