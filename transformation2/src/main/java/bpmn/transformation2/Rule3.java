@@ -1,5 +1,6 @@
 package bpmn.transformation2;
 
+import java.awt.List;
 import java.io.File;
 import java.util.Scanner;
 import java.util.Collection;
@@ -22,11 +23,20 @@ import org.camunda.bpm.model.bpmn.instance.UserTask;
 
 import org.camunda.bpm.model.bpmn.instance.InclusiveGateway;
 
-public class Rule3 {	
+public class Rule3 {
 
-    // TODO javadoc of rule 3? How do I do a javadoc?
-    // ASKANA rename this as 'applyRule' to avoid having the same name?
-    public static void rule3(BpmnModelInstance inputModel) {
+
+
+    //TODO applyRule will actually become just a (simple) method calling other specific methods referring to part 1, part 2 of rule 3 etc
+    //this method will be renamed and be called by said method. 
+    /**
+     Javadoc test
+     @param an instance of a BpmnModel.
+     It's not necessary to check wheter rule3 is applicable on the model,
+     the method should check itself if it is not and print an appropriate console message.
+     TODO add references to the paper that 'explains' rule 3?
+     */
+    public static void applyRule(BpmnModelInstance inputModel) {
 	// TODO decide on this:
 	// Here I'm creating a collection of all the Gateways in the inputModel
 	Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
@@ -83,6 +93,7 @@ public class Rule3 {
 		    // expressions that always evaluate to TRUE
 		    // First I'm adding all of them to a collection:
 		    Collection<SequenceFlow> outgoingFlowsInstances = newInclusiveGateway.getOutgoing();
+		    
 		    for (SequenceFlow outgoingFlow : outgoingFlowsInstances) {
 			// I use this just for counting. E.G. I know that the first
 			// ParallelGateway has
@@ -111,7 +122,7 @@ public class Rule3 {
 		if ((parallelGatewayCounter == 0) && (exclusiveGatewayCounter == 0)) {
 		    System.out.println("I tried applying rule 3 but I haven't found any parallel or exclusive gateways");
 		} else {
-		    
+
 		    //
 		    String outputMsg = "I applied rule 3 on " + (int)(exclusiveGatewayCounter+parallelGatewayCounter) + " gateways";
 		    System.out.println(outputMsg);
@@ -139,6 +150,8 @@ public class Rule3 {
 	for (ParallelGateway parallelGateway : parallelGatewayInstances) {
 	    // ASKANA why is this a "query" instead of a collection as usual? ASKANA what is a FlowNode?
 	    Query<FlowNode> succedingNodes = parallelGateway.getSucceedingNodes();
+	    String a = succedingNodes.toString();
+	    System.out.println(a);
 	}
 	// the subsequent exclusive gateways ("B") have one or more conditional tasks as
 	// child element ("C").
@@ -148,7 +161,7 @@ public class Rule3 {
     }
 
 
-    
+
 
 
 }

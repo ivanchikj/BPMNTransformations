@@ -31,8 +31,8 @@ public class Main {
 	
 	// Used to test R3
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
-	// String path ="/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
-	// String path ="/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
+	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
+	// String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
 	
 	// Used to test R3partb
 	// TODO create ad hoc xml file with camunda modeler
@@ -52,7 +52,7 @@ public class Main {
 	// Creating output model
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
-	Rule3.rule3(inputModelInstance);
+	Rule3.applyRule(inputModelInstance);
 
 	// Writing the output model to file
 	writeModeltoFile(inputModelInstance, filename, folderPath);
@@ -86,8 +86,8 @@ public class Main {
 	
     }
     public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) {
-	// Validate Model
-	// Bpmn.validateModel(ModelInstance);
+	//Validate Model
+	Bpmn.validateModel(ModelInstance);
 	// TODO use also Ana's test at
 	// https://github.com/camunda/camunda-engine-unittest
 

@@ -14,11 +14,13 @@ import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.UserTask;
 
 public class Rule4 {
 
     // TODO javadoc of this? Explaining the rule4
-    public static void rule4(BpmnModelInstance inputModel) {
+
+    public static void applyRule(BpmnModelInstance inputModel) {
 	// Part1: from paraGateway to double input
 	// Here I'm creating a collection of all the Gateways in the inputModel
 	Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class);
@@ -26,37 +28,45 @@ public class Rule4 {
 	// The following counter serves me to understand if I'm reading the inputModel
 	// correctly.
 	int parallelGatewayCounter = 0;
+	//	int applicableGatewaysCounter = 0;
+	//	int 
+	for (Gateway gateway : GatewayInstances) {
+	    if (gateway instanceof ParallelGateway) {
+		Query<FlowNode> previousNodesQuery = gateway.getPreviousNodes();//TODO  	
 
-	// The idea behind the first part is
-	// basically for each ParaGat i want to get the incoming flows, the outgoing
-	// flows, and then change the target of the incoming flows to the target of the
-	// outgoing flows
-	// to connect the parent elements to the child elements directly.
-	for (Gateway oldGateway : GatewayInstances) {
-	    if (oldGateway instanceof ParallelGateway /* || oldGateway instanceof ExclusiveGateway */) {
-		// Collection<SequenceFlow> outgoingFlows = oldGateway.getOutgoing();
-		// for (SequenceFlow outgoingFlow : outgoingFlows) {
-		// outgoingFlow.setSource((FlowNode) oldGateway.getPreviousNodes()); //the
-		// source of the outgoing flow will be the parent element of the gateway.
-		// outgoingFlow.setTarget(arg0);
-		// //outgoingFlow.getChildElementsByType(UserTask.class); //TODO ask Ana,
-		// why I
-		// can put UserTask but not class? I fear I will have to write the same
-		// method
-		// for every task type.
-		// }
-		Collection<SequenceFlow> incomingFlows = oldGateway.getIncoming();
-		for (SequenceFlow incomingFlow : incomingFlows) {
-		    incomingFlow.setTarget((FlowNode) oldGateway.getOutgoing()); // TODO
+		//First part of rule 4: if a parallelGateway has more than one task preceding him,
+		//or something other than a task, then rule 4 is not applicable.
+		FlowNode previousNode = previousNodesQuery.singleResult();
+		//ASKANA Should I put a 'try' here because the method singleResult fails when a node has two immediate predecessors?
+		//If the method fails it means we have two immediate predecessors so we already know the rule is it's not applicable anyway.
+		if (previousNodesQuery.count() == 1 && previousNode instanceof Task) {
+		    // after the gateway, i can have as many immediate successors as i want, to whatever element i want (task, gateway, etc...).
+		    Query<FlowNode> successiveNodes = gateway.getSucceedingNodes();
+		    // I now attach the previous node directly to the successors:
+		    java.util.List<FlowNode> successiveNodesList = successiveNodes.list();
+		    for (FlowNode succedingNode : successiveNodesList) {
+			Collection<SequenceFlow> incomingFlows = succedingNode.getIncoming();
+			for ( SequenceFlow flow : incomingFlows ) {
+			    flow.setSource(previousNode);
+			}
+
+		    }
 		}
-		// TODO
+	    }
+
+
+
+	    for (FlowNode node : previousNodesList ) {
+		String nodeId = node.getId();
+		System.out.println(nodeId);
 	    }
 	}
-
-	// Part2: from exclusiveGateway to double output
-
-	// Part3: from inclGateway to double output
     }
 
-    
+    // Part2: from exclusiveGateway to double output
+
+    // Part3: from inclGateway to double output
+}
+
+
 }

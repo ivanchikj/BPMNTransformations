@@ -2,31 +2,25 @@
 
 TODO: Vedere in che modo la regola 3 dev'essere modificata per adeguarsi a diversi grafici, guardando i paper che mi ha dato oggi ana (7 marzo)
 
-
 IDEA: usare metodi visti a SoftQuality per rappresentare algoritmo di ogni regola. Questa è roba che posso mettere nella tesi. Quale metodo però? È utile già farlo ora altrimenti mi perdo.
 
 IDEA: provare a scrivere qualche test per il programma
 
-IDEA: scrivere javadoc per i miei metodi, quando saranno finiti.
-
 TODO: Voglio fare in modo di aggiungere le regole che sono state applicate ai file di output nell'ordine in cui sono state applicate (ad esempio creando un file output_R3_R4.bpmn.xml).
 Però non basta aver chiamato un metodo per decidere di aggiungere la regola al nome del file, devo anche assicurarmi che quel metodo abbia effettivamente fatto qualcosa.
-
-
 
 TODO: Guardare le R3 e R4 dal paper di Ana
 Vedi che la R3 tu hai fatto solo le prime due. Fai la terza.
 
 TODO: Fai la rule 4, dovrebbe essere abbastanza facile fare tutte e tre le parti, forse però conviene dividerle in 3 parti diverse. L'ordine in cui vengono applicate non dovrebbe contare perché sono tutte indipendenti, ma chiedi ad Ana per sicurezza. Ricordati di scrivere nel paper se l'ordine è importante e di spiegare che le hai divise per semplicità.
 
+IDEA: fai anche un sommario per il report
 
+IDEA: molte volte nei miei algoritmi do per scontato che i bpmn in input siano 'corretti'. Se non è così, alcune assumption che faccio potrebbero non essere vere e i miei metodi avere dei problemi.
+Quindi potrei mettere un check anche al momento dell'importazione che dice all'utente che il suo bpmn non è valido e quindi il programma viene terminato (oppure che il programma viene eseguito ugualmente ma che i risultati potrebbero non essere validi, questo andrà scritto anche nel report)
 ------ Domande ------
 
 Is it a good idea to break down RULE3 into smaller methods? The code would be easier to understand, is it better to create many small methods or a single big one?
-
--
-
-Perché non vedo le cose scritte in camunda sotto i flows? Dal XML le condizioni sembrano esserci, ma nel viewer non compaiono.
 
 - 
 
