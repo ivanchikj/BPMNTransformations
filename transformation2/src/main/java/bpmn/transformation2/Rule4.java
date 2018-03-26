@@ -51,7 +51,6 @@ public class Rule4 {
 		    //Otherwise I use this boolean to tell my program to go forward
 		    success= true;
 		    
-		    
 		    if (success /*&& previousNode instanceof Task*/) { //ASKANA why "instance of Task" does not work?  
 			//after the gateway i can have as many immediate successors as i want, to whatever element i want (task, gateway, etc...).
 			Query <FlowNode> successiveNodes = gateway.getSucceedingNodes();
@@ -73,10 +72,10 @@ public class Rule4 {
 			    //previousNode.removeChildElement(gateway);
 
 			    //I can also delete the now the previously identified flows that attached the 
-			    //gateway.getIncoming().removeAll(flowsToDelete);
+			    gateway.getIncoming().removeAll(flowsToDelete);
 
 			    for (SequenceFlow flow : incomingFlows) {
-				flow.setTarget(previousNode);;//ASKANA this does not work
+				flow.setSource(previousNode);;//ASKANA this does not work
 				previousNode.setName("test4");//UNLOCKTHIS used only for testing purposes
 				flow.setName("Test5");//UNLOCKTHIS used only for testing purposes
 			    }
