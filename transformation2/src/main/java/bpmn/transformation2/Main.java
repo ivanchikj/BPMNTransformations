@@ -17,15 +17,7 @@ public class Main {
     public static String report = ""; //TODO public should be avoided, right?
 
     public static void main(String[] args) throws IOException {
-	// TODO having a way to use all of the bpmn files that are found inside a single
-	// folder.
-	// TODO have a way to let the user provide some parameters when launching the
-	// program, for example choosing which rules to apply, in which order, where to
-	// output the files, if we want to have a single file as input or a whole
-	// folder... etc...
 
-	// TODO / ASKANA find a way to organize the program in multiple classes. I don't really
-	// have objects, so am I just complicating things by having multiple classes?
 	//UNLOCKTHIS:
 	//String path = askForPath(); //Unlock this to ask the user for a path
 	

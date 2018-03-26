@@ -75,6 +75,7 @@ public class Rule4 {
 			    gateway.getIncoming().removeAll(flowsToDelete);
 
 			    for (SequenceFlow flow : incomingFlows) {
+				flow.builder();
 				flow.setSource(previousNode);;//ASKANA this does not work
 				previousNode.setName("test4");//UNLOCKTHIS used only for testing purposes
 				flow.setName("Test5");//UNLOCKTHIS used only for testing purposes
