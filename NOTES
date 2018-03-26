@@ -25,13 +25,14 @@ La regola 3 andrebbe applicata prima della regola 4? Altrimenti come faccio a tr
 
 ------------------------ Domande ------------------------
 
-Is it a good idea to break down RULE3 into smaller methods? The code would be easier to understand, is it better to create many small methods or a single big one?
-
-- 
-
-What's a FlowNode? Are both tasks and gateways considered nodes?
-I'm having troubles getting an element that precedes the one at hand, or that follows it. Both using the methods "getChildElement" and getSuccedingNodes
-
-- 
-
 When I use methods to write to file, Eclipse suggests me to write "throws IO exceptions" which it does automatically, but what does that means? Can you suggest a good tutorial on (common) exceptions?
+
+-
+
+I've seen in one of the (few) examples on camunda's website, that they use iterators instead of FOR
+
+-
+
+My current "solution" to the problem of recognizing the structures where the "third part" of rule 3 is applicable is:
+	"Search for all the instances where an exclusive gateway is followed by a single parallel gateway.
+	Then compare all of those isntances and find out wheter the parallel gateway is always the same for all those instances. If it is, then I can apply rule 3."

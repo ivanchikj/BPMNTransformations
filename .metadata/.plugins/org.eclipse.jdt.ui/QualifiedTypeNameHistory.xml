@@ -19,4 +19,6 @@
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.UserTask"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.Task"/>
 <fullyQualifiedTypeName name="java.awt.List"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelException"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Main"/>
 </qualifiedTypeNameHistroy>

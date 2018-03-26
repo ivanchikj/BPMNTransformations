@@ -34,8 +34,6 @@ public class Main {
 	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
 	// String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
 	
-	
-	
 	// Used to test R3partb
 	// TODO create ad hoc xml file with camunda modeler
 	
@@ -45,7 +43,10 @@ public class Main {
 
 	//reading a file 
 	File bpmnFile = new File(path);
-
+	
+	
+	System.out.println("Trying to open file " + path); //this will be useful when opening a folder with multiple files
+	
 	// this variable is used later to replace the filename with the new one more
 	// easily.
 	String filename = bpmnFile.getName().replace(".bpmn.xml", "");
@@ -91,8 +92,10 @@ public class Main {
 	
     }
     public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) {
-	//Validate Model
-	Bpmn.validateModel(ModelInstance);
+	//Validate Model UNLOCKTHIS (disabled for testing purposes)
+	//NOTE even with the following line disabled, it still refuses to save a malformed bpmn graph:
+	//writemodeltofile probably already includes validateModel inside.
+	//Bpmn.validateModel(ModelInstance);
 	// TODO use also Ana's test at
 	// https://github.com/camunda/camunda-engine-unittest
 
