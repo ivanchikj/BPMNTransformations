@@ -62,19 +62,20 @@ public class Rule4 {
 			Collection <SequenceFlow> flowsToDelete = gateway.getIncoming();
 
 			// I now attach the previous node directly to the predecessor of my gateway
-			for (FlowNode succedingNode : successiveNodesList) {
+			for (FlowNode succedingNode : successiveNodesList) { //TODO if a Node has two incoming
 			    succedingNodesCounter++;
 			    succedingNode.setName("Test3");//UNLOCKTHIS used only for testing purposes
 			    System.out.println("	Succeding nodes: " + succedingNodesCounter);
-			    Collection <SequenceFlow> incomingFlows = succedingNode.getIncoming();
+			    Collection <SequenceFlow> outgoingFlows = succedingNode.getIncoming(); //Note that i call the collection "outgoing" because I'm looking at them from the perspective of the gateway, not the task
+			    //TODO if a task has one more incoming flow that it's not coming from the gateway, I need to ignore it.
 
 			    //I can now safely delete my gateway
-			    //previousNode.removeChildElement(gateway);
+			    //previousNode.removeChildElement(gateway); //ASKANA this does not work.
 
-			    //I can also delete the now the previously identified flows that attached the 
-			    gateway.getIncoming().removeAll(flowsToDelete);
+			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 
+			    gateway.getIncoming().removeAll(flowsToDelete); //ASKANA this does not work.
 
-			    for (SequenceFlow flow : incomingFlows) {
+			    for (SequenceFlow flow : outgoingFlows) {
 				flow.builder();
 				flow.setSource(previousNode);;//ASKANA this does not work
 				previousNode.setName("test4");//UNLOCKTHIS used only for testing purposes
