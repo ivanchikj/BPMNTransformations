@@ -60,7 +60,7 @@ public class Rule4 {
 			//Creating the list now serves to distinguish them from the newly created ones
 			//NOTE that I cannot delete the outgoing flows instead, because I want to keep the existing conditions that they might have
 			Collection <SequenceFlow> flowsToDelete = gateway.getIncoming();
-
+			System.out.println("FlowsToDelete Size: " + flowsToDelete.size());
 			// I now attach the previous node directly to the predecessor of my gateway
 			for (FlowNode succedingNode : successiveNodesList) { //TODO if a Node has two incoming
 			    succedingNodesCounter++;
@@ -74,7 +74,8 @@ public class Rule4 {
 
 			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 
 			    gateway.getIncoming().removeAll(flowsToDelete); //ASKANA this does not work.
-
+			    System.out.println("FlowsToDelete Size after test: " + flowsToDelete.size());
+			    System.out.println("Flows to actually delete : " + gateway.getIncoming().size());
 			    for (SequenceFlow flow : outgoingFlows) {
 				flow.builder();
 				flow.setSource(previousNode);;//ASKANA this does not work
