@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -18,27 +20,24 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-	//UNLOCKTHIS:
-	//String path = askForPath(); //Unlock this to ask the user for a path
-	
-	// Used to test R3
-	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.1.Parallel_Multiple.bpmn.xml";
-	// String path = "/Users/rubenfolini/Desktop/Archive/Parallel/1.2.2.Parallel_R1R3.bpmn.xml"
-	// String path = "/Users/rubenfolini/Desktop/Archive/Exclusive/3.1.Exclusive_Multiple.bpmn";
-	
-	// Used to test R3partb
-	// TODO create ad hoc xml file with camunda modeler
-	
-	
-	//Used to test R4Part1
-	String path = "/Users/rubenfolini/Desktop/Test.bpmn.xml";
+	//String path = askForPath(); //UNLOCKTHIS to ask the user for a path
+
+	// Used to test Rule3
+	// TODO create ad hoc xml files with camunda modeler
+
+	// USED to test Rule4
+	//part1:
+	//String path = "./TestGraphs/Rule4a.bpmn.xml";
+
+	//Used to test the deleting System
+	String path = "./TestGraphs/deletingTest.bpmn.xml";
 
 	//reading a file 
 	File bpmnFile = new File(path);
-	
-	
+
+
 	System.out.println("Trying to open file " + path); //this will be useful when opening a folder with multiple files
-	
+
 	// this variable is used later to replace the filename with the new one more
 	// easily.
 	String filename = bpmnFile.getName().replace(".bpmn.xml", "");
@@ -46,15 +45,20 @@ public class Main {
 
 	// Creating output model
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
-	
-	Rule4.applyRule(inputModelInstance);
-	
+
+	//UNLOCKTHIS Rule4.applyRule(inputModelInstance);
+	Trials.deletingTest(inputModelInstance);
+
+
 	//figuring out the folder in which the file is located
 	String folderPath = getFolderFromPath(path);
-		
+
 	// Writing the output model to file
 	writeModeltoFile(inputModelInstance, filename, folderPath);
-	writeReportToFile(report,folderPath);
+	
+	//writeXMLModeltoFile(inputModelInstance, filename, folderPath);
+	
+	//UNLOCKTHIS writeReportToFile(report,folderPath);
     }
     // This lets the user decide the path of the file
     // TODO provide exceptions? What happens if it's not the correct path?
@@ -71,17 +75,21 @@ public class Main {
 	String folderpath = path.substring(0,index+1);
 	return folderpath;
     }
-    	//ASKANA
-    	//The idea is to update the report every time i do something
-  	//and then save it at the end. But is that considered bad practice?
-  	//The "report" variable would need to be modified
-  	//by many different methods
+
+    //ASKANA
+    //The idea is to update the report every time i do something
+    //and then save it at the end. But is that considered bad practice?
+    //The "report" variable would need to be modified
+    //by many different methods
     public static void writeReportToFile(String report, String folderPath) throws IOException {
-	LocalDate timestamp = LocalDate.now();
-	BufferedWriter writer = new BufferedWriter( new PrintWriter(folderPath + "Report" + timestamp +".txt"));
+	//getting today's date
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	String timeAndDate  = dateFormat.format(new Date());
+	//saving the report as a txt
+	BufferedWriter writer = new BufferedWriter(new PrintWriter(folderPath + "Report" + timeAndDate + ".txt"));
 	writer.write(report);
 	writer.close( );
-	
+
     }
     public static void writeModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) {
 	//Validate Model UNLOCKTHIS (disabled for testing purposes)
@@ -93,12 +101,30 @@ public class Main {
 
 	// Write to file
 	// TODO "rulesApplied" never gets updated. Why? Shoul i provide get and set methods? I guess there's a simpler way.
-	String location = folderPath + filename + rulesApplied + "RULE4TEST" + ".bpmn.xml";
+	String location = folderPath + "/output/" +  filename + rulesApplied + "DELETINGTEST" + ".bpmn.xml";
 	File file = new File(location);
+	file.getParentFile().mkdirs();
 	System.out.println(location);
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
 	Bpmn.writeModelToFile(file, ModelInstance);
+    }
+    /**
+     * Used to bypass Camunda's 'writeModelToFile' validation
+     * 
+     * @param ModelInstance
+     * @param filename
+     * @param folderPath
+     * @throws IOException 
+     */
+    public static void writeXMLModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) throws IOException {
+	// TODO I will have to find a way to automatically append to the filename the
+	// rules that have been applied. For now this works because I only have one.
+	String xml = ModelInstance.;
+	//TODO the following lines are exactly the same as the ones in WriteReport method. Maybe i should put them in a separate method.
+	BufferedWriter writer = new BufferedWriter(new PrintWriter(folderPath + "UNVALIDATED XML.txt"));
+	writer.write(xml);
+	writer.close( );
     }
 
 }

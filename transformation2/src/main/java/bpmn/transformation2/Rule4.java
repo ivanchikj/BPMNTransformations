@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.Collection;
 
-import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelException;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -15,7 +14,8 @@ import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
+import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.bpmn.instance.Process;
 
 public class Rule4 {
 
@@ -28,6 +28,16 @@ public class Rule4 {
      */
     public static void applyRule(BpmnModelInstance inputModel) {
 
+
+	Collection <Process> Processes = inputModel.getModelElementsByType(Process.class); 
+	//ASKANA can an xml file contain more than one process? If so in the main class I should have a loop going through all processes
+	//ASKANA But if that's the case, then i cannot simply change the "applyRule" methods to use a process instead of an inputModela s a parameter
+	//ASKANA because the bpmndi is not contained in the process.
+	Process process = Processes.iterator().next();
+	System.out.println("WORKING ON PROCESS : " +  process.getId());
+	
+	
+	
 	int gatCounter = 0;
 	int paraGatCounter = 0;
 	int succedingNodesCounter = 0;
@@ -51,7 +61,7 @@ public class Rule4 {
 		    //Otherwise I use this boolean to tell my program to go forward
 		    success= true;
 		    
-		    if (success /*&& previousNode instanceof Task*/) { //ASKANA why "instance of Task" does not work?  
+		    if (success && previousNode instanceof Task) {  
 			//after the gateway i can have as many immediate successors as i want, to whatever element i want (task, gateway, etc...).
 			Query <FlowNode> successiveNodes = gateway.getSucceedingNodes();
 			java.util.List <FlowNode> successiveNodesList = successiveNodes.list(); //to use the 'for' i need to transform the query into a list //TODO try to use an iterator instead?
@@ -68,14 +78,18 @@ public class Rule4 {
 			    System.out.println("	Succeding nodes: " + succedingNodesCounter);
 			    Collection <SequenceFlow> outgoingFlows = succedingNode.getIncoming(); //Note that i call the collection "outgoing" because I'm looking at them from the perspective of the gateway, not the task
 			    //TODO if a task has one more incoming flow that it's not coming from the gateway, I need to ignore it.
-
 			    //I can now safely delete my gateway
-			    //previousNode.removeChildElement(gateway); //ASKANA this does not work.
-
+			    //process.removeChildElement(gateway);			    
+			    
+			    
 			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 
-			    gateway.getIncoming().removeAll(flowsToDelete); //ASKANA this does not work.
-			    System.out.println("FlowsToDelete Size after test: " + flowsToDelete.size());
-			    System.out.println("Flows to actually delete : " + gateway.getIncoming().size());
+			    for (SequenceFlow flowToDelete : flowsToDelete) { 
+				System.out.println("Addio");
+				System.out.println(flowToDelete.getId());
+				//process.removeChildElement(flowToDelete);
+				}
+			    //System.out.println("FlowsToDelete Size after test: " + flowsToDelete.size());
+			    //System.out.println("Flows to actually delete : " + gateway.getIncoming().size());
 			    for (SequenceFlow flow : outgoingFlows) {
 				flow.builder();
 				flow.setSource(previousNode);;//ASKANA this does not work
@@ -97,6 +111,7 @@ public class Rule4 {
 	}
     }
 }
+
 
 // Part2: from exclusiveGateway to double output
 

@@ -8,7 +8,6 @@
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ParallelGateway"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.engine.task.Task"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ExclusiveGateway"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.SequenceFlow"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelInstance"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="java.io.PrintWriter"/>
@@ -21,4 +20,10 @@
 <fullyQualifiedTypeName name="java.awt.List"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Main"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.Query"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.EndEvent"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.xml.instance.ModelElementInstance"/>
+<fullyQualifiedTypeName name="javax.swing.text.html.HTMLDocument.Iterator"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.SequenceFlow"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.Process"/>
 </qualifiedTypeNameHistroy>
