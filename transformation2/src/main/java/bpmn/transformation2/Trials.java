@@ -18,18 +18,18 @@ import org.joda.time.LocalDateTime;
 
 public class Trials {
 
-    public static void main(String[] args) throws IOException {
-	String prova = "prova prova" + '\n' +  "prova a capo";
-	String folderPath = "/Users/rubenfolini/Desktop/";
-	writeReportToFile(prova, folderPath);
-    }
-    public static void writeReportToFile(String report, String folderPath) throws IOException {
-	LocalDateTime timestamp = LocalDateTime.now();
-	BufferedWriter writer = new BufferedWriter( new PrintWriter(folderPath + "Report" + timestamp +".txt"));
-	writer.write(report);
-	writer.close( );
-
-    }
+//    public static void main(String[] args) throws IOException {
+//	String prova = "prova prova" + '\n' +  "prova a capo";
+//	String folderPath = "/Users/rubenfolini/Desktop/";
+//	writeReportToFile(prova, folderPath);
+//    }
+//    public static void writeReportToFile(String report, String folderPath) throws IOException {
+//	LocalDateTime timestamp = LocalDateTime.now();
+//	BufferedWriter writer = new BufferedWriter( new PrintWriter(folderPath + "Report" + timestamp +".txt"));
+//	writer.write(report);
+//	writer.close( );
+//
+//    }
 
     public static void deletingTest (BpmnModelInstance inputModel) {
 

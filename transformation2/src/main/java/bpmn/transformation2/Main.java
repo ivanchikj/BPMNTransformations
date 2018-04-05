@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Scanner;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.xml.ModelInstance;
 import org.joda.time.LocalDate;
 
 public class Main {
@@ -111,7 +112,7 @@ public class Main {
     }
     /**
      * Used to bypass Camunda's 'writeModelToFile' validation
-     * 
+     * TODO fix this
      * @param ModelInstance
      * @param filename
      * @param folderPath
