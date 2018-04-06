@@ -3,6 +3,7 @@ package bpmn.transformation2;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Scanner;
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.ModelInstance;
+import org.camunda.bpm.model.xml.impl.util.IoUtil;
 import org.joda.time.LocalDate;
 
 public class Main {
@@ -28,10 +30,10 @@ public class Main {
 
 	// USED to test Rule4
 	//part1:
-	//String path = "./TestGraphs/Rule4a.bpmn.xml";
+	String path = "./TestGraphs/Rule4a.bpmn.xml";
 
 	//Used to test the deleting System
-	String path = "./TestGraphs/deletingTest.bpmn.xml";
+	//String path = "./TestGraphs/deletingTest.bpmn.xml";
 
 	//reading a file 
 	File bpmnFile = new File(path);
@@ -47,17 +49,18 @@ public class Main {
 	// Creating output model
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
-	//UNLOCKTHIS Rule4.applyRule(inputModelInstance);
-	Trials.deletingTest(inputModelInstance);
+	//UNLOCKTHIS: 
+	Rule4.applyRule(inputModelInstance);
+	//Trials.deletingTest(inputModelInstance);
 
 
 	//figuring out the folder in which the file is located
 	String folderPath = getFolderFromPath(path);
 
 	// Writing the output model to file
-	writeModeltoFile(inputModelInstance, filename, folderPath);
+	//UNLOCKTHIS writeModeltoFile(inputModelInstance, filename, folderPath);
 	
-	//writeXMLModeltoFile(inputModelInstance, filename, folderPath);
+	writeXMLModeltoFile(inputModelInstance, filename, folderPath);
 	
 	//UNLOCKTHIS writeReportToFile(report,folderPath);
     }
@@ -118,14 +121,17 @@ public class Main {
      * @param folderPath
      * @throws IOException 
      */
-    public static void writeXMLModeltoFile(BpmnModelInstance ModelInstance, String filename, String folderPath) throws IOException {
+    public static void writeXMLModeltoFile(BpmnModelInstance modelInstance, String filename, String folderPath) throws IOException {
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
-	String xml = ModelInstance.;
+	FileOutputStream os = new FileOutputStream(folderPath + "UNVALIDATED XML.txt");
+	IoUtil.writeDocumentToOutputStream(modelInstance.getDocument(), os);
 	//TODO the following lines are exactly the same as the ones in WriteReport method. Maybe i should put them in a separate method.
-	BufferedWriter writer = new BufferedWriter(new PrintWriter(folderPath + "UNVALIDATED XML.txt"));
-	writer.write(xml);
-	writer.close( );
+	//BufferedWriter writer = new BufferedWriter(new PrintWriter(folderPath + "UNVALIDATED XML.txt"));
+	os.close();
+	System.out.println("Saving file in : " + folderPath + "UNVALIDATED XML.txt");
+        
+	
     }
 
 }
