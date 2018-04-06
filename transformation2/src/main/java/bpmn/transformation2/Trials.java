@@ -54,8 +54,19 @@ public class Trials {
 
 	SequenceFlow outFlow = outgoingFlows.iterator().next();
 	task.getOutgoing().remove(outFlow); //ASKANA this does not work
+	process.removeChildElement(outFlow);
+	
+	Collection <SequenceFlow> incomingFlows = task.getIncoming();
+
+	SequenceFlow inFlow = incomingFlows.iterator().next();
+	task.getIncoming().remove(inFlow); //ASKANA this does not work
+	process.removeChildElement(inFlow);
+	
+	process.removeChildElement(task);
 	System.out.println("removing flow : " + outFlow.getName());
 
+	
+	
 	Collection <EndEvent> endEvent = process.getChildElementsByType(EndEvent.class);
 	EndEvent end = endEvent.iterator().next();
 	end.setName("Fine");
@@ -63,8 +74,9 @@ public class Trials {
 	for (SequenceFlow flow : sequenceFlows) {
 	    if (flow.getName().toString().equals("3")) {
 		System.out.println("Found it");
-		flow.setName("Found it"); //This works
-		flow.setTarget(task); //ASKANA this does not work
+		//flow.setName("Found it"); //This works
+		//flow.setTarget(task); //ASKANA this does not work (on camunda)
+		
 	    }
 
 	}

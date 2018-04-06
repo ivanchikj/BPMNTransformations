@@ -79,7 +79,7 @@ public class Rule4 {
 			    Collection <SequenceFlow> outgoingFlows = succedingNode.getIncoming(); //Note that i call the collection "outgoing" because I'm looking at them from the perspective of the gateway, not the task
 			    //TODO if a task has one more incoming flow that it's not coming from the gateway, I need to ignore it.
 			    //I can now safely delete my gateway
-			    //process.removeChildElement(gateway);			    
+			    process.removeChildElement(gateway);			    
 			    
 			    
 			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 

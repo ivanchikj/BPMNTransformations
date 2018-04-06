@@ -30,10 +30,10 @@ public class Main {
 
 	// USED to test Rule4
 	//part1:
-	String path = "./TestGraphs/Rule4a.bpmn.xml";
+	//String path = "./TestGraphs/Rule4a.bpmn.xml";
 
 	//Used to test the deleting System
-	//String path = "./TestGraphs/deletingTest.bpmn.xml";
+	String path = "./TestGraphs/deletingTest.bpmn.xml";
 
 	//reading a file 
 	File bpmnFile = new File(path);
@@ -50,8 +50,8 @@ public class Main {
 	BpmnModelInstance inputModelInstance = Bpmn.readModelFromFile(bpmnFile);
 
 	//UNLOCKTHIS: 
-	Rule4.applyRule(inputModelInstance);
-	//Trials.deletingTest(inputModelInstance);
+	//Rule4.applyRule(inputModelInstance);
+	Trials.deletingTest(inputModelInstance);
 
 
 	//figuring out the folder in which the file is located
@@ -61,7 +61,7 @@ public class Main {
 	//UNLOCKTHIS writeModeltoFile(inputModelInstance, filename, folderPath);
 	
 	writeXMLModeltoFile(inputModelInstance, filename, folderPath);
-	
+	writeModeltoFile(inputModelInstance, filename, folderPath);
 	//UNLOCKTHIS writeReportToFile(report,folderPath);
     }
     // This lets the user decide the path of the file
