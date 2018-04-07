@@ -15,6 +15,7 @@ import org.camunda.bpm.model.bpmn.instance.Gateway;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.Task;
+import org.camunda.bpm.model.dmn.instance.Input;
 import org.camunda.bpm.model.bpmn.instance.Process;
 
 public class Rule4 {
@@ -35,9 +36,9 @@ public class Rule4 {
 	//ASKANA because the bpmndi is not contained in the process.
 	Process process = Processes.iterator().next();
 	System.out.println("WORKING ON PROCESS : " +  process.getId());
-	
-	
-	
+
+
+
 	int gatCounter = 0;
 	int paraGatCounter = 0;
 	int succedingNodesCounter = 0;
@@ -46,7 +47,7 @@ public class Rule4 {
 	for (Gateway gateway : GatewayInstances) {
 	    gatCounter ++;
 	    System.out.println("GatNumber " + gatCounter);
-	    gateway.setName("Test1"); //UNLOCKTHIS used only for testing
+	    gateway.setName("Test 1"); //UNLOCKTHIS used only for testing
 	    if (gateway instanceof ParallelGateway) {
 		paraGatCounter++;
 		System.out.println("  ParaGat:" + paraGatCounter);
@@ -60,12 +61,12 @@ public class Rule4 {
 		    //If the method fails it means we have two immediate predecessors so we already know the rule is it's not applicable anyway.
 		    //Otherwise I use this boolean to tell my program to go forward
 		    success= true;
-		    
+
 		    if (success && previousNode instanceof Task) {  
 			//after the gateway i can have as many immediate successors as i want, to whatever element i want (task, gateway, etc...).
 			Query <FlowNode> successiveNodes = gateway.getSucceedingNodes();
 			java.util.List <FlowNode> successiveNodesList = successiveNodes.list(); //to use the 'for' i need to transform the query into a list //TODO try to use an iterator instead?
-			gateway.setName("Test2"); //UNLOCKTHIS used only for testing
+			gateway.setName("Test2");
 			//I make a list of all the (incoming) flows that attached my gateway to it's predecessor, so that i can later delete them
 			//Creating the list now serves to distinguish them from the newly created ones
 			//NOTE that I cannot delete the outgoing flows instead, because I want to keep the existing conditions that they might have
@@ -79,26 +80,23 @@ public class Rule4 {
 			    Collection <SequenceFlow> outgoingFlows = succedingNode.getIncoming(); //Note that i call the collection "outgoing" because I'm looking at them from the perspective of the gateway, not the task
 			    //TODO if a task has one more incoming flow that it's not coming from the gateway, I need to ignore it.
 			    //I can now safely delete my gateway
-			    process.removeChildElement(gateway);			    
+			    //process.removeChildElement(gateway);			    
 			    
-			    
+
 			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 
 			    for (SequenceFlow flowToDelete : flowsToDelete) { 
 				System.out.println("Addio");
 				System.out.println(flowToDelete.getId());
-				//process.removeChildElement(flowToDelete);
-				}
+				process.removeChildElement(flowToDelete);
+			    }
 			    //System.out.println("FlowsToDelete Size after test: " + flowsToDelete.size());
 			    //System.out.println("Flows to actually delete : " + gateway.getIncoming().size());
 			    for (SequenceFlow flow : outgoingFlows) {
-				flow.builder();
-				flow.setSource(previousNode);;//ASKANA this does not work
+				flowChangeSource(inputModel, process, flow, previousNode);
 				previousNode.setName("test4");//UNLOCKTHIS used only for testing purposes
 				flow.setName("Test5");//UNLOCKTHIS used only for testing purposes
 			    }
 			}
-
-
 		    }
 		} catch (BpmnModelException e) {
 		    //this exception should happen when a node has more than one immediate predecessor
@@ -110,9 +108,42 @@ public class Rule4 {
 	    }
 	}
     }
+
+    //TODO those two methods should be in a different class because they will be used often
+    //TODO find a way to copy every attribute of a flow, not just the condition
+    public static void flowChangeTarget (BpmnModelInstance inputModel, Process process, SequenceFlow oldFlow, FlowNode newTarget) {
+	//ASKANA the method createElement does not exist, even though i copied it from the camunda website:
+	//https://docs.camunda.org/manual/7.8/user-guide/model-api/bpmn-model-api/create-a-model/
+	//SequenceFlow newFlow = createElement(process, oldFlow.getId(), SequenceFlow.class);
+	//TODO if this method works, we can remove inputModel from the parameters.
+
+	SequenceFlow newFlow = inputModel.newInstance(SequenceFlow.class);
+
+	newFlow.setId(oldFlow.getId());
+	newFlow.setConditionExpression(oldFlow.getConditionExpression());
+	newFlow.setSource(oldFlow.getSource());
+	newFlow.setTarget(newTarget);
+	
+	newFlow.setName("PROVA");//UNLOCKTHIS used for testing
+	
+	process.removeChildElement(oldFlow);
+
+    }
+
+    public static void flowChangeSource (BpmnModelInstance inputModel, Process process, SequenceFlow oldFlow, FlowNode newSource) {
+
+	SequenceFlow newFlow = inputModel.newInstance(SequenceFlow.class);
+
+	newFlow.setId(oldFlow.getId());
+	newFlow.setConditionExpression(oldFlow.getConditionExpression());
+	newFlow.setSource(newSource);
+	newFlow.setTarget(oldFlow.getTarget());
+	
+	newFlow.setName("PROVA");//UNLOCKTHIS used for testing
+	
+	process.removeChildElement(oldFlow);
+    }
+    // Part2: from exclusiveGateway to double output
+
+    // Part3: from inclGateway to double output
 }
-
-
-// Part2: from exclusiveGateway to double output
-
-// Part3: from inclGateway to double output
