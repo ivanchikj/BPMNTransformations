@@ -78,9 +78,7 @@
           <dc:Bounds height="13" width="0" x="534" y="248.5"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape bpmnElement="Task_1x0nec8" id="Task_1x0nec8_di">
-        <dc:Bounds height="80" width="100" x="629" y="388"/>
-      </bpmndi:BPMNShape>
+      
       <bpmndi:BPMNEdge bpmnElement="SequenceFlow_1rlogqk" id="SequenceFlow_1rlogqk_di">
         <di:waypoint x="519" xsi:type="dc:Point" y="339"/>
         <di:waypoint x="519" xsi:type="dc:Point" y="428"/>

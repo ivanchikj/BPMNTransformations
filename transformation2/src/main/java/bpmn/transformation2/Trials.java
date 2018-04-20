@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -42,22 +43,22 @@ import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 
 public class Trials {
 
-    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, TransformerException {
+    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, TransformerException, XPathExpressionException, TransformerConfigurationException {
 	xmlDeletingTest();
-	System.out.println("provaXX"); 
+	System.out.println("Sto testando qualcosa"); 
     }
 
-    public static void xmlDeletingTest () throws Exception, SAXException, IOException, ParserConfigurationException, TransformerException, XPathExpressionException {
-	//TODO later the input model and the element id shall be parameters.
-	//Also, it should be an array of all the IDs to delete, together with their Tag Name
-	//Another thing to note is that for some reason the ID of an element sometimes they add "_di" at the end of the ID.
-	//But I think it's only for elements with the "bpmndi:BPMNEdge" tag.
+    public static void xmlDeletingTest () throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException, TransformerConfigurationException {
 	
-	XPathFactory xPathFactory = XPathFactory.newInstance(); //Xpath is used to simplify the interaction with my XML file.
+	//Xpath is used to simplify the interaction with my XML file.
+	XPathFactory xPathFactory = XPathFactory.newInstance(); 
         XPath xpath = xPathFactory.newXPath();
 	
-	String id = "ExclusiveGateway_11hlkwm_di";
+    
+	String id = "Task_1x0nec8";
 	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml";
+	
+	//building the document
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	Document doc = docBuilder.parse(path);
@@ -65,19 +66,17 @@ public class Trials {
 	Element bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0); //there's always one single bmpdi:BMPNDiagram, so it's "item 0"
 	System.out.println("I'm working on the following bpmndiDiagram: "+ bpmndiDiagram.getAttribute("id"));
 	
-	NodeList bpmndiList = (NodeList) xpath.evaluate("//*[@key='mykey1']", doc, XPathConstants.NODESET);
+	NodeList bpmndiList = (NodeList) xpath.evaluate("//*[@bpmnElement='"+ id + "']", doc, XPathConstants.NODESET);
 	
+	//NOTE this 'for' is probably overkill, since I expect to find only one element.
 	for (int i = 0; i < bpmndiList.getLength(); ++i) {
-	    
-	    Element bpmndi = (Element) bpmndiList.item(i);
-	    
-	    System.out.println(bpmndi.getAttribute("bpmnElement"));
-	    
-	    if (bpmndi.getAttribute("bpmnElement").equals(id)) {
-	    bpmndi.getParentNode().removeChild(bpmndi); // This actually works.
+	    Element bpmndiElement = (Element) bpmndiList.item(i);
+	    System.out.println(bpmndiElement.getAttribute("bpmnElement"));
+	    bpmndiElement.getParentNode().removeChild(bpmndiElement);
 	    System.out.println("I removed element with ID: " + id);
-	    }
 	    
+	    
+	//Saving the file
 	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
@@ -91,8 +90,7 @@ public class Trials {
 		System.out.println("Done");
 		
 	    }
-	}
-
+    }
     public static void insertXMLelement() throws SAXException, IOException, ParserConfigurationException {
 	//TODO later the input model and the element data shall be parameters. And also the parent element to find the right location in the XML
 	//And also the exact position should be given as input, but first it should be calculated by a third method that gets the information of the neighbors and computes the averages
