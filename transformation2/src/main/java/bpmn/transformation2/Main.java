@@ -30,7 +30,7 @@ public class Main {
 
 	// USED to test Rule4
 	//part1:
-	String path = "./TestGraphs/Rule4a.bpmn.xml";
+	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml";
 
 	//Used to test the deleting System
 	//String path = "./TestGraphs/deletingTest.bpmn.xml";

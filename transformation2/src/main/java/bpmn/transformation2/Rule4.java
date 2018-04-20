@@ -37,32 +37,50 @@ public class Rule4 {
 	Process process = Processes.iterator().next();
 	System.out.println("WORKING ON PROCESS : " +  process.getId());
 
-
-
 	int gatCounter = 0;
 	int paraGatCounter = 0;
 	int succedingNodesCounter = 0;
 	// Here I'm creating a collection of all the Gateways in the inputModel
 	Collection<Gateway> GatewayInstances = inputModel.getModelElementsByType(Gateway.class); 
+
 	for (Gateway gateway : GatewayInstances) {
 	    gatCounter ++;
 	    System.out.println("GatNumber " + gatCounter);
-	    gateway.setName("Test 1"); //UNLOCKTHIS used only for testing
+	    gateway.setName("This is a Gateway"); //UNLOCKTHIS used only for testing
+	    //TODO simplify this in one single "if"
+
 	    if (gateway instanceof ParallelGateway) {
 		paraGatCounter++;
-		System.out.println("  ParaGat:" + paraGatCounter);
-		Query <FlowNode> previousNodesQuery = gateway.getPreviousNodes();  	
+		System.out.println(" Found the " + paraGatCounter + "nd ParalleGateway");
+		gateway.setName("This is a parallel gateway");
+		Collection <SequenceFlow> incomingSequenceFlows = gateway.getIncoming(); 	
 		//First part of rule 4: if a parallelGateway has more than one task preceding him,
 		//or something other than a task, then rule 4 is not applicable.
-		boolean success = false;
-		try {
-		    //ASKANA I put a 'try' here because the method singleResult fails when a node has two immediate predecessors.
-		    FlowNode previousNode = previousNodesQuery.singleResult();
-		    //If the method fails it means we have two immediate predecessors so we already know the rule is it's not applicable anyway.
-		    //Otherwise I use this boolean to tell my program to go forward
-		    success= true;
+		System.out.println("Number of incomingflows : " + incomingSequenceFlows.size());
 
-		    if (success && previousNode instanceof Task) {  
+		for (SequenceFlow flow : incomingSequenceFlows) {System.out.println(flow.getId());}
+
+
+		boolean hasSinglePredecessor = false;
+		try {
+		    FlowNode previousNode = gateway.getPreviousNodes().singleResult(); //this fails even with the 
+		    hasSinglePredecessor = true;
+		    System.out.println("Does it have a single predecessor? : " +  hasSinglePredecessor);
+		} catch (BpmnModelException e) {
+		    //this exception should happen when a node has more than one immediate predecessor
+		    System.out.println("I've ignored a node that has more than one incoming flow");
+		} finally {
+		    //TODO remember to finish it (and edit the report) after rule 4 is complete, not just the first part.
+		    Main.rulesApplied.concat("_R4");
+		}
+
+		if (incomingSequenceFlows.size() == 1 && hasSinglePredecessor) {
+		    FlowNode previousNode = gateway.getPreviousNodes().list().iterator().next();
+		    Task prova = process.getChildElementsByType(Task.class).iterator().next();
+		    //this only works because I know I only have one predecessor
+		    //an alternative would be to put this whole piece of code inside a "try" block so I can use previousNode inside it normally.
+		    previousNode.setName("previousNode");
+		    if (previousNode instanceof Task) {
 			//after the gateway i can have as many immediate successors as i want, to whatever element i want (task, gateway, etc...).
 			Query <FlowNode> successiveNodes = gateway.getSucceedingNodes();
 			java.util.List <FlowNode> successiveNodesList = successiveNodes.list(); //to use the 'for' i need to transform the query into a list //TODO try to use an iterator instead?
@@ -80,35 +98,48 @@ public class Rule4 {
 			    Collection <SequenceFlow> outgoingFlows = succedingNode.getIncoming(); //Note that i call the collection "outgoing" because I'm looking at them from the perspective of the gateway, not the task
 			    //TODO if a task has one more incoming flow that it's not coming from the gateway, I need to ignore it.
 			    //I can now safely delete my gateway
-			    //process.removeChildElement(gateway);			    
-			    
+			    process.removeChildElement(gateway);	
 
+			    //NOTE: the following block is no longer needed because 
+			    //when a FlowNode is deleted the incoming flows get automatically deleted as well.
+
+			    /*
 			    //I can also delete the now the previously identified flows that attached the gateway to its predecessor 
 			    for (SequenceFlow flowToDelete : flowsToDelete) { 
-				System.out.println("Addio");
+				System.out.println("I'm deleting the node : " + flowToDelete.getId());
 				System.out.println(flowToDelete.getId());
 				process.removeChildElement(flowToDelete);
 			    }
+
+			     */
+
 			    //System.out.println("FlowsToDelete Size after test: " + flowsToDelete.size());
 			    //System.out.println("Flows to actually delete : " + gateway.getIncoming().size());
 			    for (SequenceFlow flow : outgoingFlows) {
+				
+				
+				//createFlow(inputModel, process, flow.getTarget(), gateway);
+				
 				flowChangeSource(inputModel, process, flow, previousNode);
-				previousNode.setName("test4");//UNLOCKTHIS used only for testing purposes
-				flow.setName("Test5");//UNLOCKTHIS used only for testing purposes
+				
+				//THIS DOES NOT WORK: flowChangeSource(inputModel, process, flow, previousNode); 
+				
+				previousNode.setName("PredecessorName");//UNLOCKTHIS used only for testing purposes
+				flow.setName("Those should not exist");//UNLOCKTHIS used only for testing purposes
 			    }
 			}
 		    }
-		} catch (BpmnModelException e) {
-		    //this exception should happen when a node has more than one immediate predecessor
-		    System.out.println("I've ignored a node that has more than one incoming flow");
-		} finally {
-		    //TODO remember to finish it (and edit the report) after rule 4 is complete, not just the first part.
-		    Main.rulesApplied.concat("_R4");
 		}
 	    }
 	}
     }
 
+    
+    public static void createFlow (BpmnModelInstance inputModel, Process process, FlowNode target, FlowNode source) {
+	
+	source.builder().connectTo(target.getId()).done();
+	
+    }
     //TODO those two methods should be in a different class because they will be used often
     //TODO find a way to copy every attribute of a flow, not just the condition
     public static void flowChangeTarget (BpmnModelInstance inputModel, Process process, SequenceFlow oldFlow, FlowNode newTarget) {
@@ -119,29 +150,28 @@ public class Rule4 {
 
 	SequenceFlow newFlow = inputModel.newInstance(SequenceFlow.class);
 
-	newFlow.setId(oldFlow.getId());
+	//newFlow.setId(oldFlow.getId());
 	newFlow.setConditionExpression(oldFlow.getConditionExpression());
 	newFlow.setSource(oldFlow.getSource());
 	newFlow.setTarget(newTarget);
-	
-	newFlow.setName("PROVA");//UNLOCKTHIS used for testing
-	
-	process.removeChildElement(oldFlow);
 
+	newFlow.setName("PROVA");//UNLOCKTHIS used for testing
+	System.out.println("I tried changing the Target of the node  : " + oldFlow.getId()); //UNLOCKTHIS
+	process.removeChildElement(oldFlow);
     }
 
     public static void flowChangeSource (BpmnModelInstance inputModel, Process process, SequenceFlow oldFlow, FlowNode newSource) {
 
 	SequenceFlow newFlow = inputModel.newInstance(SequenceFlow.class);
 
-	newFlow.setId(oldFlow.getId());
-	newFlow.setConditionExpression(oldFlow.getConditionExpression());
+	//newFlow.setId(oldFlow.getId());
+	//newFlow.setConditionExpression(oldFlow.getConditionExpression()); //TODO see why this creates problems. Maybe if it doesn't have a conditionExpression it fails.
 	newFlow.setSource(newSource);
 	newFlow.setTarget(oldFlow.getTarget());
-	
+
 	newFlow.setName("PROVA");//UNLOCKTHIS used for testing
-	
-	process.removeChildElement(oldFlow);
+	System.out.println("I tried changing the Source of the node : " + oldFlow.getId()); //UNLOCKTHIS
+	//process.removeChildElement(oldFlow);
     }
     // Part2: from exclusiveGateway to double output
 

@@ -1,3 +1,5 @@
+TODO: fare test per  ogni regola
+
 
 
 TODO: Vedere in che modo la regola 3 dev'essere modificata per adeguarsi a diversi grafici, guardando i paper che mi ha dato oggi ana (7 marzo)
@@ -29,9 +31,15 @@ output the files, if we want to have a single file as input or a whole
 folder... etc...
 
 
+IDEA: create a BPMNModel object, with all the informations: the inputModel, the XML, the PAth...
+
+
 ------------------------ Cose da ricordare --------------
 
 La regola 3 andrebbe applicata prima della regola 4? Altrimenti come faccio a trovare i parallel se li ho tolti?
+
+
+TODO ricordarsi di scrivere nella tesi che cos'è il BPMNDI e anche che hai dovuto editarlo tu.
 
 ------------------------ Domande ------------------------
 

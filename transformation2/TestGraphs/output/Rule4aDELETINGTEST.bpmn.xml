@@ -10,7 +10,7 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1qf5q2q" sourceRef="StartEvent_1" targetRef="Task_049ea26"/>
     <bpmn:sequenceFlow id="SequenceFlow_196p7l0" sourceRef="Task_049ea26" targetRef="ExclusiveGateway_0foq709"/>
-    <bpmn:parallelGateway gatewayDirection="Unspecified" id="ExclusiveGateway_0foq709" name="Test 1">
+    <bpmn:parallelGateway gatewayDirection="Unspecified" id="ExclusiveGateway_0foq709" name="This is a parallel gateway">
       
       <bpmn:outgoing>SequenceFlow_089lsk8</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1kamfsy</bpmn:outgoing>
@@ -26,7 +26,7 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1kamfsy" name="Test5" sourceRef="Task_049ea26" targetRef="Task_160yxpi"/>
     <bpmn:sequenceFlow id="SequenceFlow_0bu9jp1" sourceRef="Task_160yxpi" targetRef="ExclusiveGateway_168sqlv"/>
-    <bpmn:parallelGateway gatewayDirection="Unspecified" id="ExclusiveGateway_168sqlv" name="Test 1">
+    <bpmn:parallelGateway gatewayDirection="Unspecified" id="ExclusiveGateway_168sqlv" name="This is a parallel gateway">
       <bpmn:incoming>SequenceFlow_0bu9jp1</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0hugg76</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1kthdto</bpmn:outgoing>
