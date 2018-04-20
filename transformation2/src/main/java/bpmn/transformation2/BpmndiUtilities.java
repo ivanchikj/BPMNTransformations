@@ -10,10 +10,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.w3c.dom.Document;
@@ -22,10 +27,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class BpmndiUtilities {
-    
+
     Map<String,String> elementsToDelete; //TODO find a better place to put this. Maybe in the same location of the report informations? 
     //Maybe creating an object where I will remember everything that has been done? 
-    
+
     /**
      * This method is used to delete elements from the bpmndi diagram in an XML file. 
      * Unfortunately Camunda only edits the process part of an xml,
@@ -46,43 +51,59 @@ public class BpmndiUtilities {
      * @throws ParserConfigurationException
      * @throws TransformerException
      */
-    public static void xmlDeleting (String path, Map<String,String> idAndTags) throws SAXException, IOException, ParserConfigurationException, TransformerException {
+    public static void xmlDeleteFromBpmndi (String path, String[] ids) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException, TransformerConfigurationException {
 
 	//TODO make it look better
 	System.out.println("Starting to delete BMPNDI elements");
 	System.out.println("Starting to delete BMPNDI elements");
 	System.out.println("Starting to delete BMPNDI elements");
 
+	//Xpath is used to simplify the interaction with my XML file.
+	XPathFactory xPathFactory = XPathFactory.newInstance(); 
+	XPath xpath = xPathFactory.newXPath();
+
+
+	//building the document
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	Document doc = docBuilder.parse(path);
 
-	//I go through each entry in my map:
-	Iterator<Entry<String, String>> it = idAndTags.entrySet().iterator();
-	while (it.hasNext()) {
-	    Entry<String,String> entry = it.next();
-	    NodeList bpmndiList = doc.getElementsByTagName(entry.getValue()); // I hope getValue gives me the Tag and not the Id
-	    //I go through each corresponding element in my document that has a certain tag.
+	Element bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0); //there's always one single bmpdi:BMPNDiagram, so it's "item 0"
+	System.out.println("I'm working on the following bpmndiDiagram: "+ bpmndiDiagram.getAttribute("id"));
+
+	//Looking for each id in ids:
+	for (String id : ids) {
+	    System.out.println("I'm searching for id: " + id);
+	    NodeList bpmndiList = (NodeList) xpath.evaluate("//*[@bpmnElement='"+ id + "']", doc, XPathConstants.NODESET);
+
+	    //NOTE this 'for' is probably overkill, since I expect to find only one element. TODO decide if you want to keep it in case there's more than one or not.
 	    for (int i = 0; i < bpmndiList.getLength(); ++i) {
 		Element bpmndiElement = (Element) bpmndiList.item(i);
-		System.out.println("I'm looking at the element " +  bpmndiElement.getAttribute("bpmnElement"));
-		//If the ID is the one that I'm looking for, delete the element.
-		if (bpmndiElement.getAttribute("bpmnElement").equals(it)) {
-		    bpmndiElement.getParentNode().removeChild(bpmndiElement); // This actually works.
-		    System.out.println("I removed element with ID: " + entry.getKey());
-		}
+		System.out.println(bpmndiElement.getAttribute("bpmnElement"));
+		bpmndiElement.getParentNode().removeChild(bpmndiElement);
+		System.out.println("I removed element with ID: " + id);
 	    }
 	}
+
+	System.out.println("Done deleting BMPNDI elements"); //TODO make it look better
+	System.out.println("Done deleting BMPNDI elements");
+	System.out.println("Done deleting BMPNDI elements");
+	System.out.println("Saved the XML file in + " + path);
+	System.out.println("Saved the XML file in + " + path);
+	System.out.println("Saved the XML file in + " + path);
+
+	//Saving the file
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	Transformer transformer = transformerFactory.newTransformer();
 	DOMSource source = new DOMSource(doc);
 	StreamResult result = new StreamResult(new File(path));
 	transformer.transform(source, result);
 
-	//TODO make it look better
-	System.out.println("Done deleting BMPNDI elements");
-	System.out.println("Done deleting BMPNDI elements");
-	System.out.println("Done deleting BMPNDI elements");
     }
-
 }
+
+
+
+
+
+

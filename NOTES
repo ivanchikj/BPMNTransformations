@@ -1,5 +1,6 @@
 TODO: fare test per  ogni regola
 
+NOTE: I will use XPath after redaing about it multiple times on stackOverflow, this should simplify mi interactions with XML files allowing me also to have a simpler "program structure" (with XPath I can search into a whole document for a certain ID, without previouslt specifiying wich tag I use, this means that I also dont'need to )
 
 
 TODO: Vedere in che modo la regola 3 dev'essere modificata per adeguarsi a diversi grafici, guardando i paper che mi ha dato oggi ana (7 marzo)
