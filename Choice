@@ -1,0 +1,49 @@
+Option 1: 
+	
+	I find a way to edit the camunda method to include the BPMNDI behavior that I want.
+	This is probably the easiest method. The "problem" (but it is also an opportunity?) is that I would need to learn how camunda organized it's method and classes and edit them accordingly.
+
+
+Option 2:
+
+	I redo the following methods:
+
+		FindElementByType;
+		GetPredecessors; * 
+			(GetIncomingFlows + GetSource;)
+		GetSuccessors; * 
+			(GetOutgoingFlows + GetTarget;)
+		GetType *
+		SetSource
+		SetTarget
+		DeleteElement
+
+		For the first two parts of Rule3 i also need:
+			
+			GetCondition(Flow); *
+			SetCondition; * 
+			ReplaceElement; * 
+				(DeleteElement + GetIncomingFlows + SetTarget + GetOutgoingElements + SetSource + CreateElement);
+
+
+	This way, I cand ditch Camunda completely and work directly on the XML files.
+	This is probably the "cleanest" and the more interesting solution among the 3. I can also "copy and paste" the work done by Camunda if I don't know how to do something.
+	Another advantage of working with XML is that I can google everything that I need and be somewhat sure to find it because its widely used.
+	This is also the more "future proof" among the solution because I will never encounter problems because of Camunda and I will have control over everything in my program.
+
+	('*' are the methods that I won't need to change unless I go for this option).
+
+
+	NOTA: NELLA REGOLA 1 RICORDATI CHE SE LA APPLICHI SU EXCLUSIVE GATEWAYS DEVI && SULLE CONDITIONS
+
+Option 3:
+	
+	I find a way to store all the edits that I want to do in different general files
+	and I do all the edits to the BPMNDI after saving my model.
+	
+	I need to think of a good way to save all the information that I need. I'm not familiar with the common ways to store such informations as I only used arrays and/or maps before. Maybe a list of arrays ?
+
+	Or I can create objects to store this information and then create arrays of those ojects
+
+	This is the "ugliest" options among the 3, but it's also the easiest option conceptually.
+

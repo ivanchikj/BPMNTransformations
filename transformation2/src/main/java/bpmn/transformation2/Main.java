@@ -7,21 +7,39 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.bpm.model.xml.impl.util.IoUtil;
 import org.joda.time.LocalDate;
+import org.xml.sax.SAXException;
 
 public class Main {
 
+    //TODO in all those method where i use the path,
+    //it would be wiser not to work directly on my XML file,
+    //but to clone it at the launch of the program so as not to mess up the original file.
+
+    
+    //TODO: find a better place to put those in: 
     // this keeps track of the rules that have been applied, in the right order.
     public static String rulesApplied = "";
     public static String report = ""; //TODO public should be avoided, right?
-
-    public static void main(String[] args) throws IOException {
+    
+    //This remembers all of the items that I have to delete from the XML's bpmdi section
+    public static List<String> bpmndiItemsToDelete = new ArrayList<String>();
+    
+    public static void main(String[] args) throws IOException, XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, TransformerException {
 
 	//String path = askForPath(); //UNLOCKTHIS to ask the user for a path
 
@@ -59,6 +77,12 @@ public class Main {
 
 	// Writing the output model to file
 	//UNLOCKTHIS writeModeltoFile(inputModelInstance, filename, folderPath);
+	
+
+	
+	BpmndiUtilities.xmlDeleteFromBpmndi(path, bpmdiItemsToDelete); //TODO Test this 
+	//ASKANA how to avoid having multiples exception after the method? Should I use more "try/ catch" instead? 
+	//Then it's the code that gets uglier.
 	
 	writeXMLModeltoFile(inputModelInstance, filename, folderPath);
 	writeModeltoFile(inputModelInstance, filename, folderPath); 

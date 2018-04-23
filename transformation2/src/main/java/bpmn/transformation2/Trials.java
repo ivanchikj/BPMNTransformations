@@ -49,76 +49,76 @@ public class Trials {
     }
 
     public static void xmlDeletingTest () throws ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException, TransformerConfigurationException {
-	
+
 	//Xpath is used to simplify the interaction with my XML file.
 	XPathFactory xPathFactory = XPathFactory.newInstance(); 
-        XPath xpath = xPathFactory.newXPath();
-	
-    
+	XPath xpath = xPathFactory.newXPath();
+
+
 	String id = "Task_1x0nec8";
 	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml";
-	
+
 	//building the document
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	Document doc = docBuilder.parse(path);
-	
+
 	Element bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0); //there's always one single bmpdi:BMPNDiagram, so it's "item 0"
 	System.out.println("I'm working on the following bpmndiDiagram: "+ bpmndiDiagram.getAttribute("id"));
-	
+
 	NodeList bpmndiList = (NodeList) xpath.evaluate("//*[@bpmnElement='"+ id + "']", doc, XPathConstants.NODESET);
-	
+
 	//NOTE this 'for' is probably overkill, since I expect to find only one element.
 	for (int i = 0; i < bpmndiList.getLength(); ++i) {
 	    Element bpmndiElement = (Element) bpmndiList.item(i);
 	    System.out.println(bpmndiElement.getAttribute("bpmnElement"));
 	    bpmndiElement.getParentNode().removeChild(bpmndiElement);
 	    System.out.println("I removed element with ID: " + id);
-	    
-	    
-	//Saving the file
-	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File(path));
-		transformer.transform(source, result);
 
-		System.out.println("Done");
-		System.out.println(i);
-		System.out.println("Done");
-		System.out.println(i);
-		System.out.println("Done");
-		
-	    }
+
+	    //Saving the file
+	    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    Transformer transformer = transformerFactory.newTransformer();
+	    DOMSource source = new DOMSource(doc);
+	    StreamResult result = new StreamResult(new File(path));
+	    transformer.transform(source, result);
+
+	    System.out.println("Done");
+	    System.out.println(i);
+	    System.out.println("Done");
+	    System.out.println(i);
+	    System.out.println("Done");
+
+	}
     }
     public static void insertXMLelement() throws SAXException, IOException, ParserConfigurationException {
 	//TODO later the input model and the element data shall be parameters. And also the parent element to find the right location in the XML
 	//And also the exact position should be given as input, but first it should be calculated by a third method that gets the information of the neighbors and computes the averages
 	//of the position of the neighbors. THose two averages will be the Y-position and the X-position of the new element here.
 	//we also have to create a BPMNLabel with the title.
-	
+
 	//ASKANA do we have to consider the "lane" in which we are? Since now we just worked with one single (invisible) lane, but in theory there could be more.
 	//This affects also the applicability of the rules, because if a structure that we identify as "ready to be transformed" spans on more than one lane, the rule is actually not
 	//applicable because it would change the lane of the corresponding element.
-	
+
 	//Otherwise TODO add this to the limitations on the readme (and on the thesis)
-	
+
 	String id = "ExclusiveGateway_11hlkwm_di";
 	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml";
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	Document doc = docBuilder.parse(path);
-	
+
 	Node bpmndiLane = doc.getElementsByTagName("bpmndi:BPMNPlane").item(0); //because I know there's only one lane
 	bpmndiLane.appendChild();
-	
 
-	
+
+
     }
 
 
 
-    
+
 
     public static void writeReportToFile(String report, String folderPath) throws IOException {
 	LocalDateTime timestamp = LocalDateTime.now();

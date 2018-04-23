@@ -21,6 +21,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.FlowNode;
+import org.camunda.bpm.model.bpmn.instance.Process;
+import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -33,16 +36,11 @@ public class BpmndiUtilities {
 
     /**
      * This method is used to delete elements from the bpmndi diagram in an XML file. 
-     * Unfortunately Camunda only edits the process part of an xml,
+     * Unfortunately Camunda only edits the "process" part of an xml,
      * while we also want to edit the BPMDI side of things to display our diagram correctly.
      *  
-     * Note that i will use the attribute "BMPMN Element" to find the BMPNDI element that I want to delete, instead of id, because
-     * the ID of a bpmndi element will sometimes be different from the corresponding BPMN element.
-     * 
-     * Future improvements might be finding a way to avoid looping two times for a single entry (one time for the tag and one time for the ID), and instead
-     * Looking first at a certain tag and then at all the elements of that tag. This way we only will loop once per tag.
-     * 
-     * TODO even better, if I can find a way to look at every element regardless of its tag,
+     * Note that I will use the attribute "BMPMN Element" to find the BMPNDI element that I want to delete, instead of "id", because
+     * the ID of a bpmndi element will sometimes be different from the corresponding BPMN element's own iD.
      * 
      * @param path of the file that I want to open 
      * @param idAndTags a map that contains the IDs of the element i want to delete and the tag that they have.
@@ -85,7 +83,7 @@ public class BpmndiUtilities {
 	    }
 	}
 
-	System.out.println("Done deleting BMPNDI elements"); //TODO make it look better
+	System.out.println("Done deleting BMPNDI elements"); //TODO make it look cleaner
 	System.out.println("Done deleting BMPNDI elements");
 	System.out.println("Done deleting BMPNDI elements");
 	System.out.println("Saved the XML file in + " + path);
@@ -100,6 +98,7 @@ public class BpmndiUtilities {
 	transformer.transform(source, result);
 
     }
+    public static void setSourceDI (String path, Process process, SequenceFlow oldFlow, FlowNode newSource)
 }
 
 

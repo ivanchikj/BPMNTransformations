@@ -8,11 +8,8 @@
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ParallelGateway"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ExclusiveGateway"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
-<fullyQualifiedTypeName name="java.io.PrintWriter"/>
 <fullyQualifiedTypeName name="java.io.FileWriter"/>
-<fullyQualifiedTypeName name="java.io.BufferedWriter"/>
 <fullyQualifiedTypeName name="org.joda.time.LocalDate"/>
-<fullyQualifiedTypeName name="org.joda.time.LocalDateTime"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.UserTask"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.Task"/>
 <fullyQualifiedTypeName name="java.awt.List"/>
@@ -30,5 +27,25 @@
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.dmn.instance.Input"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.SequenceFlow"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="org.joda.time.LocalDateTime"/>
+<fullyQualifiedTypeName name="java.io.BufferedWriter"/>
+<fullyQualifiedTypeName name="java.io.PrintWriter"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilderFactory"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
+<fullyQualifiedTypeName name="javax.validation.Path.Node"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Document"/>
+<fullyQualifiedTypeName name="javax.xml.soap.Node"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Node"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelInstance"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="javax.xml.xpath.XPathFactory"/>
+<fullyQualifiedTypeName name="javax.xml.xpath.XPath"/>
+<fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
+<fullyQualifiedTypeName name="javax.xml.transform.TransformerConfigurationException"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.BpmndiUtilities"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="javax.swing.text.Document"/>
 </qualifiedTypeNameHistroy>
