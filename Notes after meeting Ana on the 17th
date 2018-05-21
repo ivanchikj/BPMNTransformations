@@ -1,0 +1,25 @@
+Spiegare BPMN perché quelli del committee non lo conosceranno.
+
+Spiegare bene i requirements
+ 	le regole vanno in entrambi i sensi.
+ 	anche command line inputs
+ 	reports da produrre
+ 	USE CASE DIAGRAMS "funzionalità che l'utente si aspetta"
+
+ 	Presentazione vera, non dialogo.
+
+ 	Motivazione, tools simili,
+
+ 	Design decisions
+
+ 	Cosa ho implementato fino ad ora + demo.
+ 		Magari con un modello che può usare tutte le regole che abbiamo fino ad adesso.
+
+ 	Gantt chart (optional)
+
+ 	11 / 12 / 13 Giugno
+
+
+ 	junit su udacy
+
+ 	
