@@ -3,6 +3,7 @@ package bpmn.transformation2;
 import org.camunda.bpm.model.bpmn.impl.instance.TargetRef;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -22,6 +23,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class Model {
 
@@ -55,11 +58,11 @@ public class Model {
 
 	doc = docBuilder.parse(path);
 	process = (Element) doc.getElementsByTagName("bpmn:process").item(0); //TODO what happens if there's more than one process? Is it possible? I have to do both i guess.
-	System.out.println("I'm working on the following bpmndiDiagram: " + process.getAttribute("id"));
+	System.out.println("\033[36m " + "I'm working on the following bpmndiDiagram: " + process.getAttribute("id"));
 
 	//there's always one single bmpdi:BMPNDiagram, and one single process so it's "item 0"
 	bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0);
-	System.out.println("I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
+	System.out.println("\033[36m " + "I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
     }
 
     /**
@@ -71,7 +74,7 @@ public class Model {
 	String id = "GenereateRandomString"; //TODO
 	Element newTask = doc.createElement("bpmn:task");
 	newTask.setAttribute("id", id);
-	System.out.println("I created a new Task with the id " + id );
+	System.out.println("\033[36m " + "I created a new Task with the id " + id );
 	return id;
     } //ritorna l'id dell'oggetto? Forse non è necessario. Oppure lo prendo come ID? Come faccio a generare ID dal nulla?
 
@@ -81,11 +84,34 @@ public class Model {
      */
     public String newParallelGateway(){
 	String id = "GenereateRandomString"; //TODO
-	Element newTask = doc.createElement("bpmn:task"); //TODO cerca il tagname giusto. Magari fai in modo di avere un metodo generico per la creazione di tutti gli elementi? Con vari IF? Con type as "input".
+	Element newTask = doc.createElement("bpmn:task");
 	newTask.setAttribute("id", id);
-	System.out.println("I created a new Parallel Gateway with the id " + id );
+	System.out.println("\033[36m " + "I created a new Parallel Gateway with the id " + id );
 	return id;
     }
+
+    /**
+     * 
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    public String newElement (String type) throws Exception {
+
+	//This checks that the provided type is a true BPMN type
+	String[] allowed = {"bpmn:task","bpmn:startEvent"};
+	if (!Arrays.asList(allowed).contains(type)) {
+	    throw new Exception(type + "is not a bpmn type");
+	}
+	String id = "GenerateRandomString";
+	Element newTask = doc.createElement(type);
+	newTask.setAttribute("id", id);
+	System.out.println("I created a new element of type " + type +  " and with the id " + id);
+	return id;
+
+    }
+
+
     /**
      * TODO manage BPMNDI
      * TODO give option to create with a condition.
@@ -98,7 +124,7 @@ public class Model {
 	Element flow = doc.createElement("bpmn:sequenceFlow");
 	flow.setAttribute("sourceRef", source);
 	flow.setAttribute("TargetRef", target);
-	System.out.println("I created a new SequenceFlow with the id " + id + " and the source " + source + " and the target " + target);
+	System.out.println("\033[36m " + "I created a new SequenceFlow with the id " + id + " and the source " + source + " and the target " + target);
 	return id;
     }
 
@@ -111,7 +137,7 @@ public class Model {
     public void setSource(String id, String source){
 	Element sequenceFlow = doc.getElementById(id);
 	sequenceFlow.setAttribute("sourceRef", source);
-	System.out.println( "I have changed the source of flow " + id + " to " +  source);
+	System.out.println("\033[36m " + "I have changed the source of flow " + id + " to " +  source);
     }
 
     /**
@@ -123,7 +149,7 @@ public class Model {
     public void setTarget(String id, String target){
 	Element sequenceFlow = doc.getElementById(id);
 	sequenceFlow.setAttribute("targetRef", target);
-	System.out.println( "I have changed the target of flow " + id + " to " +  target);
+	System.out.println("\033[36m " + "I have changed the target of flow " + id + " to " +  target);
     }
 
     /**
@@ -133,51 +159,73 @@ public class Model {
      */
     public NodeList findElementByType (String type){
 	NodeList elementsOfType = doc.getElementsByTagName(type);
-	System.out.println("I have found " + elementsOfType.getLength() +  " elements of type " + type) ;
+	System.out.println("\033[36m " + "I have found " + elementsOfType.getLength() +  " elements of type " + type) ;
 	return elementsOfType;
     }
-    
+
     /**
      * TODO switch from a NodeList to a list of Strings?
      * Returns a list of the immediate predecessors of a certain Element
      * @param id the id of said Element
      * @return a NodeList of the predecessors of a certain Element
+     * @throws XPathExpressionException 
      */
-    public  NodeList getPredecessors(String id){
-	
-	NodeList predecessors = doc.get
-	System.out.println("I have found " + predecessors.getLength() + " immediate predecessors");
+    public  String[] getPredecessors(String id) throws XPathExpressionException{
+
+	NodeList incomingFlows = (NodeList) xpath.evaluate("//*[@targetRef='" + id + "']", doc, XPathConstants.NODESET);
+	String[] predecessors = new String[incomingFlows.getLength()];
+	for (int i = 0; i < incomingFlows.getLength(); i ++) {
+	    Element element =  (Element) incomingFlows.item(i);
+	}
+
+	System.out.println("\033[36m " + "I have found " + predecessors.length + " immediate predecessors");
 	return predecessors;
     }
 
     /**
      * TODO switch from a NodeList to a list of Strings?
      * Returns a list of the immediate successors of a certain Element
+     * TODO if a sequenceFlow comes out of a parallel gateway it might be that two sequence flows from outgoingFlows have the same source.
+     * It should not happen, but if it does I should remove duplicates
+     * TODO test this
      * @param id the id of said Element
      * @return a NodeList of the successors of a certain Element
+     * @throws XPathExpressionException 
      */
-    public NodeList getSuccessors(String id){
-	NodeList successors = doc.get;
+    public String[] getSuccessors(String id) throws XPathExpressionException{
+
+	NodeList outgoingFlows = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
+	String[] successors = new String[outgoingFlows.getLength()];
+
+	for (int i = 0; i < outgoingFlows.getLength(); i++) {
+	    Element element = (Element) outgoingFlows.item(i);
+	    successors[i] = element.getAttribute(id);
+	}
+	System.out.println("\033[36m " + "I have found " + successors.length + " immediate successors");
 	return successors;
     }
 
     /**
-     *
+     * Returns the type (tagname) of an element
      * @param id
      * @return
      */
     public String getType(String id){
-	String type = ""; //TODO
+	String type = doc.getElementById(id).getTagName();
+	System.out.println("\033[36m " + "The type of element " +  id + " is ");
 	return type;
-    } //return a string of the type
+    }
 
-    //the two following methods are a more generic alternative to getCondition and SetCondition:
-    public  String getValue(String property){
-	String value = "";
-	return value;
-    } //return the value of the property
-
-    public void setProperty(String property, String value){}
+    /**
+     * TODO see if this works just as well as deleteElement
+     * This is much simpler
+     * @param id the ID of the element to delete
+     */
+    public void delete (String id) {
+	Element elementToDelete = doc.getElementById(id);
+	elementToDelete.getParentNode().removeChild(elementToDelete);
+	System.out.println("\033[36m " + "I'm deleting element with id " +  id);
+    }
 
     /**
      * This method is used to delete elements from the diagram in an XML file.
@@ -201,9 +249,9 @@ public class Model {
 	    Element element = (Element) nodeList.item(i);
 	    System.out.println(element.getAttribute("bpmnElement"));
 	    element.getParentNode().removeChild(element);
-	    System.out.println("I removed element with ID: " + id);
+	    System.out.println("\033[36m " + "I removed element with ID: " + id);
 	}
-	System.out.println("Deleted element " + id);
+	System.out.println("\033[36m " + "Deleted element " + id);
 
     }
 

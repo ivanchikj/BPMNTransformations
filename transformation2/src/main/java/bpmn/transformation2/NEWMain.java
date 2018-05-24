@@ -58,7 +58,7 @@ public class NEWMain {
 
 	Model model = new Model(path);
 	
-	applyRules(path, parameters);
+	//applyRules(path, parameters);
 
 	//Writing the output model to file
 	writeToFile(model, filename, folderPath);
