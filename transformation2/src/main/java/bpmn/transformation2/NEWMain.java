@@ -41,7 +41,7 @@ public class NEWMain {
 
 	// Used to test XML methods:
 	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml"; // TODO create an ad hoc model to test all of my XML functions
-	if ( path.equals("") ){
+	if ( path.equals("") ){ //This is always expected to be true except when I'm testing something. Might even delete it later.
 	    path = askForPath();
 	}
 	// reading a file
@@ -57,12 +57,36 @@ public class NEWMain {
 	String folderPath = getFolderFromPath(path);
 
 	Model model = new Model(path);
+	
+	applyRules(path, parameters);
 
 	//Writing the output model to file
-	writeXMLModeltoFile(model, filename, folderPath);
+	writeToFile(model, filename, folderPath);
 
     }
-
+    /**
+     * TODO to be completed
+     * This separates the filepath from the parameters
+     * in the resulting array, the filepath is in the first position [0]
+     * while the parameters are in the second position [1]
+     * @param input
+     * @return
+     */
+    public String[] findParameters (String input) {
+	String[] pathAndParameters = new String[2];
+	pathAndParameters[0] = input.substring( 0, input.indexOf("-"));
+	pathAndParameters[1]  = input.substring(input.indexOf(",")+1, input.length());  
+	return pathAndParameters;
+    }
+    /**
+     * TODO this method should consider the parameters provided by the users and decide which rules to apply in which order.
+     * @param model
+     * @param parameters
+     */
+    public static void applyRules (Model model, String parameters) {
+	
+    }
+    
     // This lets the user decide the path of the file
     public static String askForPath() {
 	Scanner reader = new Scanner(System.in);
@@ -102,7 +126,7 @@ public class NEWMain {
      * @throws IOException 
      * @throws TransformerException 
      */
-    public static void writeXMLModeltoFile(Model model, String filename, String folderPath) throws IOException, TransformerException {
+    public static void writeToFile(Model model, String filename, String folderPath) throws IOException, TransformerException {
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
 	String filepath = folderPath + rulesApplied + "COMMENT" + ".filetype";
