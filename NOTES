@@ -52,6 +52,9 @@ IDEA: create a BPMNModel object, with all the informations: the inputModel, the 
 
 
 
+
+
+
 ------------------------ Cose da ricordare --------------
 
 La regola 3 andrebbe applicata prima della regola 4? Altrimenti come faccio a trovare i parallel se li ho tolti?
@@ -61,6 +64,12 @@ TODO ricordarsi di scrivere nella tesi che cos'è il BPMNDI e anche che hai dovu
 
 Se usi Xpath, fai un capitoletto dove spieghi come funziona
 https://it.wikipedia.org/wiki/XPath
+
+Ricordati che 
+		the methods
+			get property
+			set property
+				are useless because they are already implemented in JAVA
 
 ------------------------ Domande ------------------------
 

@@ -1,6 +1,7 @@
 package bpmn.transformation2;
 
 import org.camunda.bpm.model.bpmn.impl.instance.TargetRef;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,13 +26,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class Model {
 
-    public Document doc; //This is the xml representation of my model
+    public Document doc; // This is the xml representation of my model
     private Element process;
     private Element bpmndiDiagram;
-    public String path; ///TODO decide whether this will be private or not.
+    private Element bpmndiPlane;
+    public String path; /// TODO decide whether this will be private or not.
     private XPath xpath;
     private DocumentBuilder docBuilder;
 
@@ -46,49 +49,73 @@ public class Model {
 
 	this.path = path;
 
-	//Xpath needed to easily interact with XMLs
+	// Xpath needed to easily interact with XMLs
 	XPathFactory xPathFactory = XPathFactory.newInstance();
 	xpath = xPathFactory.newXPath();
 
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	docBuilder = docFactory.newDocumentBuilder();
 
-	//TODO make it look better
-	System.out.println("Opening file at position" + path);
+	// TODO make it look better
+	System.out.println("		Opening file at position" + path);
 
 	doc = docBuilder.parse(path);
-	process = (Element) doc.getElementsByTagName("bpmn:process").item(0); //TODO what happens if there's more than one process? Is it possible? I have to do both i guess.
-	System.out.println("\033[36m " + "I'm working on the following bpmndiDiagram: " + process.getAttribute("id"));
+	process = (Element) doc.getElementsByTagName("bpmn:process").item(0); // TODO what happens if there's more than
+	// one process? Is it possible? I have to
+	// do both i guess.
+	System.out.println("		I'm working on the following Process: " + process.getAttribute("id"));
 
-	//there's always one single bmpdi:BMPNDiagram, and one single process so it's "item 0"
+	// there's always one single bmpdi:BMPNDiagram, and one single process so it's
+	// "item 0"
 	bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0);
-	System.out.println("\033[36m " + "I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
+	
+	// TODO there's  not always one single bmpdi:BMPNDiagram, and one single process so it's better to find a way to manage this.
+	bpmndiPlane = (Element) doc.getElementsByTagName("bpmndi:BPMNPlane").item(0);
+	System.out.println(
+		"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
     }
 
     /**
-     * TODO guarda anche gli altri attributi tipo "completionQuantity="1" isForCompensation="false" startQuantity="1", non solo id
-     * TODO fai BPMNDI thingy
+     * Method used to test various ideas or slices of other methods.
+     * @return
+     */
+    public void testMethod() {
+	
+    }
+    
+    
+    /**
+     * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
+     * isForCompensation="false" startQuantity="1", li devo aggiungere?
+     * 
+     * 
      * @return the id of the newTask
      */
-    public String newTask(){
-	String id = "GenereateRandomString"; //TODO
+    public String newTask(String x, String y) {
+	// PROCESS VIEW
+	String id = newId(); // TODO
 	Element newTask = doc.createElement("bpmn:task");
 	newTask.setAttribute("id", id);
-	System.out.println("\033[36m " + "I created a new Task with the id " + id );
-	return id;
-    } //ritorna l'id dell'oggetto? Forse non è necessario. Oppure lo prendo come ID? Come faccio a generare ID dal nulla?
+	newTask.setAttribute("name", "NEW");
+	process.appendChild(newTask);
 
-    /**
-     *  TODO manage the BPMNDI aspects
-     * @return id of the new parallel gateway
-     */
-    public String newParallelGateway(){
-	String id = "GenereateRandomString"; //TODO
-	Element newTask = doc.createElement("bpmn:task");
-	newTask.setAttribute("id", id);
-	System.out.println("\033[36m " + "I created a new Parallel Gateway with the id " + id );
+	// BPMNDI VIEW
+	Element newTaskDI = doc.createElement("bpmndi:BPMNShape");
+	bpmndiDiagram.appendChild(newTaskDI);
+	newTaskDI.setAttribute("bpmnElement", id);
+	newTaskDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	System.out.println("		I created a new Task with the id " + id);
+
+	Element size = doc.createElement("dc:Bounds");
+	bpmndiPlane.appendChild(newTaskDI); //TODO I have to know if I have to put the thing inside a plane or inside
+	
+	newTaskDI.appendChild(size);
+	size.setAttribute("height", "80");
+	size.setAttribute("width", "100");
+	size.setAttribute("x", x);
+	size.setAttribute("y", y); // TODO Decide on how to calculate this.
 	return id;
-    }
+    } // ritorna l'id ? Forse è meglio void?
 
     /**
      * 
@@ -96,141 +123,212 @@ public class Model {
      * @return
      * @throws Exception
      */
-    public String newElement (String type) throws Exception {
+    public String newNode(String type, String x, String y) throws Exception {
 
-	//This checks that the provided type is a true BPMN type
-	String[] allowed = {"bpmn:task","bpmn:startEvent"};
-	if (!Arrays.asList(allowed).contains(type)) {
-	    throw new Exception(type + "is not a bpmn type");
+	String id = newId();
+	// This checks that the provided type is a true BPMN type and applies the relative method
+	
+	if (type.equals("bpmn:task")){
+	    this.newTask(x, y);
+	} else if (type.equals("bpmn:parallelGateway")) {
+	    //TODO
+	} else {
+	   System.out.println("		" + type + " is not a valid BPMN type");
 	}
-	String id = "GenerateRandomString";
-	Element newTask = doc.createElement(type);
-	newTask.setAttribute("id", id);
-	System.out.println("I created a new element of type " + type +  " and with the id " + id);
+	System.out.println("		I created a new element of type " + type + " and with the id " + id);
 	return id;
-
     }
 
-
     /**
-     * TODO manage BPMNDI
-     * TODO give option to create with a condition.
+     * TODO manage BPMNDI TODO give option to create with a condition. Like, "if
+     * condition is null, then apply none".
+     * 
      * @param source
      * @param target
      * @return
      */
-    public String newSequenceFlowString (String source, String target) {
-	String id = "GenerateRandomString";//TODO
+    public String newSequenceFlowString(String source, String target) {
+	String id = newId();// TODO
 	Element flow = doc.createElement("bpmn:sequenceFlow");
 	flow.setAttribute("sourceRef", source);
 	flow.setAttribute("TargetRef", target);
-	System.out.println("\033[36m " + "I created a new SequenceFlow with the id " + id + " and the source " + source + " and the target " + target);
+	System.out.println("		I created a new SequenceFlow with the id " + id + " and the source " + source
+		+ " and the target " + target);
 	return id;
     }
 
     /**
-     * TODO aggiungere un errore quando l'id non corrisponde a un elemento SequenceFlow 
-     * TODO manage BPMNDI aspects
-     * @param id the id of the sequenceFlow that will be changing source 
-     * @param source the new source
+     * TODO aggiungere un errore quando l'id non corrisponde a un elemento
+     * SequenceFlow TODO manage BPMNDI aspects
+     * 
+     * @param id
+     *            the id of the sequenceFlow that will be changing source
+     * @param source
+     *            the new source
+     * @throws XPathExpressionException
      */
-    public void setSource(String id, String source){
+    public void setSource(String id, String source) throws XPathExpressionException {
+	// We need to remove the child from the previous target
+	// The following xpath could create problems when a flow has two targets, but
+	// that should be impossible.
+	NodeList toDelete = (NodeList) xpath.evaluate("//bpmn:incoming[.='" + id + "']", doc, XPathConstants.NODESET); // TODO
+	// this
+	// might
+	// not
+	// work
+	doc.removeChild(toDelete.item(0));
+
+	// This changes the element of the sequenceFlow
 	Element sequenceFlow = doc.getElementById(id);
 	sequenceFlow.setAttribute("sourceRef", source);
-	System.out.println("\033[36m " + "I have changed the source of flow " + id + " to " +  source);
+	// We still need to change also the element of the Source to have my outgoing
+	// flow as a child
+	Element sourceElement = doc.getElementById(source);
+	Element outgoing = doc.createElement("bpmn:outgoing");
+	outgoing.setTextContent(id); // TODO I'm not sure this does what I want.
+	sourceElement.appendChild(outgoing);
+
+	String x = doc.getElementById(source + "_di").getAttribute("x");
+
+	// TODO We need to remove the child of the previous target
+
+	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
 
     /**
-     * TODO aggiungere un errore quando l'id non corrisponde a un elemento SequenceFlow
-     * TODO manage BPMNDI aspects
-     * @param id the id of the sequenceFlow that will be chaning source
-     * @param target the new target
+     * TODO aggiungere un errore quando l'id non corrisponde a un elemento
+     * SequenceFlow TODO manage BPMNDI aspects
+     * 
+     * @param id
+     *            the id of the sequenceFlow that will be changing source
+     * @param target
+     *            the new target
+     * @throws XPathExpressionException
+     * @throws DOMException
      */
-    public void setTarget(String id, String target){
+    public void setTarget(String id, String target) throws DOMException, XPathExpressionException {
+
+	// We need to remove the child from the previous target
+	// The following xpath could create problems when a flow has two targets, but
+	// that should be impossible.
+	NodeList toDelete = (NodeList) xpath.evaluate("//bpmn:outgoing[.='" + id + "']", doc, XPathConstants.NODESET);
+	// TODOthis might not work
+
+	doc.removeChild(toDelete.item(0));
+
+	// This changes the element of the sequenceFlow
 	Element sequenceFlow = doc.getElementById(id);
 	sequenceFlow.setAttribute("targetRef", target);
-	System.out.println("\033[36m " + "I have changed the target of flow " + id + " to " +  target);
+
+	// We still need to change also the element of the Source to have my outgoing
+	// flow as a child
+	Element sourceElement = doc.getElementById(target);
+	Element incoming = doc.createElement("bpmn:outgoing");
+	incoming.setTextContent(id); // TODO I'm not sure this does what I want.
+	sourceElement.appendChild(incoming);
+
+	System.out.println("		I have changed the target of flow " + id + " to " + target);
     }
 
     /**
      * TODO switch from a NodeList to a list of Strings?
-     * @param type the type of elements that we want to search for
+     * 
+     * @param type
+     *            the type of elements that we want to search for
      * @return a NodeList of elements
      */
-    public NodeList findElementByType (String type){
+    public NodeList findElementByType(String type) {
 	NodeList elementsOfType = doc.getElementsByTagName(type);
-	System.out.println("\033[36m " + "I have found " + elementsOfType.getLength() +  " elements of type " + type) ;
+	System.out.println("		I have found " + elementsOfType.getLength() + " elements of type " + type);
 	return elementsOfType;
     }
 
     /**
-     * TODO switch from a NodeList to a list of Strings?
-     * Returns a list of the immediate predecessors of a certain Element
-     * @param id the id of said Element
+     * TODO switch from a NodeList to a list of Strings? Returns a list of the
+     * immediate predecessors of a certain Element
+     * 
+     * @param id
+     *            the id of said Element
      * @return a NodeList of the predecessors of a certain Element
-     * @throws XPathExpressionException 
+     * @throws XPathExpressionException
      */
-    public  String[] getPredecessors(String id) throws XPathExpressionException{
+    public String[] getPredecessors(String id) throws XPathExpressionException {
 
 	NodeList incomingFlows = (NodeList) xpath.evaluate("//*[@targetRef='" + id + "']", doc, XPathConstants.NODESET);
 	String[] predecessors = new String[incomingFlows.getLength()];
-	for (int i = 0; i < incomingFlows.getLength(); i ++) {
-	    Element element =  (Element) incomingFlows.item(i);
+	for (int i = 0; i < incomingFlows.getLength(); i++) {
+	    predecessors[i] = ((Element) incomingFlows.item(i)).getAttribute("sourceRef");
 	}
 
-	System.out.println("\033[36m " + "I have found " + predecessors.length + " immediate predecessors");
+	System.out.println("		I have found " + predecessors.length + " immediate predecessors");
 	return predecessors;
     }
 
     /**
-     * TODO switch from a NodeList to a list of Strings?
-     * Returns a list of the immediate successors of a certain Element
-     * TODO if a sequenceFlow comes out of a parallel gateway it might be that two sequence flows from outgoingFlows have the same source.
-     * It should not happen, but if it does I should remove duplicates
-     * TODO test this
-     * @param id the id of said Element
+     * TODO switch from a NodeList to a list of Strings? Returns a list of the
+     * immediate successors of a certain Element TODO if a sequenceFlow comes out of
+     * a parallel gateway it might be that two sequence flows from outgoingFlows
+     * have the same source. It should not happen, but if it does I should remove
+     * duplicates TODO test this
+     * 
+     * @param id
+     *            the id of said Element
      * @return a NodeList of the successors of a certain Element
-     * @throws XPathExpressionException 
+     * @throws XPathExpressionException
      */
-    public String[] getSuccessors(String id) throws XPathExpressionException{
+    public String[] getSuccessors(String id) throws XPathExpressionException {
 
 	NodeList outgoingFlows = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
 	String[] successors = new String[outgoingFlows.getLength()];
 
 	for (int i = 0; i < outgoingFlows.getLength(); i++) {
-	    Element element = (Element) outgoingFlows.item(i);
-	    successors[i] = element.getAttribute(id);
+	    successors[i] = ((Element) outgoingFlows.item(i)).getAttribute("targetRef");
 	}
-	System.out.println("\033[36m " + "I have found " + successors.length + " immediate successors");
+	System.out.println("		I have found " + successors.length + " immediate successors");
 	return successors;
     }
 
     /**
      * Returns the type (tagname) of an element
+     * 
      * @param id
      * @return
      */
-    public String getType(String id){
+    public String getType(String id) {
 	String type = doc.getElementById(id).getTagName();
-	System.out.println("\033[36m " + "The type of element " +  id + " is ");
+	System.out.println("		The type of element " + id + " is ");
 	return type;
     }
 
     /**
-     * TODO see if this works just as well as deleteElement
-     * This is much simpler
-     * @param id the ID of the element to delete
+     * TODO see if this works just as well as deleteElement This is much simpler
+     * 
+     * @param id
+     *            the ID of the element to delete
+     * @throws XPathExpressionException
      */
-    public void delete (String id) {
+    public void delete(String id) throws XPathExpressionException {
 	Element elementToDelete = doc.getElementById(id);
 	elementToDelete.getParentNode().removeChild(elementToDelete);
-	System.out.println("\033[36m " + "I'm deleting element with id " +  id);
+	System.out.println("		I'm deleting element with id " + id);
+
+	NodeList bpmndiElementsToDelete = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc,
+		XPathConstants.NODESET);
+	for (int i = 0; i < bpmndiElementsToDelete.getLength(); ++i) { // This for is used in case there are more than
+								       // one bmpndi with
+	    // the same id, which shouldn't happen TODO decide
+	    Element element = (Element) bpmndiElementsToDelete.item(i);
+	    System.out.println(element.getAttribute("bpmnElement"));
+	    element.getParentNode().removeChild(element);
+	}
     }
 
     /**
-     * This method is used to delete elements from the diagram in an XML file.
-     * Note that I will use the attribute "BMPMN Element" to find the BMPNDI element that I want to delete, instead of "id", because
-     * the ID of a bpmndi element will sometimes be different from the corresponding BPMN element's own iD.
+     * This method is used to delete elements from the diagram in an XML file. Note
+     * that I will use the attribute "BMPMN Element" to find the BMPNDI element that
+     * I want to delete, instead of "id", because the ID of a bpmndi element will
+     * sometimes be different from the corresponding BPMN element's own iD.
+     * 
      * @param id
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -240,30 +338,66 @@ public class Model {
      * @throws TransformerConfigurationException
      * @throws org.xml.sax.SAXException
      */
-    public void deleteElement(String id) throws ParserConfigurationException, SAXException, IOException,
-    XPathExpressionException, TransformerException, TransformerConfigurationException, org.xml.sax.SAXException {
+    public void deleteElement(String id)
+	    throws ParserConfigurationException, SAXException, IOException, XPathExpressionException,
+	    TransformerException, TransformerConfigurationException, org.xml.sax.SAXException {
 
 	System.out.println("I'm searching for id: " + id);
 	NodeList nodeList = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc, XPathConstants.NODESET);
-	for (int i = 0; i < nodeList.getLength(); ++i) { //This for is used in case there are more than one bmpndi with the same id, which shouldn't happen TODO decide	
+	for (int i = 0; i < nodeList.getLength(); ++i) { // This for is used in case there are more than one bmpndi with
+	    // the same id, which shouldn't happen TODO decide
 	    Element element = (Element) nodeList.item(i);
 	    System.out.println(element.getAttribute("bpmnElement"));
 	    element.getParentNode().removeChild(element);
 	    System.out.println("\033[36m " + "I removed element with ID: " + id);
 	}
-	System.out.println("\033[36m " + "Deleted element " + id);
-
+	System.out.println("		Deleted element " + id);
     }
 
     public void saveToFile() throws TransformerException {
-	//Saving the file
+	// Saving the file
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	Transformer transformer = transformerFactory.newTransformer();
 	DOMSource source = new DOMSource(doc);
 	StreamResult result = new StreamResult(new File(path));
 	transformer.transform(source, result);
-	System.out.println("Saved the XML file in + " + path);
+	System.out.println("		Saved the XML file in + " + path);
 
+    }
+
+    /**
+     * This method calculates the x and y positions of a new element based on the position of its predecessors
+     * The method simply calculates the position as the average of the old elements on both axis
+     * the x position will be the first position of the array[0], while the y information is stored on the [1] position 
+     * @param predecessorId
+     * @param successorId
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public String[] calculatePosition(String predecessorId, String successorId) throws XPathExpressionException {
+	NodeList predecessorBpmndi = (NodeList) xpath.evaluate("//*[@bpmnElement='" + predecessorId + "']", doc, XPathConstants.NODESET);
+	NodeList successorBpmndi = (NodeList) xpath.evaluate("//*[@bpmnElement='" + successorId + "']", doc, XPathConstants.NODESET);
+	// Predecessor position
+	int predX = Integer.parseInt(((Element) predecessorBpmndi.item(0).getFirstChild()).getAttribute("x")); //getFirstChild is not ideal maybe use Xpath
+	int predY = Integer.parseInt(((Element) predecessorBpmndi.item(0).getFirstChild()).getAttribute("y")); //getFirstChild is not ideal maybe use Xpath
+	// Successor position
+	int succX = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("x")); //getFirstChild is not ideal maybe use Xpath
+	int succY = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("y")); //getFirstChild is not ideal maybe use Xpath
+	
+	String[] positions = new String[2];
+	positions[0] = "" + (predX+succX)/2; //not super precise but who cares?
+	positions[1] = "" + (predY+succY)/2;
+	
+	return positions;
+    }
+
+    /**
+     * TODO maybe add a check that the ID is not already in use?
+     * 
+     * @return
+     */
+    public String newId() {
+	return UUID.randomUUID().toString();
     }
 
 }

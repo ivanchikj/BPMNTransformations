@@ -7,7 +7,6 @@
 <fullyQualifiedTypeName name="java.io.FileNotFoundException"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ParallelGateway"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ExclusiveGateway"/>
-<fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="java.io.FileWriter"/>
 <fullyQualifiedTypeName name="org.joda.time.LocalDate"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.UserTask"/>
@@ -27,12 +26,10 @@
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.dmn.instance.Input"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.SequenceFlow"/>
-<fullyQualifiedTypeName name="java.io.IOException"/>
 <fullyQualifiedTypeName name="org.joda.time.LocalDateTime"/>
 <fullyQualifiedTypeName name="java.io.BufferedWriter"/>
 <fullyQualifiedTypeName name="java.io.PrintWriter"/>
 <fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilderFactory"/>
-<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
 <fullyQualifiedTypeName name="javax.validation.Path.Node"/>
 <fullyQualifiedTypeName name="org.w3c.dom.Document"/>
 <fullyQualifiedTypeName name="javax.xml.soap.Node"/>
@@ -42,10 +39,23 @@
 <fullyQualifiedTypeName name="java.util.Iterator"/>
 <fullyQualifiedTypeName name="javax.xml.xpath.XPathFactory"/>
 <fullyQualifiedTypeName name="javax.xml.xpath.XPath"/>
-<fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
 <fullyQualifiedTypeName name="javax.xml.transform.TransformerConfigurationException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.BpmndiUtilities"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="javax.swing.text.Document"/>
+<fullyQualifiedTypeName name="org.xml.sax.SAXException"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
+<fullyQualifiedTypeName name="javax.print.Doc"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.impl.instance.TargetRef"/>
+<fullyQualifiedTypeName name="java.lang.ArrayStoreException"/>
+<fullyQualifiedTypeName name="java.lang.reflect.Array"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
+<fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
+<fullyQualifiedTypeName name="java.util.UUID"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
 </qualifiedTypeNameHistroy>

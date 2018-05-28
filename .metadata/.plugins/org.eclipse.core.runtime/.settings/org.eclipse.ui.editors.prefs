@@ -13,6 +13,7 @@ javaScriptOccurrenceIndicationColor=251,201,90
 lineNumberColor=124,142,153
 occurrenceIndicationColor=0,0,169
 overviewRuler_migration=migrated_3.1
+printMargin=true
 printMarginColor=124,142,153
 searchResultIndicationColor=251,201,90
 writeOccurrenceIndicationColor=0,0,169

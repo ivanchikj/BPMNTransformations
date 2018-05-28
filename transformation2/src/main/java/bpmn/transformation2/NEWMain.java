@@ -40,10 +40,13 @@ public class NEWMain {
     TransformerConfigurationException, ParserConfigurationException, SAXException, TransformerException {
 
 	// Used to test XML methods:
-	String path = "./TestGraphs/DiagramForRule4a.bpmn.xml"; // TODO create an ad hoc model to test all of my XML functions
-	if ( path.equals("") ){ //This is always expected to be true except when I'm testing something. Might even delete it later.
-	    path = askForPath();
+	String input = "./TestGraphs/DiagramForRule4a.bpmn.xml"; // TODO create an ad hoc model to test all of my XML functions
+	if ( input.equals("") ){ //This is always expected to be true except when testing something.
+	    input = askForInput();
 	}
+	String[] orderedInput = findPathandParameters(input);
+	String path = orderedInput[0];
+	String parameters = orderedInput[1];
 	// reading a file
 	File bpmnFile = new File(path);
 
@@ -52,48 +55,57 @@ public class NEWMain {
 	// this variable is used later to replace the filename with the new one more
 	// easily. (inside method writeModeltoFile)
 	String filename = bpmnFile.getName().replace(".bpmn.xml", "");
-
+	
 	// figuring out the folder in which the file is located
 	String folderPath = getFolderFromPath(path);
-
 	Model model = new Model(path);
 	
-	//applyRules(path, parameters);
+	applyRules(model, parameters);
 
 	//Writing the output model to file
 	writeToFile(model, filename, folderPath);
 
     }
     /**
-     * TODO to be completed
+     * TODO to be completed / checked
+     * TODO see if there's a common way to do this, since it's something typical
      * This separates the filepath from the parameters
      * in the resulting array, the filepath is in the first position [0]
      * while the parameters are in the second position [1]
      * @param input
      * @return
      */
-    public String[] findParameters (String input) {
+    public static String[] findPathandParameters (String input) {
 	String[] pathAndParameters = new String[2];
-	pathAndParameters[0] = input.substring( 0, input.indexOf("-"));
-	pathAndParameters[1]  = input.substring(input.indexOf(",")+1, input.length());  
+	if (input.contains("-")) { 
+	pathAndParameters[0] = input.substring(0, input.indexOf("-")); //PATH
+	pathAndParameters[1] = input.substring(input.indexOf("-")+1, input.length()); //PARAMETERS
+	} else {
+	    System.out.println("No parameters selected");
+	    pathAndParameters[0] = input;
+	    pathAndParameters[1] = "";
+	}
 	return pathAndParameters;
     }
     /**
      * TODO this method should consider the parameters provided by the users and decide which rules to apply in which order.
      * @param model
      * @param parameters
+     * @throws XPathExpressionException 
      */
-    public static void applyRules (Model model, String parameters) {
+    public static void applyRules (Model model, String parameters) throws XPathExpressionException {
+	
+	model.newTask("200", "200");
 	
     }
     
     // This lets the user decide the path of the file
-    public static String askForPath() {
+    public static String askForInput() {
 	Scanner reader = new Scanner(System.in);
 	System.out.println("Please enter the location of the bpmn file you wan to transform:");
-	String filePath = reader.next();
+	String input = reader.next();
 	reader.close();
-	return filePath;
+	return input;
     }
 
     // This method finds the path of the folder of the file. Used to save.
@@ -129,7 +141,7 @@ public class NEWMain {
     public static void writeToFile(Model model, String filename, String folderPath) throws IOException, TransformerException {
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
-	String filepath = folderPath + rulesApplied + "COMMENT" + ".filetype";
+	String filepath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
 
 	//Saving the file
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -137,8 +149,8 @@ public class NEWMain {
 	DOMSource source = new DOMSource(model.doc);
 	StreamResult result = new StreamResult(new File(filepath));
 	transformer.transform(source, result);
-
-	System.out.println("Saving file in : " + folderPath + "UNVALIDATED XML.txt");
+	System.out.println(filepath);
+	System.out.println("Saving file in : " + filepath); 
     }
 
 }
