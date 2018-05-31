@@ -27,6 +27,7 @@ import org.camunda.bpm.model.xml.ModelInstance;
 import org.camunda.bpm.model.xml.impl.util.IoUtil;
 import org.camunda.bpm.model.xml.instance.DomDocument;
 import org.joda.time.LocalDate;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class NEWMain {
@@ -36,8 +37,7 @@ public class NEWMain {
     public static String rulesApplied = "";
     public static String report = "";
 
-    public static void main(String[] args) throws IOException, XPathExpressionException,
-    TransformerConfigurationException, ParserConfigurationException, SAXException, TransformerException {
+    public static void main(String[] args) throws Exception {
 
 	// Used to test XML methods:
 	String input = "./TestGraphs/DiagramForRule4a.bpmn.xml"; // TODO create an ad hoc model to test all of my XML functions
@@ -91,11 +91,17 @@ public class NEWMain {
      * TODO this method should consider the parameters provided by the users and decide which rules to apply in which order.
      * @param model
      * @param parameters
-     * @throws XPathExpressionException 
+     * @throws Exception 
      */
-    public static void applyRules (Model model, String parameters) throws XPathExpressionException {
+    public static void applyRules (Model model, String parameters) throws Exception {
 	
-	model.newTask("200", "200");
+	String newNode = model.newNode("bpmn:task", "10", "100");
+	Element startElement = model.findElemById("StartEvent_1");
+	String start = ((Element) model.doc.getElementsByTagName("bpmn:sequenceFlow").item(0)).getAttribute("id");
+	System.out.println("The id of the first  sequenceFlow is  " + start );
+	System.out.println("The id of the BLABLA" + newNode);
+	model.setSource(start, newNode);
+	
 	
     }
     

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class Model {
@@ -68,8 +69,8 @@ public class Model {
 	// there's always one single bmpdi:BMPNDiagram, and one single process so it's
 	// "item 0"
 	bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0);
-	
-	// TODO there's  not always one single bmpdi:BMPNDiagram, and one single process so it's better to find a way to manage this.
+
+	// TODO check if there's not always one single bmpdi:BMPNDiagram. In that case it's better to find a way to manage this
 	bpmndiPlane = (Element) doc.getElementsByTagName("bpmndi:BPMNPlane").item(0);
 	System.out.println(
 		"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
@@ -80,10 +81,10 @@ public class Model {
      * @return
      */
     public void testMethod() {
-	
+
     }
-    
-    
+
+
     /**
      * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
      * isForCompensation="false" startQuantity="1", li devo aggiungere?
@@ -107,8 +108,8 @@ public class Model {
 	System.out.println("		I created a new Task with the id " + id);
 
 	Element size = doc.createElement("dc:Bounds");
-	bpmndiPlane.appendChild(newTaskDI); //TODO I have to know if I have to put the thing inside a plane or inside
-	
+	bpmndiPlane.appendChild(newTaskDI); //TODO am I sure about this?
+
 	newTaskDI.appendChild(size);
 	size.setAttribute("height", "80");
 	size.setAttribute("width", "100");
@@ -127,13 +128,13 @@ public class Model {
 
 	String id = newId();
 	// This checks that the provided type is a true BPMN type and applies the relative method
-	
+
 	if (type.equals("bpmn:task")){
 	    this.newTask(x, y);
 	} else if (type.equals("bpmn:parallelGateway")) {
 	    //TODO
 	} else {
-	   System.out.println("		" + type + " is not a valid BPMN type");
+	    System.out.println("		" + type + " is not a valid BPMN type");
 	}
 	System.out.println("		I created a new element of type " + type + " and with the id " + id);
 	return id;
@@ -147,7 +148,7 @@ public class Model {
      * @param target
      * @return
      */
-    public String newSequenceFlowString(String source, String target) {
+    public String newSequenceFlow(String source, String target) {
 	String id = newId();// TODO
 	Element flow = doc.createElement("bpmn:sequenceFlow");
 	flow.setAttribute("sourceRef", source);
@@ -168,18 +169,48 @@ public class Model {
      * @throws XPathExpressionException
      */
     public void setSource(String id, String source) throws XPathExpressionException {
-	// We need to remove the child from the previous target
-	// The following xpath could create problems when a flow has two targets, but
-	// that should be impossible.
-	NodeList toDelete = (NodeList) xpath.evaluate("//bpmn:incoming[.='" + id + "']", doc, XPathConstants.NODESET); // TODO
-	// this
-	// might
-	// not
-	// work
-	doc.removeChild(toDelete.item(0));
+	//	// We need to remove the child from the previous target
+	//	// The following xpath could create problems when a flow has two targets, but
+	//	// that should be impossible.
+	//	NodeList toDelete = (NodeList) xpath.evaluate("//bpmn:incoming[.='" + id + "']", doc, XPathConstants.NODESET); // TODO
+	//	// this
+	//	// might
+	//	// not
+	//	// work
+	//
+	//	//TODO this is empty. And it shoudn't be.
+	//	for (int i = 0; i < toDelete.getLength(); i++) {
+	//	    System.out.println("STO ELIMINANDO QUESTI: ");
+	//	    System.out.println("       " + toDelete.item(i).getTextContent());
+	//	    doc.removeChild(toDelete.item(i));
+	//	}
+	//	
+
+	/**
+	 * Basically what i'm doing here is
+	 * finding the previous source of the seqFlow that i want to change
+	 * the source of
+	 * 
+	 * Then once I found it i want to delete all the children of which
+	 * the text content equals the id of the SequenceFlow that will
+	 * be changing source
+	 */
+	String previousSourceId =  findElemById(id).getAttribute("sourceRef");
+	Element previousSource = findElemById(previousSourceId);
+	while (previousSource.hasChildNodes()) {
+	    if (previousSource.getFirstChild().getTextContent().equals(id)) {
+		previousSource.removeChild(previousSource.getFirstChild());
+		System.out.println("I deleted the children from the previous Source of " + id);
+	    }
+	}
+
+
+
+
 
 	// This changes the element of the sequenceFlow
-	Element sequenceFlow = doc.getElementById(id);
+	Element sequenceFlow = findElemById(id);
+	System.out.println("The id of the sequenceFlow that I have found is" + sequenceFlow.getAttribute(id));
 	sequenceFlow.setAttribute("sourceRef", source);
 	// We still need to change also the element of the Source to have my outgoing
 	// flow as a child
@@ -315,7 +346,7 @@ public class Model {
 	NodeList bpmndiElementsToDelete = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc,
 		XPathConstants.NODESET);
 	for (int i = 0; i < bpmndiElementsToDelete.getLength(); ++i) { // This for is used in case there are more than
-								       // one bmpndi with
+	    // one bmpndi with
 	    // the same id, which shouldn't happen TODO decide
 	    Element element = (Element) bpmndiElementsToDelete.item(i);
 	    System.out.println(element.getAttribute("bpmnElement"));
@@ -364,6 +395,21 @@ public class Model {
 	System.out.println("		Saved the XML file in + " + path);
 
     }
+    /**
+     * GetElementById doesn't work with our XML so this method serves that purpose.
+     * The problem is that while our XML elements have an ID property, that is not
+     * recognized by the GetElementId because it's not specified in the appropriate
+     * way inside the document. In other words, it's not enough to have a property
+     * called "id" for it to be an id.
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public Element findElemById(String id) throws XPathExpressionException {
+
+	NodeList nodeList = (NodeList) xpath.evaluate("//*[@id='" + id + "']", doc, XPathConstants.NODESET);
+	//We expect only one element to have the same id
+	return (Element) nodeList.item(0);
+    }
 
     /**
      * This method calculates the x and y positions of a new element based on the position of its predecessors
@@ -383,11 +429,11 @@ public class Model {
 	// Successor position
 	int succX = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("x")); //getFirstChild is not ideal maybe use Xpath
 	int succY = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("y")); //getFirstChild is not ideal maybe use Xpath
-	
+
 	String[] positions = new String[2];
 	positions[0] = "" + (predX+succX)/2; //not super precise but who cares?
 	positions[1] = "" + (predY+succY)/2;
-	
+
 	return positions;
     }
 
