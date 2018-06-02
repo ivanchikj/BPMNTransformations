@@ -33,7 +33,6 @@
 <fullyQualifiedTypeName name="javax.validation.Path.Node"/>
 <fullyQualifiedTypeName name="org.w3c.dom.Document"/>
 <fullyQualifiedTypeName name="javax.xml.soap.Node"/>
-<fullyQualifiedTypeName name="org.w3c.dom.Node"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelInstance"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="java.util.Iterator"/>
@@ -41,11 +40,9 @@
 <fullyQualifiedTypeName name="javax.xml.xpath.XPath"/>
 <fullyQualifiedTypeName name="javax.xml.transform.TransformerConfigurationException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.BpmndiUtilities"/>
-<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="javax.swing.text.Document"/>
 <fullyQualifiedTypeName name="org.xml.sax.SAXException"/>
-<fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
 <fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
 <fullyQualifiedTypeName name="javax.print.Doc"/>
 <fullyQualifiedTypeName name="java.io.IOException"/>
@@ -56,6 +53,9 @@
 <fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
 <fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
 <fullyQualifiedTypeName name="java.util.UUID"/>
-<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Node"/>
+<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
 </qualifiedTypeNameHistroy>

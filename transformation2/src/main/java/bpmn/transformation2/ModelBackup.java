@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class Model {
+public class ModelBackup {
 
     public Document doc; // This is the xml representation of my model
     private Element process;
@@ -46,7 +46,7 @@ public class Model {
      * @throws org.xml.sax.SAXException
      * @throws ParserConfigurationException
      */
-    public Model(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
+    public ModelBackup(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
 	load(path);
     }
 
@@ -64,12 +64,48 @@ public class Model {
      */
     public void reLoad() throws SAXException, IOException, ParserConfigurationException, TransformerException {
 	String tempPath = NEWMain.
-	saveToFile();
+	saveToFile(path);
 	load(path);
     }
     
     
+    /**
+     * Used to (re)load the model. 
+     * Reloading after the first time is needed 
+     * when creating new elements that would otherwise be subsequently
+     * impossible to find with the method findElemById 
+     * because they are created after loading the model the first time.
+     * @throws IOException 
+     * @throws SAXException 
+     * @throws ParserConfigurationException 
+     */
+    public void load(String path) throws SAXException, IOException, ParserConfigurationException {
+	this.path = path;
+	// Xpath needed to easily interact with XMLs
+	XPathFactory xPathFactory = XPathFactory.newInstance();
+	xpath = xPathFactory.newXPath();
 
+	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	docBuilder = docFactory.newDocumentBuilder();
+
+	// TODO make it look better
+	System.out.println("		Opening file at position" + path);
+
+	doc = docBuilder.parse(path);
+	process = (Element) doc.getElementsByTagName("bpmn:process").item(0); // TODO what happens if there's more than
+	// one process? Is it possible? I have to
+	// do both i guess.
+	System.out.println("		I'm working on the following Process: " + process.getAttribute("id"));
+
+	// there's always one single bmpdi:BMPNDiagram, and one single process so it's
+	// "item 0"
+	bpmndiDiagram = (Element) doc.getElementsByTagName("bpmndi:BPMNDiagram").item(0);
+
+	// TODO check if there's not always one single bmpdi:BMPNDiagram. In that case it's better to find a way to manage this
+	bpmndiPlane = (Element) doc.getElementsByTagName("bpmndi:BPMNPlane").item(0);
+	System.out.println(
+		"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
+    }
 
 
 /**
@@ -369,6 +405,16 @@ public void deleteElement(String id)
     System.out.println("		Deleted element " + id);
 }
 
+public void saveToFile() throws TransformerException {
+    // Saving the file
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    Transformer transformer = transformerFactory.newTransformer();
+    DOMSource source = new DOMSource(doc);
+    StreamResult result = new StreamResult(new File(path));
+    transformer.transform(source, result);
+    System.out.println("		Saved the XML file in + " + path);
+
+}
 /**
  * GetElementById doesn't work with our XML so this method serves that purpose.
  * The problem is that while our XML elements have an ID property, that is not

@@ -30,7 +30,7 @@ import org.joda.time.LocalDate;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class NEWMain {
+public class NEWMainBackup {
 
     // TODO: find a better place to put those in:
     // this keeps track of the rules that have been applied, in the right order.
@@ -152,7 +152,14 @@ public class NEWMain {
 	// rules that have been applied. For now this works because I only have one.
 	String filepath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
 
-	 
+	//Saving the file
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = transformerFactory.newTransformer();
+	DOMSource source = new DOMSource(model.doc);
+	StreamResult result = new StreamResult(new File(filepath));
+	transformer.transform(source, result);
+	System.out.println(filepath);
+	System.out.println("Saving file in : " + filepath); 
     }
 
 }

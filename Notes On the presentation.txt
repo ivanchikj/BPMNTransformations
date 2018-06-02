@@ -1,9 +1,6 @@
 Spiegare BPMN perché quelli del committee non lo conosceranno.
 
 Spiegare bene i requirements
- 	le regole vanno in entrambi i sensi.
- 	anche command line inputs
- 	reports da produrre
  	USE CASE DIAGRAMS "funzionalità che l'utente si aspetta"
 
  	Presentazione vera, non dialogo.
@@ -17,9 +14,7 @@ Spiegare bene i requirements
 
  	Gantt chart (optional)
 
- 	11 / 12 / 13 Giugno
-
-
- 	junit su udacy
-
- 	
+ 	Struttura della tesi
+ 		Inserire Xpath
+ 		Spiegare BPMN
+ 		Spiegare XML di un file BPMN

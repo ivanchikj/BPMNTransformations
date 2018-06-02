@@ -1,6 +1,9 @@
 NOTE: ricordati di scrivere nella tesi che hai usato i colori nella tesi per distinguere in cyano le cose che sono metodi XML semplici
 E in verde le cose che riguardano le regole. Magari usa anche le tab in modo diverso, ovvero scala di quattro spazi tutti i metodi XML semplici.
 
+TODO: ricordati di inserire un for loop per file che contengono più processi, se è possibile che vengano dati, e in quel caso il report deve trattare i diversi processi come se fossero file diversi.
+Capire anche come funzionano i diversi plane, quello forse sarà più complicato.
+
 TODO: fare test per  ogni regola
 		Poi mettere i path in un array e così puoi avere tutti i test i un posto solo ed eseguirli tutti.
 
