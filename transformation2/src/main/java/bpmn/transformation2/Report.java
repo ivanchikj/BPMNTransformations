@@ -15,13 +15,13 @@ public class Report {
     public String inputPath;
 
     public Report(){
-
+	//TODO
     }
 
     public String concatenate() {
 	return "" + date + rulesApplied; //TODO complete this. Add also line breaks and spacing.
     }
     public void save() {
-
+	//TODO
     }
 }
