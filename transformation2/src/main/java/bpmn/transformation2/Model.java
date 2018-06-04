@@ -61,7 +61,7 @@ public class Model {
 	//Locaiton of the temp files.
 	String tempPath = "./Temp/" + newId() + "TEMP" + ".bpmn.xml"; 
 	//TODO This is ugly. A better idea would be to separate the model from the file maybe. Or maybe there's no even need to save new files, maybe just restarting the xpath is enough 
-	
+
 	//By saving and reloading the files
 	//I can "see" the new elements that I have created. But maybe I do not need them, maybe I just need to reload the Xpath.
 	saveTemp(tempPath);
@@ -71,10 +71,7 @@ public class Model {
 
     /**
      * Used to (re)load the model. 
-     * Reloading after the first time is needed 
-     * when creating new elements that would otherwise be subsequently
-     * impossible to find with the method findElemById 
-     * because they are created after loading the model the first time.
+     * TODO decide if it's better to delete this and just use it as a constructor
      * @throws IOException 
      * @throws SAXException 
      * @throws ParserConfigurationException 
@@ -161,18 +158,20 @@ public class Model {
      */
     public String newNode(String type, String x, String y) throws Exception {
 
-	String id = newId();
-	// This checks that the provided type is a true BPMN type and applies the relative method
 
+	// This checks that the provided type is a true BPMN type and applies the relative method
+	String id = null;
 	if (type.equals("bpmn:task")){
-	    this.newTask(x, y);
+	    id = this.newTask(x, y);
 	} else if (type.equals("bpmn:parallelGateway")) {
 	    //TODO
 	} else {
-	    System.out.println("		" + type + " is not a valid BPMN type");
+	    System.err.println("		" + type + " is not a valid BPMN type");
 	}
 	System.out.println("		I created a new element of type " + type + " and with the id " + id);
 	doc.normalizeDocument();
+	if (id.equals(null)) {} // Decide how to check that the newly created element's id is not null.
+	//Maybe this is also a way to discover if this is not a valid BPMN type.
 	return id;
     }
 
@@ -209,23 +208,33 @@ public class Model {
 
 	String previousSourceId =  findElemById(id).getAttribute("sourceRef");
 	Element previousSource = findElemById(previousSourceId);
-	System.out.println("		CIAOOOOOO");
 	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
 	System.out.println("");
 
 	System.out.println("		Content of child: " + previousSource.getTextContent());
-	previousSource.getFirstChild().setNodeValue("madonna"); //TODO what is this? (This might not be important anyway.)
 
 	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
 
 	//TODO see if there's any difference. See if it prints all of the child's content or not.
 
-	//	while (previousSource.hasChildNodes()) {
-	//	    if (previousSource.getFirstChild().getTextContent().equals(id)) {
-	//		previousSource.removeChild(previousSource.getFirstChild());
-	//		System.out.println("I deleted the children from the previous Source of " + id);
-	//	    }
-	//	}
+	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
+	    NodeList childList = previousSource.getChildNodes();
+	    for (int i = 0; i < childList.getLength(); i++) {
+		Node childInCase = childList.item(i);
+		String textContentString = childInCase.getTextContent();
+		System.out.println("Searching for child to delete, child content in case: " + textContentString);
+		System.out.println("Searching for child to delete, child i'm looking for: " + id);
+		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+		//be checked in case the task is both the source and the target of a SequenceFlow!
+		if (textContentString.equals(id)){
+		    childInCase.getParentNode().removeChild(childInCase);
+		    System.out.println("I have found the child that I want to delete!!");
+		}
+
+	    }
+
+	}
+
 
 	Element sequenceFlow = findElemById(id);
 	System.out.println("The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
@@ -238,8 +247,8 @@ public class Model {
 	outgoing.appendChild(doc.createTextNode(id)); // TODO I'm not sure this does what I want.
 	sourceElement.appendChild(outgoing);
 
-	String x = doc.getElementById(source + "_di").getAttribute("x");
-	String y = doc.getElementById(source + "_di").getAttribute("y");
+	//String x = doc.getElementById(source + "_di").getAttribute("x");
+	//String y = doc.getElementById(source + "_di").getAttribute("y");
 
 	// TODO We need to remove the child of the previous target
 
@@ -405,7 +414,7 @@ public class Model {
 	System.out.println("		Deleted element " + id);
     }
 
-    public void saveToFile() throws TransformerException {
+    public void saveToFile(String path) throws TransformerException {
 	// Saving the file
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	Transformer transformer = transformerFactory.newTransformer();

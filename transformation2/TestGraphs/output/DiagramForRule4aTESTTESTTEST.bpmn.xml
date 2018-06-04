@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Camunda Modeler" exporterVersion="1.8.2" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="Process_1" isExecutable="false">
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>SequenceFlow_1s9s78m</bpmn:outgoing>
+      
     </bpmn:startEvent>
     <bpmn:task id="Task_0o9c4kb" name="Prima Task">
       <bpmn:incoming>SequenceFlow_1s9s78m</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1d2ptnt</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1s9s78m" sourceRef="StartEvent_1" targetRef="Task_0o9c4kb"/>
+    <bpmn:sequenceFlow id="SequenceFlow_1s9s78m" sourceRef="de2767e6-2842-4428-8f20-459fba604c2e" targetRef="Task_0o9c4kb"/>
     <bpmn:sequenceFlow id="SequenceFlow_1d2ptnt" sourceRef="Task_0o9c4kb" targetRef="ExclusiveGateway_0e0awww"/>
     <bpmn:parallelGateway id="ExclusiveGateway_0e0awww" name="Primo Parallel">
       <bpmn:incoming>SequenceFlow_1d2ptnt</bpmn:incoming>
@@ -35,7 +35,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1gb5ptd" sourceRef="ExclusiveGateway_11hlkwm" targetRef="EndEvent_0ifrosz"/>
     <bpmn:sequenceFlow id="SequenceFlow_0v7wipl" sourceRef="Task_022po3j" targetRef="ExclusiveGateway_11hlkwm"/>
-  <bpmn:task id="671521f9-e125-45ef-bcc6-393616158961" name="NEW"/></bpmn:process>
+  <bpmn:task id="de2767e6-2842-4428-8f20-459fba604c2e" name="NEW"><bpmn:outgoing>SequenceFlow_1s9s78m</bpmn:outgoing></bpmn:task></bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane bpmnElement="Process_1" id="BPMNPlane_1">
       <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
@@ -117,6 +117,6 @@
           <dc:Bounds height="13" width="0" x="770" y="200"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-    <bpmndi:BPMNShape bpmnElement="671521f9-e125-45ef-bcc6-393616158961" id="671521f9-e125-45ef-bcc6-393616158961_di"><dc:Bounds height="80" width="100" x="10" y="100"/></bpmndi:BPMNShape></bpmndi:BPMNPlane>
+    <bpmndi:BPMNShape bpmnElement="de2767e6-2842-4428-8f20-459fba604c2e" id="de2767e6-2842-4428-8f20-459fba604c2e_di"><dc:Bounds height="80" width="100" x="10" y="100"/></bpmndi:BPMNShape></bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

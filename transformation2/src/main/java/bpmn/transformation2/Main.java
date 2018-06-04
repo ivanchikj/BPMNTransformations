@@ -55,11 +55,11 @@ public class Main {
 	// this variable is used later to replace the filename with the new one more
 	// easily. (inside method writeModeltoFile)
 	String filename = bpmnFile.getName().replace(".bpmn.xml", "");
-	
+
 	// figuring out the folder in which the file is located
 	String folderPath = getFolderFromPath(path);
 	Model model = new Model(path);
-	
+
 	System.out.println("I'm applying the rules! " );
 	System.out.println();
 	System.out.println();
@@ -81,8 +81,8 @@ public class Main {
     public static String[] findPathandParameters (String input) {
 	String[] pathAndParameters = new String[2];
 	if (input.contains("-")) { 
-	pathAndParameters[0] = input.substring(0, input.indexOf("-")); //PATH
-	pathAndParameters[1] = input.substring(input.indexOf("-")+1, input.length()); //PARAMETERS
+	    pathAndParameters[0] = input.substring(0, input.indexOf("-")); //PATH
+	    pathAndParameters[1] = input.substring(input.indexOf("-")+1, input.length()); //PARAMETERS
 	} else {
 	    System.out.println("No parameters selected");
 	    pathAndParameters[0] = input;
@@ -97,20 +97,19 @@ public class Main {
      * @throws Exception 
      */
     public static void applyRules (Model model, String parameters) throws Exception {
-	
+
 	String newNodeId = model.newNode("bpmn:task", "10", "100");
-	
+
 	String seqFlow = ((Element) model.doc.getElementsByTagName("bpmn:sequenceFlow").item(0)).getAttribute("id");
 	System.out.println("The id of the first sequenceFlow is " + seqFlow );
-	model.reLoad();
 	Element newNodeElement = model.findElemById(newNodeId);
 	System.out.println("The id of the newNode is " + newNodeId);
 	System.out.println("The id of the newNode is " + newNodeElement.getAttribute("id"));
 	model.setSource(seqFlow, newNodeId);
-	
-	
+
+
     }
-    
+
     // This lets the user decide the path of the file
     public static String askForInput() {
 	Scanner reader = new Scanner(System.in);
@@ -153,9 +152,9 @@ public class Main {
     public static void writeToFile(Model model, String filename, String folderPath) throws IOException, TransformerException {
 	// TODO I will have to find a way to automatically append to the filename the
 	// rules that have been applied. For now this works because I only have one.
-	String filepath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
-
-	 
+	String newFilePath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
+	
+	model.saveToFile(newFilePath);
     }
 
 }
