@@ -1,4 +1,4 @@
-package bpmn.transformation2;
+package bpmn.transformation2.Backup;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,7 +30,9 @@ import org.joda.time.LocalDate;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class Main {
+import bpmn.transformation2.Model;
+
+public class NEWMainBackup {
 
     // TODO: find a better place to put those in:
     // this keeps track of the rules that have been applied, in the right order.
@@ -98,15 +100,12 @@ public class Main {
      */
     public static void applyRules (Model model, String parameters) throws Exception {
 	
-	String newNodeId = model.newNode("bpmn:task", "10", "100");
+	String newNode = model.newNode("bpmn:task", "10", "100");
 	
 	String seqFlow = ((Element) model.doc.getElementsByTagName("bpmn:sequenceFlow").item(0)).getAttribute("id");
-	System.out.println("The id of the first sequenceFlow is " + seqFlow );
-	model.reLoad();
-	Element newNodeElement = model.findElemById(newNodeId);
-	System.out.println("The id of the newNode is " + newNodeId);
-	System.out.println("The id of the newNode is " + newNodeElement.getAttribute("id"));
-	model.setSource(seqFlow, newNodeId);
+	System.out.println("The id of the first  sequenceFlow is  " + seqFlow );
+	System.out.println("The id of the newNode is " + newNode);
+	model.setSource(seqFlow, newNode);
 	
 	
     }
@@ -155,7 +154,14 @@ public class Main {
 	// rules that have been applied. For now this works because I only have one.
 	String filepath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
 
-	 
+	//Saving the file
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = transformerFactory.newTransformer();
+	DOMSource source = new DOMSource(model.doc);
+	StreamResult result = new StreamResult(new File(filepath));
+	transformer.transform(source, result);
+	System.out.println(filepath);
+	System.out.println("Saving file in : " + filepath); 
     }
 
 }
