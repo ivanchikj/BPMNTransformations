@@ -269,36 +269,34 @@ public class Model {
 	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
 
 	Element sourceBPMNDI = findBPMNDI(source);
-	//TODO what happens if the elements has more than one child? It happens if there's a label, for example.
 	
-	
-	//	Element sourceDcBounds = (Element) sourceBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
-	//	
-	//	String xSource = sourceDcBounds.getAttribute("x");
-	//	String ySource = sourceDcBounds.getAttribute("y");
-	//	Element sourceWP = createWaypoint(xSource, ySource);
-	//	
-	//	
-	//	//we want to get the position of the target to know where the flow will have to point
-	//	String target = sequenceFlow.getAttribute("targetRef");
-	//	Element targetBPMNDI = findBPMNDI(target);
-	//	Element targetDcBounds = (Element) targetBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
-	//	String xTarget = targetDcBounds.getAttribute("x");
-	//	String yTarget = targetDcBounds.getAttribute("y");
-	//	Element targetWP = createWaypoint(xTarget, yTarget);
-	//	
-	//	//This is the bpmndi corresponding to our sequenceFlow
-	//	Element sequenceFlowBPMNDI = findBPMNDI(id);
-	//	
-	//	//let's remove the previous waypoints:
-	//	while(sequenceFlowBPMNDI.hasChildNodes()) {
-	//	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
-	//	    System.out.println("		Just deleted the a waypoint");
-	//	}
-	//
-	//	//let's now add the previously created waypoints:
-	//	sequenceFlowBPMNDI.appendChild(targetWP);
-	//	sequenceFlowBPMNDI.appendChild(sourceWP);
+	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
+
+	String xSource = sourceDcBounds.getAttribute("x");
+	String ySource = sourceDcBounds.getAttribute("y");
+	Element sourceWP = createWaypoint(xSource, ySource);
+
+
+	//we want to get the position of the target to know where the flow will have to point
+	String target = sequenceFlow.getAttribute("targetRef");
+	Element targetBPMNDI = findBPMNDI(target);
+	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
+	String xTarget = targetDcBounds.getAttribute("x");
+	String yTarget = targetDcBounds.getAttribute("y");
+	Element targetWP = createWaypoint(xTarget, yTarget);
+
+	//This is the bpmndi corresponding to our sequenceFlow
+	Element sequenceFlowBPMNDI = findBPMNDI(id);
+
+	//let's remove the previous waypoints:
+	while(sequenceFlowBPMNDI.hasChildNodes()) {
+	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
+	    System.out.println("		Just deleted the a waypoint");
+	}
+
+	//let's now add the previously created waypoints:
+	sequenceFlowBPMNDI.appendChild(targetWP);
+	sequenceFlowBPMNDI.appendChild(sourceWP);
 	
 	
 	
@@ -529,15 +527,20 @@ public class Model {
      */
     public Element findDcBounds(Element bpmndiElement) throws XPathExpressionException {
 	
-	Element dcBounds = (Element) xpath.evaluate("//*[dc:Bounds=", bpmndiElement, XPathConstants.NODE);
-	System.out.println(dcBounds);
-	System.out.println(dcBounds.getAttribute("x"));
-	System.out.println(dcBounds.getAttribute("x"));
-	System.out.println(dcBounds.getAttribute("x"));
-	System.out.println(dcBounds.getAttribute("x"));
-	System.out.println(dcBounds.getAttribute("x"));
-
-	return bpmndiElement;
+	NodeList children = (NodeList) xpath.evaluate("*", bpmndiElement, XPathConstants.NODESET);
+	Element dcBounds = null; 
+	for (int i = 0; i < children.getLength(); i++ ) {
+	    if (children.item(i).hasAttributes()) {
+		dcBounds = (Element) children.item(i);
+		break;
+	    }
+	}
+	
+	if (dcBounds == null) {
+	    System.err.println("It means that this bpmdiElement has not any dc:Bounds item. This is not expected");
+	}
+	
+	return dcBounds;
 
     }
 
