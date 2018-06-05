@@ -223,13 +223,13 @@ public class Model {
 	    for (int i = 0; i < childList.getLength(); i++) {
 		Node childInCase = childList.item(i);
 		String textContentString = childInCase.getTextContent();
-		System.out.println("Searching for child to delete, child content in case: " + textContentString);
-		System.out.println("Searching for child to delete, child i'm looking for: " + id);
+		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
 		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
 		//be checked in case the task is both the source and the target of a SequenceFlow!
 		if (textContentString.equals(id)){
 		    childInCase.getParentNode().removeChild(childInCase);
-		    System.out.println("I have found the child that I want to delete!!");
+		    System.out.println("		I have found the child that I want to delete!!");
 		    //TODO if you want, find a way to remove the blank space that gets created
 		}
 
@@ -239,12 +239,12 @@ public class Model {
 
 
 	Element sequenceFlow = findElemById(id);
-	System.out.println("The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
+	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
 	sequenceFlow.setAttribute("sourceRef", source);
 	// We still need to change also the element of the Source to have my outgoing
 	// flow as a child
 	Element sourceElement = findElemById(source);
-	System.out.println("The new source is: " + sourceElement.getAttribute("id"));
+	System.out.println("		The new source is: " + sourceElement.getAttribute("id"));
 	Element outgoing = doc.createElement("bpmn:outgoing");
 	outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	sourceElement.appendChild(outgoing);
@@ -262,25 +262,41 @@ public class Model {
 	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
 	//on whether I want to connect to the item's upper, lower, left or right border.
 	
+	
+
+
 	//we want to get the position of the source to know where the flow will have to point
-	String xSource = findBPMNDI(source).getAttribute("x");  
-	String ySource = findBPMNDI(source).getAttribute("y");
+	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
+	
+	Element sourceBPMNDI = findBPMNDI(source);
+	//TODO what happens if the elements has more than one child? It happens if there's a label, for example.
+	Element sourceDcBounds = (Element) sourceBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
+	
+	String xSource = sourceDcBounds.getAttribute("x");
+	String ySource = sourceDcBounds.getAttribute("y");
 	Element sourceWP = createWaypoint(xSource, ySource);
-	sequenceFlow.appendChild(sourceWP);
+	
 	
 	//we want to get the position of the target to know where the flow will have to point
 	String target = sequenceFlow.getAttribute("targetRef");
-	String xTarget = findBPMNDI(target).getAttribute("x");
-	String yTarget = findBPMNDI(target).getAttribute("y");
-	Element targetWPElement = createWaypoint(xTarget, yTarget);
+	Element targetBPMNDI = findBPMNDI(target);
+	Element targetDcBounds = (Element) targetBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
+	String xTarget = targetDcBounds.getAttribute("x");
+	String yTarget = targetDcBounds.getAttribute("y");
+	Element targetWP = createWaypoint(xTarget, yTarget);
+	
+	//This is the bpmndi corresponding to our sequenceFlow
+	Element sequenceFlowBPMNDI = findBPMNDI(id);
 	
 	//let's remove the previous waypoints:
-	while(sequenceFlow.hasChildNodes()) {
-	    sequenceFlow.removeChild(sequenceFlow.getFirstChild());
+	while(sequenceFlowBPMNDI.hasChildNodes()) {
+	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
+	    System.out.println("		Just deleted the a waypoint");
 	}
 
 	//let's now add the previously created waypoints:
-	
+	sequenceFlowBPMNDI.appendChild(targetWP);
+	sequenceFlowBPMNDI.appendChild(sourceWP);
 	
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
@@ -451,7 +467,7 @@ public class Model {
 	DOMSource source = new DOMSource(doc);
 	StreamResult result = new StreamResult(new File(path));
 	transformer.transform(source, result);
-	System.out.println("		Saved the XML file in + " + path);
+	System.out.println("Saved the XML file in + " + path);
 
     }
 
@@ -462,7 +478,7 @@ public class Model {
 	DOMSource source = new DOMSource(doc);
 	StreamResult result = new StreamResult(new File(tempPath));
 	transformer.transform(source, result);
-	System.out.println("		Saved the XML file in + " + path);    
+	System.out.println("		Saved the TEMPORARy XML file in + " + path);    
     }
     /**
      * GetElementById doesn't work with our XML so this method serves that purpose.
@@ -539,9 +555,11 @@ public class Model {
 	Element waypoint = doc.createElement("di:waypoint");
 	
 	waypoint.setAttribute("x", x);
+	
 	waypoint.setAttribute("xsi:type", "dc:Point"); //this attribute never changes and is always the same (?)
 	waypoint.setAttribute("y", y);
 	
+	System.out.println("		I created a waypoint with the coordinates " + x + " and " + y);
 	return waypoint;
     }
     
