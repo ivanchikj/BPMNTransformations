@@ -30,6 +30,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.PrimitiveIterator.OfDouble;
 
 public class Model {
 
@@ -229,6 +230,7 @@ public class Model {
 		if (textContentString.equals(id)){
 		    childInCase.getParentNode().removeChild(childInCase);
 		    System.out.println("I have found the child that I want to delete!!");
+		    //TODO if you want, find a way to remove the blank space that gets created
 		}
 
 	    }
@@ -244,14 +246,42 @@ public class Model {
 	Element sourceElement = findElemById(source);
 	System.out.println("The new source is: " + sourceElement.getAttribute("id"));
 	Element outgoing = doc.createElement("bpmn:outgoing");
-	outgoing.appendChild(doc.createTextNode(id)); // TODO I'm not sure this does what I want.
+	outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	sourceElement.appendChild(outgoing);
 
-	//String x = doc.getElementById(source + "_di").getAttribute("x");
-	//String y = doc.getElementById(source + "_di").getAttribute("y");
+	
+	
+	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
+	//existing waypoints and create two of them from scratch.
+	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
+	//and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
+	//distant from the original positions of the source and target elements.
+	
+	//TODO see how camunda solves this. One problem that this has is that it connects to the center of the items, 
+	//instead of connecting to the borders of the item. I could change the position to go to the item's border by
+	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
+	//on whether I want to connect to the item's upper, lower, left or right border.
+	
+	//we want to get the position of the source to know where the flow will have to point
+	String xSource = findBPMNDI(source).getAttribute("x");  
+	String ySource = findBPMNDI(source).getAttribute("y");
+	Element sourceWP = createWaypoint(xSource, ySource);
+	sequenceFlow.appendChild(sourceWP);
+	
+	//we want to get the position of the target to know where the flow will have to point
+	String target = sequenceFlow.getAttribute("targetRef");
+	String xTarget = findBPMNDI(target).getAttribute("x");
+	String yTarget = findBPMNDI(target).getAttribute("y");
+	Element targetWPElement = createWaypoint(xTarget, yTarget);
+	
+	//let's remove the previous waypoints:
+	while(sequenceFlow.hasChildNodes()) {
+	    sequenceFlow.removeChild(sequenceFlow.getFirstChild());
+	}
 
-	// TODO We need to remove the child of the previous target
-
+	//let's now add the previously created waypoints:
+	
+	
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
 
@@ -451,9 +481,27 @@ public class Model {
     }
 
     /**
+     * Method used to find the BPMNDI element relative to an id provided by the user
+     * @param id the id of the element that i want to find the bpmndi element of
+     * @return
+     * @throws XPathExpressionException
+     */
+    public Element findBPMNDI(String id) throws XPathExpressionException {
+	NodeList nodeList = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc, XPathConstants.NODESET);
+	//We expect only one element to have the same id
+	return (Element) nodeList.item(0);
+    }
+    
+    
+    /**
      * This method calculates the x and y positions of a new element based on the position of its predecessors
      * The method simply calculates the position as the average of the old elements on both axis
      * the x position will be the first position of the array[0], while the y information is stored on the [1] position 
+     * 
+     * 
+     * TODO this is not tested nor finished
+     * 
+     * 
      * @param predecessorId
      * @param successorId
      * @return
@@ -476,6 +524,28 @@ public class Model {
 	return positions;
     }
 
+    /**
+     * This method creates the waypoints used in the BPMNDI to position the sequenceFlows
+     * This method is used both to create the waypoints of the "pointy" side
+     * of the arrow and of the flat side of the arrows, as they are identical.
+     * Probably the program deduces where to put the arrow based on the process part of the XML
+     * X and Y are provided by the user. This methods only creates the elements
+     * @param x
+     * @param y
+     * @return
+     */
+    public Element createWaypoint(String x, String y){
+	
+	Element waypoint = doc.createElement("di:waypoint");
+	
+	waypoint.setAttribute("x", x);
+	waypoint.setAttribute("xsi:type", "dc:Point"); //this attribute never changes and is always the same (?)
+	waypoint.setAttribute("y", y);
+	
+	return waypoint;
+    }
+    
+    
     /**
      * TODO maybe add a check that the ID is not already in use?
      * 
