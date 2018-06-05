@@ -249,55 +249,62 @@ public class Model {
 	outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	sourceElement.appendChild(outgoing);
 
-	
-	
+
+
 	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
 	//existing waypoints and create two of them from scratch.
 	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
 	//and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
 	//distant from the original positions of the source and target elements.
-	
+
 	//TODO see how camunda solves this. One problem that this has is that it connects to the center of the items, 
 	//instead of connecting to the borders of the item. I could change the position to go to the item's border by
 	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
 	//on whether I want to connect to the item's upper, lower, left or right border.
-	
-	
+
+
 
 
 	//we want to get the position of the source to know where the flow will have to point
 	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
-	
+
 	Element sourceBPMNDI = findBPMNDI(source);
 	//TODO what happens if the elements has more than one child? It happens if there's a label, for example.
-	Element sourceDcBounds = (Element) sourceBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
-	
-	String xSource = sourceDcBounds.getAttribute("x");
-	String ySource = sourceDcBounds.getAttribute("y");
-	Element sourceWP = createWaypoint(xSource, ySource);
 	
 	
-	//we want to get the position of the target to know where the flow will have to point
-	String target = sequenceFlow.getAttribute("targetRef");
-	Element targetBPMNDI = findBPMNDI(target);
-	Element targetDcBounds = (Element) targetBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
-	String xTarget = targetDcBounds.getAttribute("x");
-	String yTarget = targetDcBounds.getAttribute("y");
-	Element targetWP = createWaypoint(xTarget, yTarget);
+	//	Element sourceDcBounds = (Element) sourceBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
+	//	
+	//	String xSource = sourceDcBounds.getAttribute("x");
+	//	String ySource = sourceDcBounds.getAttribute("y");
+	//	Element sourceWP = createWaypoint(xSource, ySource);
+	//	
+	//	
+	//	//we want to get the position of the target to know where the flow will have to point
+	//	String target = sequenceFlow.getAttribute("targetRef");
+	//	Element targetBPMNDI = findBPMNDI(target);
+	//	Element targetDcBounds = (Element) targetBPMNDI.getFirstChild(); //the dc:bounds tag contains the info about the position
+	//	String xTarget = targetDcBounds.getAttribute("x");
+	//	String yTarget = targetDcBounds.getAttribute("y");
+	//	Element targetWP = createWaypoint(xTarget, yTarget);
+	//	
+	//	//This is the bpmndi corresponding to our sequenceFlow
+	//	Element sequenceFlowBPMNDI = findBPMNDI(id);
+	//	
+	//	//let's remove the previous waypoints:
+	//	while(sequenceFlowBPMNDI.hasChildNodes()) {
+	//	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
+	//	    System.out.println("		Just deleted the a waypoint");
+	//	}
+	//
+	//	//let's now add the previously created waypoints:
+	//	sequenceFlowBPMNDI.appendChild(targetWP);
+	//	sequenceFlowBPMNDI.appendChild(sourceWP);
 	
-	//This is the bpmndi corresponding to our sequenceFlow
-	Element sequenceFlowBPMNDI = findBPMNDI(id);
 	
-	//let's remove the previous waypoints:
-	while(sequenceFlowBPMNDI.hasChildNodes()) {
-	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
-	    System.out.println("		Just deleted the a waypoint");
-	}
+	
+		
+	findDcBounds(sourceBPMNDI);
 
-	//let's now add the previously created waypoints:
-	sequenceFlowBPMNDI.appendChild(targetWP);
-	sequenceFlowBPMNDI.appendChild(sourceWP);
-	
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
 
@@ -455,7 +462,7 @@ public class Model {
 	    Element element = (Element) nodeList.item(i);
 	    System.out.println(element.getAttribute("bpmnElement"));
 	    element.getParentNode().removeChild(element);
-	    System.out.println("\033[36m " + "I removed element with ID: " + id);
+	    System.out.println("		I removed element with ID: " + id);
 	}
 	System.out.println("		Deleted element " + id);
     }
@@ -491,9 +498,9 @@ public class Model {
      */
     public Element findElemById(String id) throws XPathExpressionException {
 
-	NodeList nodeList = (NodeList) xpath.evaluate("//*[@id='" + id + "']", doc, XPathConstants.NODESET);
+	Node node = (Node) xpath.evaluate("//*[@id='" + id + "']", doc, XPathConstants.NODE);
 	//We expect only one element to have the same id
-	return (Element) nodeList.item(0);
+	return (Element) node;
     }
 
     /**
@@ -503,12 +510,37 @@ public class Model {
      * @throws XPathExpressionException
      */
     public Element findBPMNDI(String id) throws XPathExpressionException {
-	NodeList nodeList = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc, XPathConstants.NODESET);
+	Node bpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc, XPathConstants.NODE);
 	//We expect only one element to have the same id
-	return (Element) nodeList.item(0);
+	return (Element) bpmndi;
     }
-    
-    
+
+    /**
+     * this method takes a Bpmndi Element as input
+     * and returns the relative dc:Bounds element
+     * (which contains informations about the X and Y positions of the BPMND element.
+     * TODO future improvement for this method would be to create an algorithm that gets the position 
+     * of the source element and of the target,
+     * and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
+     * distant from the original positions of the source and target elements.
+     * @param bpmndiElement
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public Element findDcBounds(Element bpmndiElement) throws XPathExpressionException {
+	
+	Element dcBounds = (Element) xpath.evaluate("//*[dc:Bounds=", bpmndiElement, XPathConstants.NODE);
+	System.out.println(dcBounds);
+	System.out.println(dcBounds.getAttribute("x"));
+	System.out.println(dcBounds.getAttribute("x"));
+	System.out.println(dcBounds.getAttribute("x"));
+	System.out.println(dcBounds.getAttribute("x"));
+	System.out.println(dcBounds.getAttribute("x"));
+
+	return bpmndiElement;
+
+    }
+
     /**
      * This method calculates the x and y positions of a new element based on the position of its predecessors
      * The method simply calculates the position as the average of the old elements on both axis
@@ -524,14 +556,14 @@ public class Model {
      * @throws XPathExpressionException 
      */
     public String[] calculatePosition(String predecessorId, String successorId) throws XPathExpressionException {
-	NodeList predecessorBpmndi = (NodeList) xpath.evaluate("//*[@bpmnElement='" + predecessorId + "']", doc, XPathConstants.NODESET);
-	NodeList successorBpmndi = (NodeList) xpath.evaluate("//*[@bpmnElement='" + successorId + "']", doc, XPathConstants.NODESET);
+	Node predecessorBpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + predecessorId + "']", doc, XPathConstants.NODE);
+	Node successorBpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + successorId + "']", doc, XPathConstants.NODE);
 	// Predecessor position
-	int predX = Integer.parseInt(((Element) predecessorBpmndi.item(0).getFirstChild()).getAttribute("x")); //getFirstChild is not ideal maybe use Xpath
-	int predY = Integer.parseInt(((Element) predecessorBpmndi.item(0).getFirstChild()).getAttribute("y")); //getFirstChild is not ideal maybe use Xpath
+	int predX = Integer.parseInt(((Element) predecessorBpmndi.getFirstChild()).getAttribute("x")); //TODO getFirstChild does not works. use Xpath
+	int predY = Integer.parseInt(((Element) predecessorBpmndi.getFirstChild()).getAttribute("y")); //TODO getFirstChild does not works. use Xpath
 	// Successor position
-	int succX = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("x")); //getFirstChild is not ideal maybe use Xpath
-	int succY = Integer.parseInt(((Element) successorBpmndi.item(0).getFirstChild()).getAttribute("y")); //getFirstChild is not ideal maybe use Xpath
+	int succX = Integer.parseInt(((Element) successorBpmndi.getFirstChild()).getAttribute("x")); //TODO getFirstChild does not works. use Xpath
+	int succY = Integer.parseInt(((Element) successorBpmndi.getFirstChild()).getAttribute("y")); //TODO getFirstChild does not works. use Xpath
 
 	String[] positions = new String[2];
 	positions[0] = "" + (predX+succX)/2; //not super precise but who cares?
@@ -551,19 +583,19 @@ public class Model {
      * @return
      */
     public Element createWaypoint(String x, String y){
-	
+
 	Element waypoint = doc.createElement("di:waypoint");
-	
+
 	waypoint.setAttribute("x", x);
-	
+
 	waypoint.setAttribute("xsi:type", "dc:Point"); //this attribute never changes and is always the same (?)
 	waypoint.setAttribute("y", y);
-	
+
 	System.out.println("		I created a waypoint with the coordinates " + x + " and " + y);
 	return waypoint;
     }
-    
-    
+
+
     /**
      * TODO maybe add a check that the ID is not already in use?
      * 
