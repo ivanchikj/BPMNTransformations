@@ -297,9 +297,6 @@ public class Model {
 	//let's now add the previously created waypoints:
 	sequenceFlowBPMNDI.appendChild(targetWP);
 	sequenceFlowBPMNDI.appendChild(sourceWP);
-	
-	
-	
 		
 	findDcBounds(sourceBPMNDI);
 
@@ -319,60 +316,100 @@ public class Model {
      */
     public void setTarget(String id, String target) throws DOMException, XPathExpressionException {
 
-	// We need to remove the child from the previous target
-	// The following xpath could create problems when a flow has two targets, but
-	// that should be impossible.
-	NodeList toDelete = (NodeList) xpath.evaluate("//bpmn:outgoing[.='" + id + "']", doc, XPathConstants.NODESET);
-	// TODOthis might not work
+	String previousTargetId =  findElemById(id).getAttribute("targetRef");
+	Element previousTarget = findElemById(previousTargetId);
+	System.out.println("		This element's previous target is: " + previousTarget.getAttribute("id"));
+	System.out.println("");
 
-	doc.removeChild(toDelete.item(0));
+	System.out.println("		Content of child: " + previousTarget.getTextContent());
 
-	// This changes the element of the sequenceFlow
-	Element sequenceFlow = doc.getElementById(id);
-	sequenceFlow.setAttribute("targetRef", target);
+	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousTarget));
+	//TODO see if there's any difference. See if it prints all of the child's content or not.
 
-	// We still need to change also the element of the Source to have my outgoing
-	// flow as a child
-	Element sourceElement = doc.getElementById(target);
-	Element incoming = doc.createElement("bpmn:outgoing");
-	incoming.setTextContent(id); // TODO I'm not sure this does what I want.
-	sourceElement.appendChild(incoming);
+	//TODO the following two if blocks can become a method used both by setTarget and setSource
+	if (previousTarget.hasChildNodes()) { //This is expected to be always true anyway
+	    NodeList childList = previousTarget.getChildNodes();
+	    for (int i = 0; i < childList.getLength(); i++) {
+		Node childInCase = childList.item(i);
+		String textContentString = childInCase.getTextContent();
+		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+		//be checked in case the task is both the source and the target of a SequenceFlow!
+		if (textContentString.equals(id)){
+		    childInCase.getParentNode().removeChild(childInCase);
+		    System.out.println("		I have found the child that I want to delete!!");
+		    //TODO if you want, find a way to remove the blank space that gets created
+		}
 
-	System.out.println("		I have changed the target of flow " + id + " to " + target);
-    }
+	    }
 
-    /**
-     * TODO switch from a NodeList to a list of Strings?
-     * 
-     * @param type
-     *            the type of elements that we want to search for
-     * @return a NodeList of elements
-     */
-    public NodeList findElementByType(String type) {
-	NodeList elementsOfType = doc.getElementsByTagName(type);
-	System.out.println("		I have found " + elementsOfType.getLength() + " elements of type " + type);
-	return elementsOfType;
-    }
-
-    /**
-     * TODO switch from a NodeList to a list of Strings? Returns a list of the
-     * immediate predecessors of a certain Element
-     * 
-     * @param id
-     *            the id of said Element
-     * @return a NodeList of the predecessors of a certain Element
-     * @throws XPathExpressionException
-     */
-    public String[] getPredecessors(String id) throws XPathExpressionException {
-
-	NodeList incomingFlows = (NodeList) xpath.evaluate("//*[@targetRef='" + id + "']", doc, XPathConstants.NODESET);
-	String[] predecessors = new String[incomingFlows.getLength()];
-	for (int i = 0; i < incomingFlows.getLength(); i++) {
-	    predecessors[i] = ((Element) incomingFlows.item(i)).getAttribute("sourceRef");
 	}
 
-	System.out.println("		I have found " + predecessors.length + " immediate predecessors");
-	return predecessors;
+
+	Element sequenceFlow = findElemById(id);
+	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
+	sequenceFlow.setAttribute("targetRef", target);
+	// We still need to change also the element of the Source to have my outgoing
+	// flow as a child
+	Element targetElement = findElemById(target);
+	System.out.println("		The new target is: " + targetElement.getAttribute("id"));
+	Element incoming = doc.createElement("bpmn:incoming");
+	incoming.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
+	targetElement.appendChild(incoming);
+
+
+
+	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
+	//existing waypoints and create two of them from scratch.
+	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
+	//and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
+	//distant from the original positions of the source and target elements.
+
+	//TODO see how camunda solves this. One problem that this has is that it connects to the center of the items, 
+	//instead of connecting to the borders of the item. I could change the position to go to the item's border by
+	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
+	//on whether I want to connect to the item's upper, lower, left or right border.
+
+
+
+
+	//we want to get the position of the source to know where the flow will have to point
+	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
+
+	Element targetBPMNDI = findBPMNDI(target);
+	
+	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
+
+	String xTarget = targetDcBounds.getAttribute("x");
+	String yTarget = targetDcBounds.getAttribute("y");
+	Element targetWP = createWaypoint(xTarget, yTarget);
+
+
+	//we want to get the position of the target to know where the flow will have to point
+	String source = sequenceFlow.getAttribute("sourceRef");
+	Element sourceBPMNDI = findBPMNDI(source);
+	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
+	String xSource = sourceDcBounds.getAttribute("x");
+	String ySource = sourceDcBounds.getAttribute("y");
+	Element sourceWP = createWaypoint(xSource, ySource);
+
+	//This is the bpmndi corresponding to our sequenceFlow
+	Element sequenceFlowBPMNDI = findBPMNDI(id);
+
+	//let's remove the previous waypoints:
+	while(sequenceFlowBPMNDI.hasChildNodes()) {
+	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
+	    System.out.println("		Just deleted the a waypoint");
+	}
+
+	//let's now add the previously created waypoints:
+	sequenceFlowBPMNDI.appendChild(sourceWP);
+	sequenceFlowBPMNDI.appendChild(targetWP);
+		
+	findDcBounds(targetBPMNDI);
+
+	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
 
     /**
