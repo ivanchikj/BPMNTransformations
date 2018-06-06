@@ -250,7 +250,6 @@ public class Model {
 	sourceElement.appendChild(outgoing);
 
 
-
 	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
 	//existing waypoints and create two of them from scratch.
 	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
@@ -289,15 +288,17 @@ public class Model {
 	Element sequenceFlowBPMNDI = findBPMNDI(id);
 
 	//let's remove the previous waypoints:
-	while(sequenceFlowBPMNDI.hasChildNodes()) {
+	while (sequenceFlowBPMNDI.hasChildNodes()) {
 	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
 	    System.out.println("		Just deleted the a waypoint");
 	}
 
 	//let's now add the previously created waypoints:
-	sequenceFlowBPMNDI.appendChild(targetWP);
+	//NOTE: the order in which the waypoints are added decides the order of the arrow!
+	//This is a little bit counterintuitive imho, but it is like it is.
 	sequenceFlowBPMNDI.appendChild(sourceWP);
-		
+	sequenceFlowBPMNDI.appendChild(targetWP);
+	
 	findDcBounds(sourceBPMNDI);
 
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
