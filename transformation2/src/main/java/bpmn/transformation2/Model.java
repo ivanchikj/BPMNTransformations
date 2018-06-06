@@ -617,8 +617,7 @@ public class Model {
      * This method creates the waypoints used in the BPMNDI to position the sequenceFlows
      * This method is used both to create the waypoints of the "pointy" side
      * of the arrow and of the flat side of the arrows, as they are identical.
-     * Probably the program deduces where to put the arrow based on the process part of the XML
-     * X and Y are provided by the user. This methods only creates the elements
+     * The program decided the direction in which the arrow points, depending on the order of the waypoints.
      * @param x
      * @param y
      * @return
@@ -635,7 +634,75 @@ public class Model {
 	System.out.println("		I created a waypoint with the coordinates " + x + " and " + y);
 	return waypoint;
     }
-
+    /**
+     * This item decides in which exact position to put the end or the start of the sequenceFlow
+     * based on the target/source location and their height / width.
+     * This way we can have the arrow nicely connect to the border of the items
+     *  
+     * @param type
+     * @param x
+     * @param y
+     * @return
+     */
+    public String[] decideArrowPosition(String sourceXPosition, String sourceYPosition, String sourceItemHeight, String sourceItemWidth, String targetXPosition, String targetYPosition, String targetItemHeight, String targetItemWidth) {
+	
+	//Transforming everything into ints to do the calculations
+	int sourceX = Integer.parseInt(sourceXPosition);
+	int sourceY = Integer.parseInt(sourceYPosition);
+	int sourceHeight = Integer.parseInt(sourceItemHeight);
+	int sourceWidth = Integer.parseInt(sourceItemWidth);
+	
+	int targetX = Integer.parseInt(targetXPosition);
+	int targetY = Integer.parseInt(targetYPosition);
+	int targetHeight = Integer.parseInt(targetItemHeight);
+	int targetWidth = Integer.parseInt(targetItemWidth);
+	
+	//To be precise, X and Y are not the exact centers of the item
+	//instead, they represent the upper left corner of an item. 
+	//We will replace them with the actual centers.
+	//We deduce the position of the centers by using the width and height
+	//of items:
+	sourceX = sourceX + (sourceWidth/2);
+	sourceY = sourceY - (sourceHeight/2);
+	
+	targetX = targetX + (targetWidth/2);
+	targetY = targetY - (targetHeight/2);
+	
+	int horizontalDiff = sourceY - targetY;
+	// if it's positive it means that the source it's on the right of the target
+	int verticalDiff = sourceX - targetX;
+	// if it's positive it means that the source it's on the top of the target
+	
+	
+	// let's prepare the resulting Ints
+	// of course the start will be connected to the source and the 
+	// end will be connected to the target
+	int resultStartX = sourceX;
+	int resultStartY = sourceY;
+	int resultEndX = targetX;
+	int resultEndY = targetY;
+	
+	if (horizontalDiff == 0 && verticalDiff == 0) {
+	    //This should be almost impossible
+	    System.out.println("The source and target are in the same position ! ");    
+	} else if (horizontalDiff == 0 && verticalDiff < 0) {
+	    System.out.println("The source and target are in the same horizontal position but the target is higher");
+	} else if (horizontalDiff == 0 && verticalDiff > 0) {
+	    System.out.println("The source and target are in the same horizontal position but the target is lower");   
+	} else if (horizontalDiff > 0 && verticalDiff == 0) {
+	    
+	} else if (horizontalDiff < 0 && verticalDiff == 0)
+	
+	//let's transform our ints into string, ready to be put into an XML
+	//TODO there's probably a better way to return this, maybe as an object? Maybe as a map.
+	String[] positions = new String[4];
+	positions[0] = "" + resultStartX; 
+	positions[1] = "" + resultStartY;
+	positions[2] = "" + resultEndX;
+	positions[3] = "" + resultEndY;
+	
+	return positions;
+    }
 
     /**
      * TODO maybe add a check that the ID is not already in use?

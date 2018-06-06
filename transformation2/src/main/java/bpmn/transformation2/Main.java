@@ -106,7 +106,7 @@ public class Main {
 	System.out.println("The id of the newNode is " + newNodeId);
 	System.out.println("The id of the newNode is " + newNodeElement.getAttribute("id"));
 	model.setTarget(seqFlow, newNodeId);
-	//model.setSource(seqFlow, newNodeId);
+	model.setSource(seqFlow, newNodeId);
 
     }
 
