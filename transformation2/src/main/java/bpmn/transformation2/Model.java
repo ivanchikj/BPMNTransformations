@@ -1,6 +1,7 @@
 package bpmn.transformation2;
 
 import org.camunda.bpm.model.bpmn.impl.instance.TargetRef;
+import org.camunda.bpm.model.cmmn.instance.IfPart;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -268,12 +269,16 @@ public class Model {
 	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
 
 	Element sourceBPMNDI = findBPMNDI(source);
-	
+
 	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
 
 	String xSource = sourceDcBounds.getAttribute("x");
 	String ySource = sourceDcBounds.getAttribute("y");
-	Element sourceWP = createWaypoint(xSource, ySource);
+	String sourceItemHeight = sourceDcBounds.getAttribute("height");
+	String sourceItemWidth = sourceDcBounds.getAttribute("width");
+	
+	
+	//  Element sourceWP = createWaypoint(xSource, ySource);
 
 
 	//we want to get the position of the target to know where the flow will have to point
@@ -282,7 +287,19 @@ public class Model {
 	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
 	String xTarget = targetDcBounds.getAttribute("x");
 	String yTarget = targetDcBounds.getAttribute("y");
-	Element targetWP = createWaypoint(xTarget, yTarget);
+	String targetItemHeight = targetDcBounds.getAttribute("height");
+	String targetItemWidth = targetDcBounds.getAttribute("width");
+	
+	//Element targetWP = createWaypoint(xTarget, yTarget);
+	
+	
+	
+	//Calculating the best options for the placement of the sequenceFlow
+	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
+	
+	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
+	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
+	
 
 	//This is the bpmndi corresponding to our sequenceFlow
 	Element sequenceFlowBPMNDI = findBPMNDI(id);
@@ -298,7 +315,7 @@ public class Model {
 	//This is a little bit counterintuitive imho, but it is like it is.
 	sequenceFlowBPMNDI.appendChild(sourceWP);
 	sequenceFlowBPMNDI.appendChild(targetWP);
-	
+
 	findDcBounds(sourceBPMNDI);
 
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
@@ -379,7 +396,7 @@ public class Model {
 	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
 
 	Element targetBPMNDI = findBPMNDI(target);
-	
+
 	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
 
 	String xTarget = targetDcBounds.getAttribute("x");
@@ -407,7 +424,7 @@ public class Model {
 	//let's now add the previously created waypoints:
 	sequenceFlowBPMNDI.appendChild(sourceWP);
 	sequenceFlowBPMNDI.appendChild(targetWP);
-		
+
 	findDcBounds(targetBPMNDI);
 
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
@@ -564,7 +581,7 @@ public class Model {
      * @throws XPathExpressionException 
      */
     public Element findDcBounds(Element bpmndiElement) throws XPathExpressionException {
-	
+
 	NodeList children = (NodeList) xpath.evaluate("*", bpmndiElement, XPathConstants.NODESET);
 	Element dcBounds = null; 
 	for (int i = 0; i < children.getLength(); i++ ) {
@@ -573,11 +590,11 @@ public class Model {
 		break;
 	    }
 	}
-	
+
 	if (dcBounds == null) {
 	    System.err.println("It means that this bpmdiElement has not any dc:Bounds item. This is not expected");
 	}
-	
+
 	return dcBounds;
 
     }
@@ -639,41 +656,54 @@ public class Model {
      * based on the target/source location and their height / width.
      * This way we can have the arrow nicely connect to the border of the items
      *  
+     *  Note that since the gateways are tilted squares, it's better to only
+     *  point the arrows in the 4 corners of items. This works best for both tasks and 
+     *  gateways. 
+     *  
+     *  NOTE that counterintuitively, with this system, the higher the value of Y, the LOWER an item is.
+     *  
+     *  TODO this can be done more elegantly, with less repetition of code, and also in a way
+     *  to avoid problems when an item is just SLIGHTLY higher or lower than the other
+     *  Another idea would be to create 4 candidate anchor points for both items,
+     *  go through each permutation (16 in total) of the 4 anchor points 
+     *  and select the one with the lower distance. This would take less code and be a more 
+     *  generalized solution, but it would be a little bit overkill maybe.
+     *  
      * @param type
      * @param x
      * @param y
      * @return
      */
     public String[] decideArrowPosition(String sourceXPosition, String sourceYPosition, String sourceItemHeight, String sourceItemWidth, String targetXPosition, String targetYPosition, String targetItemHeight, String targetItemWidth) {
-	
+
 	//Transforming everything into ints to do the calculations
 	int sourceX = Integer.parseInt(sourceXPosition);
 	int sourceY = Integer.parseInt(sourceYPosition);
 	int sourceHeight = Integer.parseInt(sourceItemHeight);
 	int sourceWidth = Integer.parseInt(sourceItemWidth);
-	
+
 	int targetX = Integer.parseInt(targetXPosition);
 	int targetY = Integer.parseInt(targetYPosition);
 	int targetHeight = Integer.parseInt(targetItemHeight);
 	int targetWidth = Integer.parseInt(targetItemWidth);
-	
+
 	//To be precise, X and Y are not the exact centers of the item
 	//instead, they represent the upper left corner of an item. 
 	//We will replace them with the actual centers.
 	//We deduce the position of the centers by using the width and height
 	//of items:
 	sourceX = sourceX + (sourceWidth/2);
-	sourceY = sourceY - (sourceHeight/2);
-	
+	sourceY = sourceY + (sourceHeight/2);
+
 	targetX = targetX + (targetWidth/2);
-	targetY = targetY - (targetHeight/2);
-	
-	int horizontalDiff = sourceY - targetY;
-	// if it's positive it means that the source it's on the right of the target
+	targetY = targetY + (targetHeight/2);
+
+	int horizontalDiff = targetY - sourceY;
+	// if it's positive it means that the source it's on top of the target
 	int verticalDiff = sourceX - targetX;
-	// if it's positive it means that the source it's on the top of the target
-	
-	
+	// if it's positive it means that the source it's on the right of the target
+
+
 	// let's prepare the resulting Ints
 	// of course the start will be connected to the source and the 
 	// end will be connected to the target
@@ -681,26 +711,57 @@ public class Model {
 	int resultStartY = sourceY;
 	int resultEndX = targetX;
 	int resultEndY = targetY;
-	
+
 	if (horizontalDiff == 0 && verticalDiff == 0) {
 	    //This should be almost impossible
 	    System.out.println("The source and target are in the same position ! ");    
 	} else if (horizontalDiff == 0 && verticalDiff < 0) {
 	    System.out.println("The source and target are in the same horizontal position but the target is higher");
+	    resultStartY = sourceY + (sourceHeight/2);
+	    resultEndY = targetY - (targetHeight/2);
+	    
 	} else if (horizontalDiff == 0 && verticalDiff > 0) {
 	    System.out.println("The source and target are in the same horizontal position but the target is lower");   
-	} else if (horizontalDiff > 0 && verticalDiff == 0) {
+	    resultStartY = sourceY - (sourceHeight/2);
+	    resultEndY = targetY + (targetHeight/2);
 	    
-	} else if (horizontalDiff < 0 && verticalDiff == 0)
-	
-	//let's transform our ints into string, ready to be put into an XML
-	//TODO there's probably a better way to return this, maybe as an object? Maybe as a map.
+	} else if (horizontalDiff > 0 && verticalDiff == 0) {
+	    System.out.println("The source and target are at the same height but the target is left of the source");
+	    resultStartX = sourceX - (sourceWidth/2);
+	    resultEndX =  targetX + (targetWidth/2);
+	    
+	} else if (horizontalDiff < 0 && verticalDiff == 0) {
+	    System.out.println("The source and target are at the same height but the target is right of the source");
+	    resultStartX = sourceX + (sourceWidth/2);
+	    resultEndX =  targetX - (targetWidth/2);
+	    
+	} else if (horizontalDiff < 0 && verticalDiff < 0) {
+	    System.out.println("The target is on the upper right of the target");
+	    resultStartY = sourceY - (sourceHeight/2);
+	    resultEndY = targetY + (targetHeight/2);
+	    
+	    resultStartX = sourceX + (sourceWidth/2);
+	    resultEndX =  targetX - (targetWidth/2);
+	    
+	} else if (horizontalDiff > 0 && verticalDiff > 0) {
+	    System.out.println("The target is on the lower left of the target");
+	    resultStartY = sourceY - (sourceHeight/2);
+	    resultEndY = targetY + (targetHeight/2);
+	    
+	    resultStartX = sourceX - (sourceWidth/2);
+	    resultEndX =  targetX + (targetWidth/2);
+	    
+	}
+
+	//finally
+	//let's transform back our Ints into string, ready to be put into an XML
+	//TODO there's probably a better way to return this info, maybe as an object? Maybe as a map.
 	String[] positions = new String[4];
 	positions[0] = "" + resultStartX; 
 	positions[1] = "" + resultStartY;
 	positions[2] = "" + resultEndX;
 	positions[3] = "" + resultEndY;
-	
+
 	return positions;
     }
 
