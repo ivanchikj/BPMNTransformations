@@ -251,22 +251,14 @@ public class Model {
 	sourceElement.appendChild(outgoing);
 
 
-	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
+	//Since it's impossible to distinguish the source waypoints from the target waipoints, 
+	//(aside from looking at the order, but this doesn't seem like a good solution
+	//it's best to simply delete all
 	//existing waypoints and create two of them from scratch.
-	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
-	//and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
-	//distant from the original positions of the source and target elements.
-
-	//TODO see how camunda solves this. One problem that this has is that it connects to the center of the items, 
-	//instead of connecting to the borders of the item. I could change the position to go to the item's border by
-	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
-	//on whether I want to connect to the item's upper, lower, left or right border.
-
 
 
 
 	//we want to get the position of the source to know where the flow will have to point
-	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
 
 	Element sourceBPMNDI = findBPMNDI(source);
 
@@ -278,9 +270,6 @@ public class Model {
 	String sourceItemWidth = sourceDcBounds.getAttribute("width");
 
 
-	//  Element sourceWP = createWaypoint(xSource, ySource);
-
-
 	//we want to get the position of the target to know where the flow will have to point
 	String target = sequenceFlow.getAttribute("targetRef");
 	Element targetBPMNDI = findBPMNDI(target);
@@ -290,16 +279,11 @@ public class Model {
 	String targetItemHeight = targetDcBounds.getAttribute("height");
 	String targetItemWidth = targetDcBounds.getAttribute("width");
 
-	//Element targetWP = createWaypoint(xTarget, yTarget);
-
-
-
 	//Calculating the best options for the placement of the sequenceFlow
 	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
 
 	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
 	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
-
 
 	//This is the bpmndi corresponding to our sequenceFlow
 	Element sequenceFlowBPMNDI = findBPMNDI(id);
@@ -364,7 +348,6 @@ public class Model {
 
 	}
 
-
 	Element sequenceFlow = findElemById(id);
 	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
 	sequenceFlow.setAttribute("targetRef", target);
@@ -376,24 +359,12 @@ public class Model {
 	incoming.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	targetElement.appendChild(incoming);
 
-
-
-	//Since it's impossible to distinguish the source waypoints from the target waipoints, it's best to simply delete all
+	//Since it's impossible to distinguish the source waypoints from the target waipoints, 
+	//(aside from looking at the order, but this doesn't seem like a good solution
+	//it's best to simply delete all
 	//existing waypoints and create two of them from scratch.
-	//TODO a good method would be to create an algorithm that gets the position of the source element and of the target,
-	//and distinguish the waypoint of the source form the waypoint of the target based on the one that is less 
-	//distant from the original positions of the source and target elements.
-
-	//TODO see how camunda solves this. One problem that this has is that it connects to the center of the items, 
-	//instead of connecting to the borders of the item. I could change the position to go to the item's border by
-	//adding/substracting half of the element height/width but how do i decide which operation to do? It depends
-	//on whether I want to connect to the item's upper, lower, left or right border.
-
-
-
 
 	//we want to get the position of the source to know where the flow will have to point
-	//NOTE the first child of the BPMNDI is the one tagged "dc:Bounds"
 
 	Element targetBPMNDI = findBPMNDI(target);
 
@@ -401,7 +372,8 @@ public class Model {
 
 	String xTarget = targetDcBounds.getAttribute("x");
 	String yTarget = targetDcBounds.getAttribute("y");
-	Element targetWP = createWaypoint(xTarget, yTarget);
+	String targetItemHeight = targetDcBounds.getAttribute("height");
+	String targetItemWidth = targetDcBounds.getAttribute("width"); 
 
 
 	//we want to get the position of the target to know where the flow will have to point
@@ -410,7 +382,15 @@ public class Model {
 	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
 	String xSource = sourceDcBounds.getAttribute("x");
 	String ySource = sourceDcBounds.getAttribute("y");
-	Element sourceWP = createWaypoint(xSource, ySource);
+	String sourceItemHeight = sourceDcBounds.getAttribute("height");
+	String sourceItemWidth = sourceDcBounds.getAttribute("width");
+	
+	//Calculating the best options for the placement of the sequenceFlow
+	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
+
+	
+	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
+	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
 
 	//This is the bpmndi corresponding to our sequenceFlow
 	Element sequenceFlowBPMNDI = findBPMNDI(id);
@@ -422,6 +402,8 @@ public class Model {
 	}
 
 	//let's now add the previously created waypoints:
+	//NOTE: the order in which the waypoints are added decides the order of the arrow!
+	//This is a little bit counterintuitive imho, but it is like it is.
 	sequenceFlowBPMNDI.appendChild(sourceWP);
 	sequenceFlowBPMNDI.appendChild(targetWP);
 
@@ -668,6 +650,13 @@ public class Model {
      *  go through each permutation (16 in total) of the 4 anchor points 
      *  and select the one with the lower distance. This would take less code and be a more 
      *  generalized solution, but it would be a little bit overkill maybe.
+     *  NOTE at one point you will see an if inside an if:
+     *  	since we don't want to place the arrows on the corner,
+     *  but on the side,only one of the following operations 
+     *  has to be performed we decide which one based on which one
+     *  is the greatest distance, the horizontal o
+     *  or the vertical one
+
      *  
      * @param type
      * @param x
@@ -704,7 +693,6 @@ public class Model {
 
 	int verticalDiff = sourceY - targetY;
 	// if it's positive it means that the source it's on the right of the target
-
 
 	// let's prepare the resulting Ints
 	// of course the start will be connected to the source and the 
@@ -746,12 +734,7 @@ public class Model {
 	} else if (horizontalDiff < 0 && verticalDiff < 0) {
 	    //this works as intended
 
-	    System.out.println("The target is on the upper left of the source");
-	    //Since we dont want to place the arrows on the corner, but on the side,
-	    //only one of the following operations has to be performed
-	    //we decide which one based on which one
-	    //is the greatest distance, the horizontal one
-	    //or the vertical one
+	    System.out.println("The target is on the lower right of the source");
 
 	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
 		resultStartY = sourceY + (sourceHeight/2);
@@ -764,7 +747,7 @@ public class Model {
 	} else if (horizontalDiff < 0 && verticalDiff > 0) {
 	    //this works as intended
 
-	    System.out.println("The target is on the lower left of the source");
+	    System.out.println("The target is on the upper right of the source");
 
 	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
 
@@ -776,7 +759,7 @@ public class Model {
 	    }
 	} else if (horizontalDiff > 0 && verticalDiff < 0) {
 	    //this works as intended
-	    System.out.println("The target is on the upper right of the source");
+	    System.out.println("The target is on the lower left of the source");
 	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
 		resultStartY = sourceY + (sourceHeight/2);
 		resultEndY = targetY - (targetHeight/2);
@@ -784,12 +767,14 @@ public class Model {
 		resultStartX = sourceX - (sourceWidth/2);
 		resultEndX =  targetX + (targetWidth/2);
 	    }
-	} else if (horizontalDiff >0 && verticalDiff > 0) {
+	} else if (horizontalDiff > 0 && verticalDiff > 0) {
 	    //this works as intended
-	    System.out.println("The target is on the lower right of the source");
+	    
+	    System.out.println("The target is on the upper left of the source");
+	    
 	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
-		resultStartY = sourceY + (sourceHeight/2);
-		resultEndY = targetY - (targetHeight/2);
+		resultStartY = sourceY - (sourceHeight/2);
+		resultEndY = targetY + (targetHeight/2);
 	    } else {
 		resultStartX = sourceX - (sourceWidth/2);
 		resultEndX =  targetX + (targetWidth/2);
@@ -807,7 +792,11 @@ public class Model {
 
 	return positions;
     }
+    
+    
+    
 
+    
     /**
      * TODO maybe add a check that the ID is not already in use?
      * 
