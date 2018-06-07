@@ -276,8 +276,8 @@ public class Model {
 	String ySource = sourceDcBounds.getAttribute("y");
 	String sourceItemHeight = sourceDcBounds.getAttribute("height");
 	String sourceItemWidth = sourceDcBounds.getAttribute("width");
-	
-	
+
+
 	//  Element sourceWP = createWaypoint(xSource, ySource);
 
 
@@ -289,17 +289,17 @@ public class Model {
 	String yTarget = targetDcBounds.getAttribute("y");
 	String targetItemHeight = targetDcBounds.getAttribute("height");
 	String targetItemWidth = targetDcBounds.getAttribute("width");
-	
+
 	//Element targetWP = createWaypoint(xTarget, yTarget);
-	
-	
-	
+
+
+
 	//Calculating the best options for the placement of the sequenceFlow
 	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
-	
+
 	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
 	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
-	
+
 
 	//This is the bpmndi corresponding to our sequenceFlow
 	Element sequenceFlowBPMNDI = findBPMNDI(id);
@@ -698,15 +698,18 @@ public class Model {
 	targetX = targetX + (targetWidth/2);
 	targetY = targetY + (targetHeight/2);
 
-	int horizontalDiff = targetY - sourceY;
-	// if it's positive it means that the source it's on top of the target
-	int verticalDiff = sourceX - targetX;
+	int horizontalDiff = sourceX - targetX;
+	// if it's positive it means that the source it's on below the target 
+	// (Y coordinates work in the opposite way as they normally would in a graph, for some reason)
+
+	int verticalDiff = sourceY - targetY;
 	// if it's positive it means that the source it's on the right of the target
 
 
 	// let's prepare the resulting Ints
 	// of course the start will be connected to the source and the 
 	// end will be connected to the target
+
 	int resultStartX = sourceX;
 	int resultStartY = sourceY;
 	int resultEndX = targetX;
@@ -714,43 +717,83 @@ public class Model {
 
 	if (horizontalDiff == 0 && verticalDiff == 0) {
 	    //This should be almost impossible
+	    //nonetheless, i tested it and it works
 	    System.out.println("The source and target are in the same position ! ");    
 	} else if (horizontalDiff == 0 && verticalDiff < 0) {
-	    System.out.println("The source and target are in the same horizontal position but the target is higher");
+	    //this works fine
+	    System.out.println("The source and target are in the same horizontal position but the target is lower");
 	    resultStartY = sourceY + (sourceHeight/2);
 	    resultEndY = targetY - (targetHeight/2);
-	    
+
 	} else if (horizontalDiff == 0 && verticalDiff > 0) {
-	    System.out.println("The source and target are in the same horizontal position but the target is lower");   
+	    //this works as intended
+	    System.out.println("The source and target are in the same horizontal position but the target is higher");   
 	    resultStartY = sourceY - (sourceHeight/2);
 	    resultEndY = targetY + (targetHeight/2);
-	    
+
 	} else if (horizontalDiff > 0 && verticalDiff == 0) {
+	    //this works as intended
 	    System.out.println("The source and target are at the same height but the target is left of the source");
 	    resultStartX = sourceX - (sourceWidth/2);
 	    resultEndX =  targetX + (targetWidth/2);
-	    
+
 	} else if (horizontalDiff < 0 && verticalDiff == 0) {
+	    //this works as intended
 	    System.out.println("The source and target are at the same height but the target is right of the source");
 	    resultStartX = sourceX + (sourceWidth/2);
 	    resultEndX =  targetX - (targetWidth/2);
-	    
+
 	} else if (horizontalDiff < 0 && verticalDiff < 0) {
-	    System.out.println("The target is on the upper right of the target");
-	    resultStartY = sourceY - (sourceHeight/2);
-	    resultEndY = targetY + (targetHeight/2);
-	    
-	    resultStartX = sourceX + (sourceWidth/2);
-	    resultEndX =  targetX - (targetWidth/2);
-	    
-	} else if (horizontalDiff > 0 && verticalDiff > 0) {
-	    System.out.println("The target is on the lower left of the target");
-	    resultStartY = sourceY - (sourceHeight/2);
-	    resultEndY = targetY + (targetHeight/2);
-	    
-	    resultStartX = sourceX - (sourceWidth/2);
-	    resultEndX =  targetX + (targetWidth/2);
-	    
+	    //this works as intended
+
+	    System.out.println("The target is on the upper left of the source");
+	    //Since we dont want to place the arrows on the corner, but on the side,
+	    //only one of the following operations has to be performed
+	    //we decide which one based on which one
+	    //is the greatest distance, the horizontal one
+	    //or the vertical one
+
+	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
+		resultStartY = sourceY + (sourceHeight/2);
+		resultEndY = targetY - (targetHeight/2);
+	    } else {
+		resultStartX = sourceX + (sourceWidth/2);
+		resultEndX =  targetX - (targetWidth/2);
+	    }
+
+	} else if (horizontalDiff < 0 && verticalDiff > 0) {
+	    //this works as intended
+
+	    System.out.println("The target is on the lower left of the source");
+
+	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
+
+		resultStartY = sourceY - (sourceHeight/2);
+		resultEndY = targetY + (targetHeight/2);
+	    } else {
+		resultStartX = sourceX + (sourceWidth/2);
+		resultEndX =  targetX - (targetWidth/2);
+	    }
+	} else if (horizontalDiff > 0 && verticalDiff < 0) {
+	    //this works as intended
+	    System.out.println("The target is on the upper right of the source");
+	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
+		resultStartY = sourceY + (sourceHeight/2);
+		resultEndY = targetY - (targetHeight/2);
+	    } else {
+		resultStartX = sourceX - (sourceWidth/2);
+		resultEndX =  targetX + (targetWidth/2);
+	    }
+	} else if (horizontalDiff >0 && verticalDiff > 0) {
+	    //this works as intended
+	    System.out.println("The target is on the lower right of the source");
+	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
+		resultStartY = sourceY + (sourceHeight/2);
+		resultEndY = targetY - (targetHeight/2);
+	    } else {
+		resultStartX = sourceX - (sourceWidth/2);
+		resultEndX =  targetX + (targetWidth/2);
+	    }
 	}
 
 	//finally
