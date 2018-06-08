@@ -1,6 +1,8 @@
 package bpmn.transformation2;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -44,11 +46,13 @@ public class NEWRule3 {
 
 	    String[] oldParallelCoordinates = model.getPosition(oldParallel);
 
-	    //TODO the following code lines has been done in a rush, it would be better to create a new method 
+	    //TODO the following code lines (until line 90 more or less) has been done in a rush, it would be better to create a new method 
 	    //called "subsituteElement" to use in this occasions
 
 
 
+	    
+	    
 
 	    // creating the substitute element in the position of the old one
 	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
@@ -58,24 +62,32 @@ public class NEWRule3 {
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 
 	    //It's also useful to have the bpmndi ready to edit:
-
 	    Element newInclusiveGatewayBPMNDI = model.findBPMNDI(newInclusiveGatewayId);
 	    
 
-	    //let's save the ID of the old element
+	    //Let's save the ID of the old element
 	    String oldId = oldParallel.getAttribute("id");
 
 	    //let's save the child elements of the oldGateway
 	    //those child elements will contain the oldGateway's incoming and outgoing sequenceFlows
-	    NodeList oldGatewayChildElements = oldParallel.getChildNodes();
-
-	    //let's append the children to the new gateway
-	    for (int n = 0; n < oldGatewayChildElements.getLength(); n++) {
-		Node childNode = oldGatewayChildElements.item(n);
-		newInclusiveGateway.appendChild(childNode);
-		System.out.println("I'm appendind child called " + childNode.getTextContent());
+	    //we will soon attach them to the new inclusiveGateway
+	    NodeList oldGatewayChildNodes = oldParallel.getChildNodes();
+	    //List<Element> oldGatewayChildElements = new ArrayList<Element>();
+	    
+	   
+	    
+	    //Let's now append the child nodes of the old element to the new element
+	    for (int n = 0; n < oldGatewayChildNodes.getLength(); n++) {
+		
+		Node childNode = oldGatewayChildNodes.item(n);
+		newInclusiveGateway.appendChild(childNode.cloneNode(true));
+		//System.out.println("I'm appendind child called " + childNode.getTextContent());
+		
+		//newInclusiveGateway.appendChild(childNode);
+		
 	    }
 
+	   	    
 	    //let's delete the old element
 	    model.delete(oldId);
 
@@ -87,6 +99,14 @@ public class NEWRule3 {
 	    //let's remember to change the id of the BPMNDI as well:
 	    newInclusiveGatewayBPMNDI.setAttribute("bpmnElement", newInclusiveGatewayId);
 	    newInclusiveGatewayBPMNDI.setAttribute("id", newInclusiveGatewayId + "_di");
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 	}
 
     }

@@ -100,15 +100,15 @@ public class Main {
      */
     public static void applyRules (Model model, String parameters) throws Exception {
 
-//	String newNodeId = model.newNode("bpmn:task", "0", "0");
-//
-//	String seqFlow = ((Element) model.doc.getElementsByTagName("bpmn:sequenceFlow").item(0)).getAttribute("id");
-//	System.out.println("The id of the first sequenceFlow is " + seqFlow );
-//	Element newNodeElement = model.findElemById(newNodeId);
-//	System.out.println("The id of the newNode is " + newNodeId);
-//	System.out.println("The id of the newNode is " + newNodeElement.getAttribute("id"));
-//	//model.setTarget(seqFlow, newNodeId);
-//	//model.setSource(seqFlow, newNodeId);
+	String newNodeId = model.newNode("bpmn:task", "0", "200");
+
+	String seqFlow = ((Element) model.doc.getElementsByTagName("bpmn:sequenceFlow").item(0)).getAttribute("id");
+	System.out.println("The id of the first sequenceFlow is " + seqFlow );
+	Element newNodeElement = model.findElemById(newNodeId);
+	System.out.println("The id of the newNode is " + newNodeId);
+	System.out.println("The id of the newNode is " + newNodeElement.getAttribute("id"));
+	model.setTarget(seqFlow, newNodeId);
+	//model.setSource(seqFlow, newNodeId);
 	
 	NEWRule3.firstPart(model);
 

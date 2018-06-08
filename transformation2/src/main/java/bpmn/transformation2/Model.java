@@ -321,7 +321,7 @@ public class Model {
 	String [] coordinates = {dcBounds.getAttribute("x"), dcBounds.getAttribute("y")}; 
 	return coordinates;
     }
-    
+
     /**
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
      * SequenceFlow TODO manage BPMNDI aspects
@@ -415,7 +415,7 @@ public class Model {
 	//let's remove the previous waypoints:
 	while(sequenceFlowBPMNDI.hasChildNodes()) {
 	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
-	    System.out.println("		Just deleted the a waypoint");
+	    System.out.println("		Just deleted the waypoint");
 	}
 
 	//let's now add the previously created waypoints:
@@ -478,15 +478,10 @@ public class Model {
 	elementToDelete.getParentNode().removeChild(elementToDelete);
 	System.out.println("		I've deleted the element with id " + id);
 
-	NodeList bpmndiElementsToDelete = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc,
-		XPathConstants.NODESET);
-	for (int i = 0; i < bpmndiElementsToDelete.getLength(); ++i) { // This for is used in case there are more than
-	    // one bmpndi with
-	    // the same id, which shouldn't happen TODO decide
-	    Element element = (Element) bpmndiElementsToDelete.item(i);
-	    System.out.println(element.getAttribute("bpmnElement"));
-	    element.getParentNode().removeChild(element);
-	}
+	Element bpmndiElementToDelete = findBPMNDI(id);
+	System.out.println(bpmndiElementToDelete.getAttribute("bpmnElement"));
+	bpmndiElementToDelete.getParentNode().removeChild(bpmndiElementToDelete);
+
     }
 
     /**
@@ -520,6 +515,32 @@ public class Model {
 	    System.out.println("		I removed element with ID: " + id);
 	}
 	System.out.println("		Deleted element " + id);
+    }
+    /**
+     * NOTE this is not tested but it should work
+     * @param id
+     * @throws XPathExpressionException
+     */
+    public void deleteChildren(String id) throws XPathExpressionException {
+	Element element = findElemById(id);
+	if (element.hasChildNodes()) { //This is expected to be always true anyway
+	    NodeList childList = element.getChildNodes();
+	    for (int i = 0; i < childList.getLength(); i++) {
+		Node childInCase = childList.item(i);
+		String textContentString = childInCase.getTextContent();
+		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+		//be checked in case the task is both the source and the target of a SequenceFlow!
+		if (textContentString.equals(id)){
+		    childInCase.getParentNode().removeChild(childInCase);
+		    System.out.println("		I have found the child that I want to delete!!");
+		    //TODO if you want, find a way to remove the blank space that gets created
+		}
+
+	    }
+
+	}
     }
 
     public void saveToFile(String path) throws TransformerException {
@@ -601,19 +622,7 @@ public class Model {
 	System.out.println("The id of the bpmndi is " + idofBPMNDI);
 	//Element dcBounds = (Element) xpath.evaluate("//dc:Bounds", bpmndiElement, XPathConstants.NODE); // TODO delete this line
 	Element dcBounds = (Element) bpmndiElement.getElementsByTagName("dc:Bounds").item(0);
-	
-	//TODO delete the following code block
-	//This used to be the old way in which I did this
-	
-//	NodeList children = (NodeList) xpath.evaluate("*", bpmndiElement, XPathConstants.NODESET);
-//	Element dcBounds = null;
-//	for (int i = 0; i < children.getLength(); i++ ) {
-//	    if (!children.item(i).hasChildNodes()) { // Old version of this condition: children.item(i).hasAttributes() this used to work if an element has no label
-//		dcBounds = (Element) children.item(i);
-//		break;
-//	    }
-//	}
-//
+
 	if (dcBounds == null) {
 	    System.err.println("It means that this bpmdiElement has not any dc:Bounds item. This is not expected");
 	}
