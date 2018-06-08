@@ -27,11 +27,14 @@ public class NEWRule3 {
 	// The following counters serves us to understand if I'm reading the inputModel
 	// correctly.
 	int parallelGatewayCounter = 0;
+	int exclusiveGatewayCounter = 0;
 	int outflowsFromParaGateCounter = 0;
 
 	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no parallel gateways in this model");}
 	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no exclusive gateways in this model");}
-
+	
+	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
+	
 	// going through all of the parallelGateways in the model:
 	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
 	    //this will be the element in case
@@ -42,21 +45,30 @@ public class NEWRule3 {
 	    System.out.println("working on the " + parallelGatewayCounter + "nd parallelGateway");
 	    System.out.println("The id of the element is " + oldParallel.getAttribute("id") );
 
-
-
 	    String[] oldParallelCoordinates = model.getPosition(oldParallel);
 
 	    // creating the substitute element in the position of the old one
 	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 	    model.replaceELement(oldParallel, newInclusiveGateway);
+	}
+	
+	// going through all of the exclusiveGateways in the model:
+	for (int i = 0; i < exclusiveGatewayInstances.getLength(); i++) {
+	    //this will be the element in case
+	    Element oldExclusive = (Element) exclusiveGatewayInstances.item(i);
 
+	    exclusiveGatewayCounter++;
 
+	    System.out.println("working on the " + exclusiveGatewayCounter + "nd exclusiveGateway");
+	    System.out.println("The id of the element is " + oldExclusive.getAttribute("id") );
 
+	    String[] oldExclusiveCoordinates = model.getPosition(oldExclusive);
 
-
-
-
+	    // creating the substitute element in the position of the old one
+	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldExclusiveCoordinates[0], oldExclusiveCoordinates[1]);
+	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
+	    model.replaceELement(oldExclusive, newInclusiveGateway);
 	}
 
     }
