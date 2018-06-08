@@ -483,6 +483,48 @@ public class Model {
 	bpmndiElementToDelete.getParentNode().removeChild(bpmndiElementToDelete);
 
     }
+    /**
+     * Replace the old element with the new.
+     * In principle, nothing else should be affected (i.e. the incoming / outgoing sequenceFlows)
+     * @param id
+     * @param newElement
+     * @throws XPathExpressionException 
+     */
+    public void replaceELement(Element oldElem, Element newElem) throws XPathExpressionException {
+	
+	//It's also useful to have the bpmndi ready to edit:
+	Element newElementBPMNDI = findBPMNDI(newElem.getAttribute("id"));
+
+
+	//Let's save the ID of the old element
+	String oldId = oldElem.getAttribute("id");
+
+	//let's save the child elements of the oldElement
+	//those child elements will contain the oldElement's incoming and outgoing sequenceFlows
+	//we will soon attach them to the newElement
+	NodeList oldElemChildNodes = oldElem.getChildNodes();
+
+	//Let's now append the child nodes of the old element to the new element
+	for (int n = 0; n < oldElemChildNodes.getLength(); n++) {
+
+	    Node childNode = oldElemChildNodes.item(n);
+	    newElem.appendChild(childNode.cloneNode(true));
+	}
+
+
+	//let's delete the old element
+	delete(oldId);
+
+
+	//let's change the ID of the new element to be equal to the id of the old one
+	newElem.setAttribute("id", oldId);
+	String newElemId = newElem.getAttribute("id");
+
+	//let's remember to change the id of the BPMNDI as well:
+	newElementBPMNDI.setAttribute("bpmnElement", newElemId);
+	newElementBPMNDI.setAttribute("id", newElemId + "_di");
+
+    }
 
     /**
      * This method is used to delete elements from the diagram in an XML file. Note

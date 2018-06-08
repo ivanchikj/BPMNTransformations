@@ -46,67 +46,17 @@ public class NEWRule3 {
 
 	    String[] oldParallelCoordinates = model.getPosition(oldParallel);
 
-	    //TODO the following code lines (until line 90 more or less) has been done in a rush, it would be better to create a new method 
-	    //called "subsituteElement" to use in this occasions
-
-
-
-	    
-	    
-
 	    // creating the substitute element in the position of the old one
 	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
-
-	    //Now I have the new element as an ID String
-	    //It's useful to find it as an Element because now I will change it (along with other properties)
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
-
-	    //It's also useful to have the bpmndi ready to edit:
-	    Element newInclusiveGatewayBPMNDI = model.findBPMNDI(newInclusiveGatewayId);
-	    
-
-	    //Let's save the ID of the old element
-	    String oldId = oldParallel.getAttribute("id");
-
-	    //let's save the child elements of the oldGateway
-	    //those child elements will contain the oldGateway's incoming and outgoing sequenceFlows
-	    //we will soon attach them to the new inclusiveGateway
-	    NodeList oldGatewayChildNodes = oldParallel.getChildNodes();
-	    //List<Element> oldGatewayChildElements = new ArrayList<Element>();
-	    
-	   
-	    
-	    //Let's now append the child nodes of the old element to the new element
-	    for (int n = 0; n < oldGatewayChildNodes.getLength(); n++) {
-		
-		Node childNode = oldGatewayChildNodes.item(n);
-		newInclusiveGateway.appendChild(childNode.cloneNode(true));
-		//System.out.println("I'm appendind child called " + childNode.getTextContent());
-		
-		//newInclusiveGateway.appendChild(childNode);
-		
-	    }
-
-	   	    
-	    //let's delete the old element
-	    model.delete(oldId);
+	    model.replaceELement(oldParallel, newInclusiveGateway);
 
 
-	    //let's change the ID of the new element to be equal to the id of the old one
-	    newInclusiveGateway.setAttribute("id", oldId);
-	    newInclusiveGatewayId = newInclusiveGateway.getAttribute("id");
 
-	    //let's remember to change the id of the BPMNDI as well:
-	    newInclusiveGatewayBPMNDI.setAttribute("bpmnElement", newInclusiveGatewayId);
-	    newInclusiveGatewayBPMNDI.setAttribute("id", newInclusiveGatewayId + "_di");
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+
+
+
+
 	}
 
     }
