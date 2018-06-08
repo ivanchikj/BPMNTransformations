@@ -26,12 +26,14 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.PrimitiveIterator.OfDouble;
+import java.util.function.ToDoubleBiFunction;
 
 public class Model {
 
@@ -54,22 +56,6 @@ public class Model {
     public Model(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
 	load(path);
     }
-
-
-    /**
-     * TODO probabilmente questo verrà eliminato
-     */
-    public void reLoad() throws SAXException, IOException, ParserConfigurationException, TransformerException {
-	//Locaiton of the temp files.
-	String tempPath = "./Temp/" + newId() + "TEMP" + ".bpmn.xml"; 
-	//TODO This is ugly. A better idea would be to separate the model from the file maybe. Or maybe there's no even need to save new files, maybe just restarting the xpath is enough 
-
-	//By saving and reloading the files
-	//I can "see" the new elements that I have created. But maybe I do not need them, maybe I just need to reload the Xpath.
-	saveTemp(tempPath);
-	load(tempPath);
-    }
-
 
     /**
      * Used to (re)load the model. 
@@ -108,15 +94,6 @@ public class Model {
 
 
     /**
-     * Method used to test various ideas or slices of other methods.
-     * @return
-     */
-    public void testMethod() {
-
-    }
-
-
-    /**
      * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
      * isForCompensation="false" startQuantity="1", li devo aggiungere?
      * 
@@ -128,7 +105,7 @@ public class Model {
      */
     public String newTask(String x, String y) throws SAXException, IOException, ParserConfigurationException {
 	// PROCESS VIEW
-	String id = newId(); // TODO
+	String id = newId();
 	Element newTask = doc.createElement("bpmn:task");
 	newTask.setAttribute("id", id);
 	newTask.setAttribute("name", "NEW");
@@ -152,6 +129,34 @@ public class Model {
 	return id;
     } // ritorna l'id ? Forse è meglio void?
 
+
+    public String newInclusiveGateway(String x, String y) { 
+	// PROCESS VIEW
+	String id = newId(); 
+	Element newTask = doc.createElement("bpmn:inclusiveGateway");
+	newTask.setAttribute("id", id);
+	newTask.setAttribute("name", "NEW");
+	process.appendChild(newTask);
+
+	// BPMNDI VIEW
+	Element newGatDI = doc.createElement("bpmndi:BPMNShape");
+	bpmndiDiagram.appendChild(newGatDI);
+	newGatDI.setAttribute("bpmnElement", id);
+	newGatDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	System.out.println("		I created a new Inclusive Gateway with the id " + id);
+
+	Element size = doc.createElement("dc:Bounds");
+	bpmndiPlane.appendChild(newGatDI);
+
+	newGatDI.appendChild(size);
+	size.setAttribute("height", "50");
+	size.setAttribute("width", "50");
+	size.setAttribute("x", x);
+	size.setAttribute("y", y);
+	return id;
+
+    }
+
     /**
      * 
      * @param type
@@ -165,13 +170,13 @@ public class Model {
 	String id = null;
 	if (type.equals("bpmn:task")){
 	    id = this.newTask(x, y);
-	} else if (type.equals("bpmn:parallelGateway")) {
-	    //TODO
+	} else if (type.equals("bpmn:inclusiveGateway")) {
+	    id = this.newInclusiveGateway(x, y);
 	} else {
 	    System.err.println("		" + type + " is not a valid BPMN type");
 	}
 	System.out.println("		I created a new element of type " + type + " and with the id " + id);
-	doc.normalizeDocument();
+	doc.normalizeDocument();// dont know if this is useful
 	if (id.equals(null)) {} // Decide how to check that the newly created element's id is not null.
 	//Maybe this is also a way to discover if this is not a valid BPMN type.
 	return id;
@@ -217,7 +222,7 @@ public class Model {
 
 	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
 
-	//TODO see if there's any difference. See if it prints all of the child's content or not.
+	//TODO both the two lines above do the same thing.
 
 	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
 	    NodeList childList = previousSource.getChildNodes();
@@ -300,11 +305,23 @@ public class Model {
 	sequenceFlowBPMNDI.appendChild(sourceWP);
 	sequenceFlowBPMNDI.appendChild(targetWP);
 
-	findDcBounds(sourceBPMNDI);
-
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
-
+    /**
+     * used to get an item's position
+     * (for example when wanting to substitute it
+     * TODO change the methods setSource and setTarget to use this method
+     * X is in the first position, Y in the second
+     * @throws XPathExpressionException 
+     */
+    public String[] getPosition (Element element) throws XPathExpressionException {
+	Element elementBPMNDI = findBPMNDI(element.getAttribute("id"));
+	Element dcBounds = findDcBounds(elementBPMNDI); //The dcBounds contains the coordinates
+	System.out.println("Get Position  X : "+ dcBounds.getAttribute("x") + "Y: " + dcBounds.getAttribute("y"));
+	String [] coordinates = {dcBounds.getAttribute("x"), dcBounds.getAttribute("y")}; 
+	return coordinates;
+    }
+    
     /**
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
      * SequenceFlow TODO manage BPMNDI aspects
@@ -384,11 +401,11 @@ public class Model {
 	String ySource = sourceDcBounds.getAttribute("y");
 	String sourceItemHeight = sourceDcBounds.getAttribute("height");
 	String sourceItemWidth = sourceDcBounds.getAttribute("width");
-	
+
 	//Calculating the best options for the placement of the sequenceFlow
 	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
 
-	
+
 	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
 	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
 
@@ -456,9 +473,10 @@ public class Model {
      * @throws XPathExpressionException
      */
     public void delete(String id) throws XPathExpressionException {
-	Element elementToDelete = doc.getElementById(id);
+	System.out.println("		I'm deleting the element with id " + id);
+	Element elementToDelete = findElemById(id);
 	elementToDelete.getParentNode().removeChild(elementToDelete);
-	System.out.println("		I'm deleting element with id " + id);
+	System.out.println("		I've deleted the element with id " + id);
 
 	NodeList bpmndiElementsToDelete = (NodeList) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc,
 		XPathConstants.NODESET);
@@ -476,6 +494,8 @@ public class Model {
      * that I will use the attribute "BMPMN Element" to find the BMPNDI element that
      * I want to delete, instead of "id", because the ID of a bpmndi element will
      * sometimes be different from the corresponding BPMN element's own iD.
+     * 
+     * TODO probably this method shall be deleted (pun intended)
      * 
      * @param id
      * @throws ParserConfigurationException
@@ -537,6 +557,18 @@ public class Model {
 	//We expect only one element to have the same id
 	return (Element) node;
     }
+    /**
+     * Used to find elements of a certain type.
+     * @return a list of elements of the desired tag type.
+     * NOTE: can also be used to find other tagnames.
+     * 
+     */
+    public Element[] findElemByType(String tagname) {
+	Element[] elements = new Element[9];
+	//Element[] elements = (Element[]) doc.getElementsByTagName(tagname);
+	//TODO see if I want to do this method or simply use getElementsByTagName
+	return elements;
+    }
 
     /**
      * Method used to find the BPMNDI element relative to an id provided by the user
@@ -547,6 +579,8 @@ public class Model {
     public Element findBPMNDI(String id) throws XPathExpressionException {
 	Node bpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + id + "']", doc, XPathConstants.NODE);
 	//We expect only one element to have the same id
+	System.out.println("Found the BPMNDI element corresponding to " + id);
+	System.out.println("The id of the BPMNDI is " + ((Element) bpmndi).getAttribute("id"));
 	return (Element) bpmndi;
     }
 
@@ -562,17 +596,24 @@ public class Model {
      * @return
      * @throws XPathExpressionException 
      */
-    public Element findDcBounds(Element bpmndiElement) throws XPathExpressionException {
-
-	NodeList children = (NodeList) xpath.evaluate("*", bpmndiElement, XPathConstants.NODESET);
-	Element dcBounds = null; 
-	for (int i = 0; i < children.getLength(); i++ ) {
-	    if (children.item(i).hasAttributes()) {
-		dcBounds = (Element) children.item(i);
-		break;
-	    }
-	}
-
+    public Element findDcBounds(Element bpmndiElement){
+	String idofBPMNDI = bpmndiElement.getAttribute("id");
+	System.out.println("The id of the bpmndi is " + idofBPMNDI);
+	//Element dcBounds = (Element) xpath.evaluate("//dc:Bounds", bpmndiElement, XPathConstants.NODE); // TODO delete this line
+	Element dcBounds = (Element) bpmndiElement.getElementsByTagName("dc:Bounds").item(0);
+	
+	//TODO delete the following code block
+	//This used to be the old way in which I did this
+	
+//	NodeList children = (NodeList) xpath.evaluate("*", bpmndiElement, XPathConstants.NODESET);
+//	Element dcBounds = null;
+//	for (int i = 0; i < children.getLength(); i++ ) {
+//	    if (!children.item(i).hasChildNodes()) { // Old version of this condition: children.item(i).hasAttributes() this used to work if an element has no label
+//		dcBounds = (Element) children.item(i);
+//		break;
+//	    }
+//	}
+//
 	if (dcBounds == null) {
 	    System.err.println("It means that this bpmdiElement has not any dc:Bounds item. This is not expected");
 	}
@@ -769,9 +810,9 @@ public class Model {
 	    }
 	} else if (horizontalDiff > 0 && verticalDiff > 0) {
 	    //this works as intended
-	    
+
 	    System.out.println("The target is on the upper left of the source");
-	    
+
 	    if (Math.abs(horizontalDiff) < Math.abs(verticalDiff)) {
 		resultStartY = sourceY - (sourceHeight/2);
 		resultEndY = targetY + (targetHeight/2);
@@ -792,11 +833,11 @@ public class Model {
 
 	return positions;
     }
-    
-    
-    
 
-    
+
+
+
+
     /**
      * TODO maybe add a check that the ID is not already in use?
      * 
