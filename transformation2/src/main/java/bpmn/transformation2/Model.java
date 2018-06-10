@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -430,8 +431,7 @@ public class Model {
     }
 
     /**
-     * TODO switch from a NodeList to a list of Strings? Returns a list of the
-     * immediate successors of a certain Element TODO if a sequenceFlow comes out of
+     * TODO if a sequenceFlow comes out of
      * a parallel gateway it might be that two sequence flows from outgoingFlows
      * have the same source. It should not happen, but if it does I should remove
      * duplicates TODO test this
@@ -441,9 +441,10 @@ public class Model {
      * @return a NodeList of the successors of a certain Element
      * @throws XPathExpressionException
      */
-    public String[] getSuccessors(String id) throws XPathExpressionException {
+    public String[] getSuccessors(Element element) throws XPathExpressionException {
 
-	NodeList outgoingFlows = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
+
+	NodeList outgoingFlows = getOutgoingFlows(element);
 	String[] successors = new String[outgoingFlows.getLength()];
 
 	for (int i = 0; i < outgoingFlows.getLength(); i++) {
@@ -451,6 +452,25 @@ public class Model {
 	}
 	System.out.println("		I have found " + successors.length + " immediate successors");
 	return successors;
+    }
+    /**
+     * From an element, get its outgoing flows as an array of elements
+     * @param element
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public NodeList getOutgoingFlows (Element element) throws XPathExpressionException {
+
+	String id = element.getAttribute("id");
+	NodeList outgoingFlows = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
+
+	if (outgoingFlows.getLength() == 0) {
+	    System.out.println("this element has no outgoing Flows");
+	} else { 
+	    System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.getLength() + " outgoing Flows");
+	}
+	return outgoingFlows;
+
     }
 
     /**
@@ -491,7 +511,7 @@ public class Model {
      * @throws XPathExpressionException 
      */
     public void replaceELement(Element oldElem, Element newElem) throws XPathExpressionException {
-	
+
 	//It's also useful to have the bpmndi ready to edit:
 	Element newElementBPMNDI = findBPMNDI(newElem.getAttribute("id"));
 

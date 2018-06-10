@@ -27,4 +27,15 @@ nome del plugin di eclipse
 
 -
 
-problema è che certe volte aggiungono _di alla fine dell'id, altre volte no. Bisogna capire quando. Oppure bisogna semplicemente dirgli di eliminarli entrambi.
+Intermediate presentation:
+
+ 	Spiegare com'è XML
+Spiegare che c'è Process e BMPNDI e che cos'è uno e l'altro.
+Spiegare che Camunda lavora solo con il process e quindi aprendo un file su camunda viewer vedi ancora gli elementi che sono stati cancellati.
+
+Spiega che per eliminare la cosa dovrei eliminare il BPMDI manualmente usando XML.
+Potrei quindi fare una lista di tutti gli elementi da cancellare con i loro ID e poi dopo aver salvato il file come XML lo riapro e cancello le cose dal BPMNDI e dopo lo risalvo.
+
+Oppure potrei estendere tutti i metodi di Camunda per fare quello che voglio io.
+
+Ma visto che camunda non fa niente di troppo complicato, tanto vale che agisco direttamente io sull'XML.

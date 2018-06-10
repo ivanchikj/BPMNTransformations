@@ -1,20 +1,3 @@
+Final presentation:
+
 Spiegare BPMN perché quelli del committee non lo conosceranno.
-
-Spiegare bene i requirements
- 	USE CASE DIAGRAMS "funzionalità che l'utente si aspetta"
-
- 	Presentazione vera, non dialogo.
-
- 	Motivazione, tools simili,
-
- 	Design decisions
-
- 	Cosa ho implementato fino ad ora + demo.
- 		Magari con un modello che può usare tutte le regole che abbiamo fino ad adesso.
-
- 	Gantt chart (optional)
-
- 	Struttura della tesi
- 		Inserire Xpath
- 		Spiegare BPMN
- 		Spiegare XML di un file BPMN

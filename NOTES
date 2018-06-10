@@ -1,3 +1,19 @@
+Ricordati di pensare bene a quali metodi devono essere pubblici (interfaccia) e quali privati all'interno di Model.java Quelli interfaccia devono essere più descrittivi
+
+
+
+NOTE:
+
+Idee per capitoli della tesi:
+ 		Inserire Xpath
+ 		Spiegare BPMN
+ 		Spiegare XML di un file BPMN
+
+
+
+
+
+
 NOTE:
 	Ogni metodo XPATH diventa un metodo a parte.
 	Il codice diventa più facile da leggere, e poi

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.ibatis.javassist.tools.framedump;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -32,9 +33,9 @@ public class NEWRule3 {
 
 	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no parallel gateways in this model");}
 	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no exclusive gateways in this model");}
-	
+
 	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
-	
+
 	// going through all of the parallelGateways in the model:
 	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
 	    //this will be the element in case
@@ -51,9 +52,26 @@ public class NEWRule3 {
 	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 	    model.replaceELement(oldParallel, newInclusiveGateway);
+
+	    //TODO this has to become two separate methods
+	    //one that changes the condition and takes a string as an input
+	    //inside model.java
+	    //And one that creates a bpmn:conditionExpression element, inside newNode
+	    NodeList outgoingFlows = model.getOutgoingFlows(newInclusiveGateway);
+	    for (int f = 0; f < outgoingFlows.getLength(); f ++) {
+		Element element = (Element) outgoingFlows.item(f);
+		element.setAttribute("name", "1==1"); // TODO this is just for the demo
+		Element condition = model.doc.createElement("bpmn:conditionExpression");
+		condition.setAttribute("xsi:type", "bpmn:tFormalExpression");
+		condition.appendChild(model.doc.createTextNode("1==1"));
+		element.appendChild(condition);
+	    }
+
+
+
 	}
-	
-	// going through all of the exclusiveGateways in the model:
+
+	//going through all of the exclusiveGateways in the model:
 	for (int i = 0; i < exclusiveGatewayInstances.getLength(); i++) {
 	    //this will be the element in case
 	    Element oldExclusive = (Element) exclusiveGatewayInstances.item(i);
