@@ -41,9 +41,13 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+	// TODO create an ad hoc model to test all of my XML functions
 	// String input = "./TestGraphs/Rule3a.bpmn.xml";
-	String input = "./TestGraphs/Rule4b.bpmn.xml";// TODO create an ad hoc model to test all of my XML functions
-
+	String input = "./TestGraphs/Rule3b.bpmn.xml";
+	//String input = "./TestGraphs/Rule4a.bpmn.xml";
+	//String input = "./TestGraphs/Rule4b.bpmn.xml";
+	//String input = "./TestGraphs/Rule4c.bpmn.xml";
+	
 	
 	if ( input.equals("") ){ //This is always expected to be true except when testing something.
 	    input = askForInput();
@@ -113,7 +117,10 @@ public class Main {
 //	//model.setSource(seqFlow, newNodeId);
 	
 	//NEWRule3.a(model);
-	NEWRule4.b(model);
+	NEWRule3.b(model);
+	//NEWRule4.a(model);
+	//NEWRule4.b(model);
+	//NEWRule4.c(model);
 
     }
 

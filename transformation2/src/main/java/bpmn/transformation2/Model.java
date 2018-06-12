@@ -464,6 +464,18 @@ public class Model {
 	System.out.println("		I have found " + successors.size() + " immediate successors");
 	return successors;
     }
+    
+    
+    public ArrayList<Element> getPredecessors(Element element) throws XPathExpressionException{
+	ArrayList<Element> incomingFlows = getIncomingFlows(element);
+	ArrayList<Element> predecessors = new ArrayList<Element>();
+	
+	for (int i = 0; i < incomingFlows.size(); i++) {
+	    predecessors.add(findElemById(incomingFlows.get(i).getAttribute("sourceRef")));
+	}
+	System.out.println("		I have found " + predecessors.size() + " immediate predecessors");
+	return predecessors;
+    }
     /**
      * From an element, get its outgoing flows as an array of elements
      * @param element
