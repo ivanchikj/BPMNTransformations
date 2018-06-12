@@ -89,9 +89,48 @@ public class NEWRule3 {
 	    } else { System.out.println("This is a merge. Its outgoingFlows will not be changed");}
 	}
 
-
     }
 
+    public static void b (Model model) throws Exception {
+	System.out.println("I'm applying Rule3a");
+
+	// TODO decide on this:
+	// Here I'm creating a list of all the parallel gateways in the inputModel
+	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
+	System.out.println("number of exclusive gateway instances: " + exclusiveGatewayInstances.getLength());
+
+
+	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE3b: there are no exclusive gateways in this model");}
+
+	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
+
+	// going through all of the parallelGateways in the model:
+	for (int i = 0; i <= exclusiveGatewayInstances.getLength(); i++) {
+	    
+	    Element oldExclusive = (Element) exclusiveGatewayInstances.item(0); //this will be the element in case
+	    //NOTE Why this works?
+	    // Reason: After the gateway gets deleted from the model, it also gets deleted from parallelGatewayInstances
+	    // For some reason. The problem is that now the element at index 1 is now at index 0.
+	    // That why we use the same index every time until the list is empty.
+	    // TODO decide if I want to change that to be more intuitive
+	    
+
+	    System.out.println("working on the " + (i+1) + "nd exclusiveGateway");
+	    System.out.println("working on " + oldExclusive.getAttribute("id"));
+	    System.out.println("The id of the element is " + oldExclusive.getAttribute("id") );
+
+	    String[] oldParallelCoordinates = model.getPosition(oldExclusive);
+
+	    // creating the substitute element in the position of the old one
+	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
+	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
+	    model.replaceELement(oldExclusive, newInclusiveGateway); 
+
+	    //Here I dont need to distinguish between those that are merges and those that are not.
+	    //I dont need to touch the incoming/outgoing flows either
+	}
+    }
+    
     // TODO integrate this into the first part of rule3
     // NOTE that this has to execute before the other part of rule3 because
     // otherwise it will never be applicable (no parallel gateways will be found)
