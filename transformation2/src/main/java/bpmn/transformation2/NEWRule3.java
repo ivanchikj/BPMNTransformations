@@ -19,35 +19,30 @@ public class NEWRule3 {
     //this method will be renamed and be called by said method. 
 
     public static void a(Model model) throws Exception {
+	System.out.println("I'm applying Rule3a");
 
 	// TODO decide on this:
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
-	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusivegateway");
 
-	//the following For loop checks to see if the gateway is a merge
-	//in which case it gets removed from the list
 
-	// The following counters serves us to understand if I'm reading the inputModel
-	// correctly.
-	int parallelGatewayCounter = 0;
-	int exclusiveGatewayCounter = 0;
-	int outflowsFromParaGateCounter = 0;
-
-	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no parallel gateways in this model");}
-	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE3: there are no exclusive gateways in this model");}
+	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE3a: there are no parallel gateways in this model");}
 
 	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
 
 	// going through all of the parallelGateways in the model:
-	for (int i = 0; i <= parallelGatewayInstances.getLength(); i++) { //TODO This has a problem. "<=" would work.
-	    //this will be the element in case
-	    Element oldParallel = (Element) parallelGatewayInstances.item(0);// TODO inquire the reason why this works?
+	for (int i = 0; i <= parallelGatewayInstances.getLength(); i++) {
+	    
+	    Element oldParallel = (Element) parallelGatewayInstances.item(0); //this will be the element in case
+	    //NOTE Why this works?
+	    // Reason: After the gateway gets deleted from the model, it also gets deleted from parallelGatewayInstances
+	    // For some reason. The problem is that now the element at index 1 is now at index 0.
+	    // That why we use the same index every time until the list is empty.
+	    // TODO decide if I want to change that to be more intuitive
+	    
 
-	    parallelGatewayCounter++;
-
-	    System.out.println("working on the " + parallelGatewayCounter + "nd parallelGateway");
+	    System.out.println("working on the " + (i+1) + "nd parallelGateway");
 	    System.out.println("working on " + oldParallel.getAttribute("id"));
 	    System.out.println("The id of the element is " + oldParallel.getAttribute("id") );
 
@@ -56,8 +51,7 @@ public class NEWRule3 {
 	    // creating the substitute element in the position of the old one
 	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
-	    model.replaceELement(oldParallel, newInclusiveGateway);
-
+	    model.replaceELement(oldParallel, newInclusiveGateway); 
 
 	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(newInclusiveGateway);
 	    ArrayList<Element> incomingFlows = model.getIncomingFlows(newInclusiveGateway);
@@ -71,7 +65,7 @@ public class NEWRule3 {
 	    //allora probabilmente non lo considero un merge. E inoltre vorrei anche appicare la regola su di esso.
 	    //Quindi sarebbe meglio se i merge fossero soltanto "i gateway che hanno un solo outgoingFlow ma che hanno più di
 	    //un incomingFlow
-	    
+
 	    //merges are gateways that have more than one incoming flow
 	    //but only one outgoingFlow
 	    if (!(incomingFlows.size() > 1 && outgoingFlows.size() == 1 )) { //TODO check if this conditions is actually a solid way to distinguish merges
@@ -79,9 +73,9 @@ public class NEWRule3 {
 		//we can thus change its outgoingFlows conditions:
 		System.out.println("This is a not a merge. Its outgoingFlows will be changed");
 		//TODO this has to become two separate methods
-		    //one that changes the condition and takes a string as an input
-		    //inside model.java
-		    //And one that creates a bpmn:conditionExpression element, inside newNode
+		//one that changes the condition and takes a string as an input
+		//inside model.java
+		//And one that creates a bpmn:conditionExpression element, inside newNode
 		for (int f = 0; f < outgoingFlows.size(); f++) {
 		    Element element = outgoingFlows.get(f); 
 		    //this Cast only works because there are no line breaks as nodes. 
@@ -92,13 +86,9 @@ public class NEWRule3 {
 		    condition.appendChild(model.doc.createTextNode("1==1"));
 		    element.appendChild(condition);
 		}
-	    }
+	    } else { System.out.println("This is a merge. Its outgoingFlows will not be changed");}
 	}
 
-	//going through all of the exclusiveGateways in the model:
-	for (int i = 0; i < exclusiveGatewayInstances.getLength(); i++) {
-	    //TODO copy from above
-	}
 
     }
 

@@ -324,7 +324,8 @@ public class Model {
     }    
     
     /**
-     * TODO aggiungere un errore quando l'id non corrisponde a un elemento
+     * TODO cambialo per avere due element invece di due id come parametri
+     * TODO in generale cerca di cambiare tutti i metodi per avere elementi invece che stringhe come parametri
      * SequenceFlow TODO manage BPMNDI aspects
      * 
      * @param id
@@ -387,11 +388,16 @@ public class Model {
 	Element targetBPMNDI = findBPMNDI(target);
 
 	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
-
+	//TODO make this position thing a separate method
+	System.out.println("Positions will follow");
 	String xTarget = targetDcBounds.getAttribute("x");
+	System.out.println(xTarget);
 	String yTarget = targetDcBounds.getAttribute("y");
+	System.out.println(yTarget);
 	String targetItemHeight = targetDcBounds.getAttribute("height");
-	String targetItemWidth = targetDcBounds.getAttribute("width"); 
+	System.out.println(targetItemHeight);
+	String targetItemWidth = targetDcBounds.getAttribute("width");
+	System.out.println(targetItemWidth);
 
 
 	//we want to get the position of the target to know where the flow will have to point
@@ -399,9 +405,13 @@ public class Model {
 	Element sourceBPMNDI = findBPMNDI(source);
 	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
 	String xSource = sourceDcBounds.getAttribute("x");
+	System.out.println(xSource);
 	String ySource = sourceDcBounds.getAttribute("y");
+	System.out.println(ySource);
 	String sourceItemHeight = sourceDcBounds.getAttribute("height");
+	System.out.println(sourceItemHeight);
 	String sourceItemWidth = sourceDcBounds.getAttribute("width");
+	System.out.println(sourceItemWidth);
 
 	//Calculating the best options for the placement of the sequenceFlow
 	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
@@ -448,7 +458,7 @@ public class Model {
 	ArrayList<Element> outgoingFlows = getOutgoingFlows(element);
 	ArrayList<Element> successors = new ArrayList<Element>();
 
-	for (int i = 0; i <= outgoingFlows.size(); i++) {
+	for (int i = 0; i < outgoingFlows.size(); i++) {
 	    successors.add(findElemById(outgoingFlows.get(i).getAttribute("targetRef"))); 
 	}
 	System.out.println("		I have found " + successors.size() + " immediate successors");
@@ -809,15 +819,15 @@ public class Model {
     public String[] decideArrowPosition(String sourceXPosition, String sourceYPosition, String sourceItemHeight, String sourceItemWidth, String targetXPosition, String targetYPosition, String targetItemHeight, String targetItemWidth) {
 
 	//Transforming everything into ints to do the calculations
-	int sourceX = Integer.parseInt(sourceXPosition);
-	int sourceY = Integer.parseInt(sourceYPosition);
-	int sourceHeight = Integer.parseInt(sourceItemHeight);
-	int sourceWidth = Integer.parseInt(sourceItemWidth);
+	double sourceX = Double.parseDouble(sourceXPosition);
+	double sourceY = Double.parseDouble(sourceYPosition);
+	double sourceHeight = Double.parseDouble(sourceItemHeight);
+	double sourceWidth = Double.parseDouble(sourceItemWidth);
 
-	int targetX = Integer.parseInt(targetXPosition);
-	int targetY = Integer.parseInt(targetYPosition);
-	int targetHeight = Integer.parseInt(targetItemHeight);
-	int targetWidth = Integer.parseInt(targetItemWidth);
+	double targetX = Double.parseDouble(targetXPosition);
+	double targetY = Double.parseDouble(targetYPosition);
+	double targetHeight = Double.parseDouble(targetItemHeight);
+	double targetWidth = Double.parseDouble(targetItemWidth);
 
 	//To be precise, X and Y are not the exact centers of the item
 	//instead, they represent the upper left corner of an item. 
@@ -830,21 +840,21 @@ public class Model {
 	targetX = targetX + (targetWidth/2);
 	targetY = targetY + (targetHeight/2);
 
-	int horizontalDiff = sourceX - targetX;
+	double horizontalDiff = sourceX - targetX;
 	// if it's positive it means that the source it's on below the target 
 	// (Y coordinates work in the opposite way as they normally would in a graph, for some reason)
 
-	int verticalDiff = sourceY - targetY;
+	double verticalDiff = sourceY - targetY;
 	// if it's positive it means that the source it's on the right of the target
 
 	// let's prepare the resulting Ints
 	// of course the start will be connected to the source and the 
 	// end will be connected to the target
 
-	int resultStartX = sourceX;
-	int resultStartY = sourceY;
-	int resultEndX = targetX;
-	int resultEndY = targetY;
+	double resultStartX = sourceX;
+	double resultStartY = sourceY;
+	double resultEndX = targetX;
+	double resultEndY = targetY;
 
 	if (horizontalDiff == 0 && verticalDiff == 0) {
 	    //This should be almost impossible

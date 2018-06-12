@@ -41,11 +41,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-	// Used to test XML methods:
-	String input = "./TestGraphs/Rule3a.bpmn.xml"; // TODO create an ad hoc model to test all of my XML functions
+	// String input = "./TestGraphs/Rule3a.bpmn.xml";
+	String input = "./TestGraphs/Rule4b.bpmn.xml";// TODO create an ad hoc model to test all of my XML functions
+
+	
 	if ( input.equals("") ){ //This is always expected to be true except when testing something.
 	    input = askForInput();
 	}
+	
 	String[] orderedInput = findPathandParameters(input);
 	String path = orderedInput[0];
 	String parameters = orderedInput[1];
@@ -63,8 +66,7 @@ public class Main {
 	Model model = new Model(path);
 
 	System.out.println("I'm applying the rules! " );
-	System.out.println();
-	System.out.println();
+	
 	applyRules(model, parameters);
 
 	//Writing the output model to file
@@ -110,7 +112,8 @@ public class Main {
 //	model.setTarget(seqFlow, newNodeId);
 //	//model.setSource(seqFlow, newNodeId);
 	
-	NEWRule3.a(model);
+	//NEWRule3.a(model);
+	NEWRule4.b(model);
 
     }
 
