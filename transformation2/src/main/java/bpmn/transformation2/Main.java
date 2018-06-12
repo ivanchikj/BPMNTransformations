@@ -110,7 +110,7 @@ public class Main {
 //	model.setTarget(seqFlow, newNodeId);
 //	//model.setSource(seqFlow, newNodeId);
 	
-	NEWRule3.firstPart(model);
+	NEWRule3.a(model);
 
     }
 

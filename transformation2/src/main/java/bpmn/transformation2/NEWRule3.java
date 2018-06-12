@@ -18,12 +18,16 @@ public class NEWRule3 {
     //TODO applyRule will actually become just a (simple) method calling other specific methods referring to part 1, part 2 of rule 3 etc
     //this method will be renamed and be called by said method. 
 
-    public static void firstPart(Model model) throws Exception {
+    public static void a(Model model) throws Exception {
 
 	// TODO decide on this:
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
+	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
 	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusivegateway");
+
+	//the following For loop checks to see if the gateway is a merge
+	//in which case it gets removed from the list
 
 	// The following counters serves us to understand if I'm reading the inputModel
 	// correctly.
@@ -37,13 +41,14 @@ public class NEWRule3 {
 	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
 
 	// going through all of the parallelGateways in the model:
-	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
+	for (int i = 0; i <= parallelGatewayInstances.getLength(); i++) { //TODO This has a problem. "<=" would work.
 	    //this will be the element in case
-	    Element oldParallel = (Element) parallelGatewayInstances.item(i);
+	    Element oldParallel = (Element) parallelGatewayInstances.item(0);// TODO inquire the reason why this works?
 
 	    parallelGatewayCounter++;
 
 	    System.out.println("working on the " + parallelGatewayCounter + "nd parallelGateway");
+	    System.out.println("working on " + oldParallel.getAttribute("id"));
 	    System.out.println("The id of the element is " + oldParallel.getAttribute("id") );
 
 	    String[] oldParallelCoordinates = model.getPosition(oldParallel);
@@ -53,40 +58,46 @@ public class NEWRule3 {
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 	    model.replaceELement(oldParallel, newInclusiveGateway);
 
-	    //TODO this has to become two separate methods
-	    //one that changes the condition and takes a string as an input
-	    //inside model.java
-	    //And one that creates a bpmn:conditionExpression element, inside newNode
-	    NodeList outgoingFlows = model.getOutgoingFlows(newInclusiveGateway);
-	    for (int f = 0; f < outgoingFlows.getLength(); f ++) {
-		Element element = (Element) outgoingFlows.item(f);
-		element.setAttribute("name", "1==1"); // TODO this is just for the demo
-		Element condition = model.doc.createElement("bpmn:conditionExpression");
-		condition.setAttribute("xsi:type", "bpmn:tFormalExpression");
-		condition.appendChild(model.doc.createTextNode("1==1"));
-		element.appendChild(condition);
+
+	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(newInclusiveGateway);
+	    ArrayList<Element> incomingFlows = model.getIncomingFlows(newInclusiveGateway);
+
+	    System.out.println("test " + outgoingFlows.size());
+	    System.out.println("test " + incomingFlows.size());
+
+	    //ASKANA ovviamente devo distinguere i gateway che sono anche merge dagli altri
+	    //Un modo facile per distinguerli sarebbe dire "se hai solo un outgoingFlow allora sei un merge"
+	    //Però in realtà, se io avessi un parallel che ha solo un input e solo un output
+	    //allora probabilmente non lo considero un merge. E inoltre vorrei anche appicare la regola su di esso.
+	    //Quindi sarebbe meglio se i merge fossero soltanto "i gateway che hanno un solo outgoingFlow ma che hanno più di
+	    //un incomingFlow
+	    
+	    //merges are gateways that have more than one incoming flow
+	    //but only one outgoingFlow
+	    if (!(incomingFlows.size() > 1 && outgoingFlows.size() == 1 )) { //TODO check if this conditions is actually a solid way to distinguish merges
+		//then it's not a merge
+		//we can thus change its outgoingFlows conditions:
+		System.out.println("This is a not a merge. Its outgoingFlows will be changed");
+		//TODO this has to become two separate methods
+		    //one that changes the condition and takes a string as an input
+		    //inside model.java
+		    //And one that creates a bpmn:conditionExpression element, inside newNode
+		for (int f = 0; f < outgoingFlows.size(); f++) {
+		    Element element = outgoingFlows.get(f); 
+		    //this Cast only works because there are no line breaks as nodes. 
+		    //I should redo this with a condition to assure that it's not the case
+		    element.setAttribute("name", "1==1"); // TODO this is just for the demo
+		    Element condition = model.doc.createElement("bpmn:conditionExpression");
+		    condition.setAttribute("xsi:type", "bpmn:tFormalExpression");
+		    condition.appendChild(model.doc.createTextNode("1==1"));
+		    element.appendChild(condition);
+		}
 	    }
-
-
-
 	}
 
 	//going through all of the exclusiveGateways in the model:
 	for (int i = 0; i < exclusiveGatewayInstances.getLength(); i++) {
-	    //this will be the element in case
-	    Element oldExclusive = (Element) exclusiveGatewayInstances.item(i);
-
-	    exclusiveGatewayCounter++;
-
-	    System.out.println("working on the " + exclusiveGatewayCounter + "nd exclusiveGateway");
-	    System.out.println("The id of the element is " + oldExclusive.getAttribute("id") );
-
-	    String[] oldExclusiveCoordinates = model.getPosition(oldExclusive);
-
-	    // creating the substitute element in the position of the old one
-	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldExclusiveCoordinates[0], oldExclusiveCoordinates[1]);
-	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
-	    model.replaceELement(oldExclusive, newInclusiveGateway);
+	    //TODO copy from above
 	}
 
     }

@@ -205,7 +205,7 @@ public class Model {
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
      * SequenceFlow TODO manage BPMNDI aspects
      * TODO vedi se puoi riutilizzare alcuni pezzi per il metodo newSequenceFlow
-     * 
+     * TODO vedi cosa succede se una task è source di due flow, se ne cambi uno, cosa succede al secondo?
      * @param id
      *            the id of the sequenceFlow that will be changing source
      * @param source
@@ -321,8 +321,8 @@ public class Model {
 	System.out.println("Get Position  X : "+ dcBounds.getAttribute("x") + "Y: " + dcBounds.getAttribute("y"));
 	String [] coordinates = {dcBounds.getAttribute("x"), dcBounds.getAttribute("y")}; 
 	return coordinates;
-    }
-
+    }    
+    
     /**
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
      * SequenceFlow TODO manage BPMNDI aspects
@@ -434,23 +434,24 @@ public class Model {
      * TODO if a sequenceFlow comes out of
      * a parallel gateway it might be that two sequence flows from outgoingFlows
      * have the same source. It should not happen, but if it does I should remove
-     * duplicates TODO test this
+     * duplicates 
+     * TODO test this
      * 
      * @param id
      *            the id of said Element
      * @return a NodeList of the successors of a certain Element
      * @throws XPathExpressionException
      */
-    public String[] getSuccessors(Element element) throws XPathExpressionException {
+    public ArrayList<Element> getSuccessors(Element element) throws XPathExpressionException {
 
 
-	NodeList outgoingFlows = getOutgoingFlows(element);
-	String[] successors = new String[outgoingFlows.getLength()];
+	ArrayList<Element> outgoingFlows = getOutgoingFlows(element);
+	ArrayList<Element> successors = new ArrayList<Element>();
 
-	for (int i = 0; i < outgoingFlows.getLength(); i++) {
-	    successors[i] = ((Element) outgoingFlows.item(i)).getAttribute("targetRef");
+	for (int i = 0; i <= outgoingFlows.size(); i++) {
+	    successors.add(findElemById(outgoingFlows.get(i).getAttribute("targetRef"))); 
 	}
-	System.out.println("		I have found " + successors.length + " immediate successors");
+	System.out.println("		I have found " + successors.size() + " immediate successors");
 	return successors;
     }
     /**
@@ -459,20 +460,50 @@ public class Model {
      * @return
      * @throws XPathExpressionException 
      */
-    public NodeList getOutgoingFlows (Element element) throws XPathExpressionException {
+    public ArrayList <Element> getOutgoingFlows (Element element) throws XPathExpressionException {
 
 	String id = element.getAttribute("id");
-	NodeList outgoingFlows = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
-
-	if (outgoingFlows.getLength() == 0) {
+	NodeList outgoingFlowsNodes = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
+	ArrayList<Element> outgoingFlows = new ArrayList<Element>();
+	for (int i = 0; i < outgoingFlowsNodes.getLength(); i++) { //TODO why not <=?
+	    System.out.println("Getting outgoingFlow: "+ ((Element) outgoingFlowsNodes.item(i)).getAttribute("id"));
+	    outgoingFlows.add((Element) outgoingFlowsNodes.item(i));
+	}
+	if (outgoingFlows.size() == 0) {
 	    System.out.println("this element has no outgoing Flows");
 	} else { 
-	    System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.getLength() + " outgoing Flows");
+	    System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.size() + " outgoing Flows");
 	}
+	
 	return outgoingFlows;
 
     }
 
+    /**
+     * From an element, get its incoming flows as an array of elements
+     * @param element
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public ArrayList <Element> getIncomingFlows (Element element) throws XPathExpressionException {
+
+	String id = element.getAttribute("id");
+	NodeList incomingFlowsNodes = (NodeList) xpath.evaluate("//*[@targetRef='" + id + "']", doc, XPathConstants.NODESET);
+	ArrayList<Element> incomingFlows = new ArrayList<Element>();
+	for (int i = 0; i < incomingFlowsNodes.getLength(); i++) { //TODO why not <=?
+	    System.out.println("Getting incomingFlow: "+ ((Element) incomingFlowsNodes.item(i)).getAttribute("id"));
+	    incomingFlows.add((Element) incomingFlowsNodes.item(i));
+	}
+	if (incomingFlows.size() == 0) {
+	    System.out.println("this element has no incoming Flows");
+	} else { 
+	    System.out.println("The element " + element.getAttribute("id") + " has " + incomingFlows.size() + " incoming Flows");
+	}
+	
+	return incomingFlows;
+
+    }
+    
     /**
      * Returns the type (tagname) of an element
      * 
