@@ -1,3 +1,12 @@
+NOTE:
+	explain in the thesis the difference between :
+ 		<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language=""></bpmn:conditionExpression>
+		<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">1==1</bpmn:conditionExpression>
+	Also explain that the direction of the arrows in the BPMNDI is depended on the order of the waypoint.
+	Do a graphical example for that one
+
+
+
 Ricordati di pensare bene a quali metodi devono essere pubblici (interfaccia) e quali privati all'interno di Model.java Quelli interfaccia devono essere più descrittivi
 
 
