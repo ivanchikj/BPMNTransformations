@@ -14,7 +14,9 @@
       <bpmn:incoming>SequenceFlow_1k0ggjd</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1wqazkx</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1k0ggjd" sourceRef="ExclusiveGateway_035whqp" targetRef="Task_1qpu26w" />
+    <bpmn:sequenceFlow id="SequenceFlow_1k0ggjd" sourceRef="ExclusiveGateway_035whqp" targetRef="Task_1qpu26w">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA["1==1"]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0cjtl7e">
       <bpmn:incoming>SequenceFlow_0tjm9sg</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1wqazkx</bpmn:incoming>

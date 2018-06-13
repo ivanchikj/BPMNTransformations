@@ -19,7 +19,7 @@
       <bpmn:outgoing>SequenceFlow_02adiws</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1lj4jz7" name="1 == 1" sourceRef="ExclusiveGateway_17zcanu" targetRef="Task_0ynnuj8">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">1==1</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA["whatever"]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_02adiws" sourceRef="Task_0ynnuj8" targetRef="ExclusiveGateway_0d3wbl2" />
     <bpmn:sequenceFlow id="SequenceFlow_021anws" sourceRef="Task_08dpqla" targetRef="ExclusiveGateway_0d3wbl2" />
@@ -28,7 +28,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_030qjnw" sourceRef="ExclusiveGateway_0d3wbl2" targetRef="EndEvent_06mbgm8" />
     <bpmn:sequenceFlow id="SequenceFlow_0855kdy" name="1==1" sourceRef="ExclusiveGateway_17zcanu" targetRef="Task_08dpqla">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">1==1</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">1==2</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="ExclusiveGateway_17zcanu">
       <bpmn:incoming>SequenceFlow_04434by</bpmn:incoming>

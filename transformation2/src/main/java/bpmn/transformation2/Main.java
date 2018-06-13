@@ -37,14 +37,14 @@ public class Main {
     // TODO: find a better place to put those in:
     // this keeps track of the rules that have been applied, in the right order.
     public static String rulesApplied = "";
-    public static String report = "";
+    public static String report = ""; //TODO a different class for the report 
 
     public static void main(String[] args) throws Exception {
 
-	// TODO create an ad hoc model to test all of my XML functions
-	// String input = "./TestGraphs/Rule3a.bpmn.xml";
-	String input = "./TestGraphs/Rule3b.bpmn.xml";
-	//String input = "./TestGraphs/Rule4a.bpmn.xml";
+	//TODO create ad hoc models to test all of my XML functions
+	//String input = "./TestGraphs/Rule3a.bpmn.xml";
+	//String input = "./TestGraphs/Rule3b.bpmn.xml";
+	String input = "./TestGraphs/Rule4a.bpmn.xml";
 	//String input = "./TestGraphs/Rule4b.bpmn.xml";
 	//String input = "./TestGraphs/Rule4c.bpmn.xml";
 	
@@ -117,10 +117,10 @@ public class Main {
 //	//model.setSource(seqFlow, newNodeId);
 	
 	//NEWRule3.a(model);
-	NEWRule3.b(model);
+	//NEWRule3.b(model);
 	//NEWRule4.a(model);
-	//NEWRule4.b(model);
-	//NEWRule4.c(model);
+	NEWRule4.b(model);
+	NEWRule4.c(model);
 
     }
 
