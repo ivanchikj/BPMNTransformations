@@ -47,7 +47,7 @@ public class Model {
     private DocumentBuilder docBuilder;
 
     //TODO fare metodo che prende un parallel gateway e controlla se è un merge. Mi serve in più di una classe mi sa.
-    
+
     /**
      * 
      * @param path
@@ -324,7 +324,7 @@ public class Model {
 	String [] coordinates = {dcBounds.getAttribute("x"), dcBounds.getAttribute("y")}; 
 	return coordinates;
     }    
-    
+
     /**
      * TODO cambialo per avere due element invece di due id come parametri
      * TODO in generale cerca di cambiare tutti i metodi per avere elementi invece che stringhe come parametri
@@ -466,12 +466,12 @@ public class Model {
 	System.out.println("		I have found " + successors.size() + " immediate successors");
 	return successors;
     }
-    
-    
+
+
     public ArrayList<Element> getPredecessors(Element element) throws XPathExpressionException{
 	ArrayList<Element> incomingFlows = getIncomingFlows(element);
 	ArrayList<Element> predecessors = new ArrayList<Element>();
-	
+
 	for (int i = 0; i < incomingFlows.size(); i++) {
 	    predecessors.add(findElemById(incomingFlows.get(i).getAttribute("sourceRef")));
 	}
@@ -498,7 +498,7 @@ public class Model {
 	} else { 
 	    System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.size() + " outgoing Flows");
 	}
-	
+
 	return outgoingFlows;
 
     }
@@ -523,11 +523,11 @@ public class Model {
 	} else { 
 	    System.out.println("The element " + element.getAttribute("id") + " has " + incomingFlows.size() + " incoming Flows");
 	}
-	
+
 	return incomingFlows;
 
     }
-    
+
     /**
      * Returns the type (tagname) of an element
      * 
@@ -706,6 +706,20 @@ public class Model {
 	//Element[] elements = (Element[]) doc.getElementsByTagName(tagname);
 	//TODO see if I want to do this method or simply use getElementsByTagName
 	return elements;
+    }
+    /**
+     * ASKANA if this is a good method to recognize merges
+     * @param gateway
+     * @return
+     * @throws XPathExpressionException
+     */
+    public boolean isAMerge(Element gateway) throws XPathExpressionException {
+	//if (gateway.getTagName()) TODO check that is a gateway and return a message when it's not
+
+	if (getIncomingFlows(gateway).size() > 1 && getOutgoingFlows(gateway).size() == 1) {
+	    return true;
+	} else { return false;
+	}
     }
 
     /**

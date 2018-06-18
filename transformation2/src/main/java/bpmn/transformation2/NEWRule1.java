@@ -108,7 +108,8 @@ public class NEWRule1 {
 	for (int j = 0; j < predecessors.size(); j++) {
 
 	    //checking that all predecessors are of the same type:
-
+	    Element predecessor = predecessors.get(j);
+	    System.out.println("I'm analyzing predecessor " + predecessor.getAttribute("id"));
 	    if (predecessors.get(j).getTagName() != type ){
 		System.out.println("The gateway " + parallelGateway.getAttribute("id") + " is preceeded by something that is not a gateway of the same type.");
 		System.out.println("The rule1 cannot be applied on that gateway");
@@ -119,19 +120,19 @@ public class NEWRule1 {
 	    }
 
 
-
 	    //Checking that we are on the innermost level. I.e. that every predecessor is not preceded by a gateway of the same type himself 
 	    ArrayList<Element> predsOfPred = model.getPredecessors(predecessors.get(j)); //the predecessors of the predecessor
 
 	    for (int i = 0; i < predsOfPred.size(); i++) {
+		Element predOfPred = predsOfPred.get(i);
+		System.out.println("Im analyzing predecessor " + predOfPred.getAttribute("id") + " of the predecessor " + predecessor.getAttribute("id"));
+		
 		if (predsOfPred.get(i).getTagName() != type) {
 		    System.out.println("I have found a predecessor that is not a gateway of the same type!");
 		    innerMost = true;
 		}
-		if (model.getIncomingFlows(predecessors.get(i)).size() < 2) {
+		if (!model.isAMerge(predecessor)) {
 		    System.out.println("I have found a predecessor that is not a merge but rather a split!"); 
-		    //ASKANA if this is a good way to recognize merges. Alternatively,
-		    //do a method to recognize merges.
 		    noSplitsInPreds = false;
 		}
 		
