@@ -42,9 +42,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
 	//TODO create ad hoc models to test all of my XML functions
+	String input = "./TestGraphs/rule1parallel.bpmn.xml";
 	//String input = "./TestGraphs/Rule3a.bpmn.xml";
 	//String input = "./TestGraphs/Rule3b.bpmn.xml";
-	String input = "./TestGraphs/Rule4a.bpmn.xml";
+	//String input = "./TestGraphs/Rule4a.bpmn.xml";
 	//String input = "./TestGraphs/Rule4b.bpmn.xml";
 	//String input = "./TestGraphs/Rule4c.bpmn.xml";
 	
@@ -116,11 +117,12 @@ public class Main {
 //	model.setTarget(seqFlow, newNodeId);
 //	//model.setSource(seqFlow, newNodeId);
 	
+	NEWRule1.applyRule(model);
 	//NEWRule3.a(model);
 	//NEWRule3.b(model);
 	//NEWRule4.a(model);
-	NEWRule4.b(model);
-	NEWRule4.c(model);
+	//NEWRule4.b(model);
+	//NEWRule4.c(model);
 
     }
 

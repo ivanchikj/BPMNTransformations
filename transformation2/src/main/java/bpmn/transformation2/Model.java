@@ -46,6 +46,8 @@ public class Model {
     private XPath xpath;
     private DocumentBuilder docBuilder;
 
+    //TODO fare metodo che prende un parallel gateway e controlla se è un merge. Mi serve in più di una classe mi sa.
+    
     /**
      * 
      * @param path
@@ -540,7 +542,7 @@ public class Model {
 
     /**
      * TODO see if this works just as well as deleteElement This is much simpler
-     * 
+     * TODO if it is a flow, remember to delete also the children of it's target/ source. But only the right child.
      * @param id
      *            the ID of the element to delete
      * @throws XPathExpressionException
