@@ -15,11 +15,11 @@ public class Rule2 {
      * @param model
      * @throws XPathExpressionException 
      */
-    public void applyRule(Model model) throws XPathExpressionException {
+    public static void applyRule(Model model) throws XPathExpressionException {
 	System.out.println("I'm applying Rule1");
 
-	//TODO make it such that it works with every gateway, not just parallel ones.
-	NodeList gatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
+	//TODO make it such that it works with every gateway, not just exclusive ones.
+	NodeList gatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
 	System.out.println("number of " + " gateway instances: " + gatewayInstances.getLength()); //TODO make it work with every gateway type.
 
 	if (gatewayInstances.getLength() == 0) {System.out.println("RULE4: there are no gateways in this model");
@@ -50,7 +50,7 @@ public class Rule2 {
 	if (readyToBeChangedGateways.size() > 0 ){
 	    for (int g = 0; g < readyToBeChangedGateways.size(); g++) {
 		Element gateway = readyToBeChangedGateways.get(g);
-		ArrayList<Element> successors = model.getSuccessors(gateway); //predecessors will be eliminated
+		ArrayList<Element> successors = model.getSuccessors(gateway); //successors will be eliminated
 		for (int j = 0; j < successors.size(); j++) {
 
 		    Element succ = successors.get(j);
@@ -63,10 +63,10 @@ public class Rule2 {
 		    }
 		    //changing the targets of all their sequence flows
 		    for (int k = 0; k < flowsToKeep.size(); k++) {
-			model.setTarget(flowsToKeep.get(k).getAttribute("id"), gateway.getAttribute("id"));
+			model.setSource(flowsToKeep.get(k).getAttribute("id"), gateway.getAttribute("id"));
 		    }
 		    //finally deleting the gateways
-		    model.delete(pred.getAttribute("id"));
+		    model.delete(succ.getAttribute("id"));
 
 		}
 	    }
@@ -75,9 +75,58 @@ public class Rule2 {
 
 
 
-    private boolean isApplicable(Model model, Element gateway) {
-	// TODO Auto-generated method stub
-	return false;
+    private static boolean isApplicable(Model model, Element gateway) throws XPathExpressionException {
+
+	System.out.println("I'm checking if gateway " +  gateway.getAttribute("id") + " is suitable for rule 2:");
+
+	ArrayList<Element> successors = model.getSuccessors(gateway);
+	String type =  gateway.getTagName();
+
+	boolean sameType = true;
+	boolean innerMost = false;
+	boolean noMergesInPreds = true; //all successors (that will be deleted) have to be splits
+
+	for (int j = 0; j < successors.size(); j++) {
+
+	    //checking that all successors are of the same type:
+	    Element successor = successors.get(j);
+	    System.out.println("I'm analyzing predecessor " + successor.getAttribute("id"));
+	    if (successors.get(j).getTagName() != type ){
+		System.out.println("The gateway " + gateway.getAttribute("id") + " is succeded by something that is not a gateway of the same type.");
+		System.out.println("The rule2 cannot be applied on that gateway");
+		sameType = false;
+	    } else {
+		System.out.println("I haven't found a single successor of " + gateway.getAttribute("id") +  " that is not a " + type);
+		//sameType remains true
+	    }
+
+	    //Checking that we are on the innermost level. I.e. that every successor is not succeded by a gateway of the same type himself 
+	    ArrayList<Element> succsOfSucc = model.getSuccessors(successors.get(j)); //the predecessors of the predecessor
+
+	    for (int i = 0; i < succsOfSucc.size(); i++) {
+		Element succOfSucc = succsOfSucc.get(i);
+		System.out.println("Im analyzing successor " + succOfSucc.getAttribute("id") + " of the successor " + successor.getAttribute("id"));
+
+		if (succsOfSucc.get(i).getTagName() != type) {
+		    System.out.println("I have found a successor that is not a gateway of the same type!");
+		    innerMost = true;
+		}
+
+
+		//Checking that all predecessors are splits
+		if (model.isAMerge(successor)) {
+		    System.out.println("I have found a predecessor that is not a split but rather a merge!"); //TODO this includes 1in 1out gateways. Decide what to do with merges. I would do it more resistant. 
+		    noMergesInPreds = false;
+		}
+	    }
+	}
+	//Finally if all conditions are true, return true.
+	if ( sameType && innerMost && noMergesInPreds) {
+	    System.out.println("All predecessors are of same type AND they are all splits AND we are on the innermost level");
+	    return true;
+	} else { 
+	    return false;
+	}
     }
 
 
@@ -89,7 +138,7 @@ public class Rule2 {
      * @return
      */
     public boolean hasCondition(Element sequenceFlow) {
-	ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression");
+	ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
 
 	boolean hasCondition = false;
 
@@ -121,15 +170,15 @@ public class Rule2 {
     public void applyCondition(Model model, Element sequenceFlow, String condition) {
 	if (hasCondition(sequenceFlow)) { 
 	    // getting all the conditions of a sequenceFlow
-	    ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression");
+	    ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
 	    //removing all the previous conditions:
 	    for (int i = 0; i < children.size(); i++) {
 		sequenceFlow.removeChild(children.get(i));
 	    }
 	}
 	Element conditionElement = model.doc.createElement("bpmn:conditionExpression");
-	    conditionElement.setAttribute("xsi:type", "bpmn:tFormalExpression");
-	    conditionElement.appendChild(model.doc.createTextNode(condition));
-	    sequenceFlow.appendChild(conditionElement);
+	conditionElement.setAttribute("xsi:type", "bpmn:tFormalExpression");
+	conditionElement.appendChild(model.doc.createTextNode(condition));
+	sequenceFlow.appendChild(conditionElement);
     }
 }

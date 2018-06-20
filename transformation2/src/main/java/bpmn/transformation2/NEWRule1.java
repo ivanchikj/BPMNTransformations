@@ -48,7 +48,6 @@ public class NEWRule1 {
 
 	    if (isApplicable(model, gateway)) {
 		readyToBeChangedGateways.add(gateway); //I will do the edits at the end to avoid recursive behavior
-
 	    }
 
 	}
@@ -130,14 +129,14 @@ public class NEWRule1 {
 		    System.out.println("I have found a predecessor that is not a gateway of the same type!");
 		    innerMost = true;
 		}
+		
+		
+		//Checking that all predecessors are splits
 		if (!model.isAMerge(predecessor)) {
 		    System.out.println("I have found a predecessor that is not a merge but rather a split!"); 
 		    noSplitsInPreds = false;
 		}
-		
-
 	    }
-
 	}
 
 	//Finally if both conditions are true, return true.

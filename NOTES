@@ -1,3 +1,8 @@
+TODO: in rule1 and rule2 methods isApplicable, the condition that all successors/predecessors have to be of the same type is useless. 
+
+TODO: in rule1 and rule2, make it so that if a gat has 1 incoming and 1 outgoin, then it's boh a merge and a split. Explain in the thesis that this is illegal in BPMN but it should work regardless
+
+
 IDEA: fare in modo che se qualcosa fallisce in un modello, non interrompe gli altri ma vengono eseguiti correttamente. Sia che c'è un errore nel modello di input, che nell'esecuzione del programma, che del programma di output. Ma questi errori devono essere scritti nel report.
 
 NOTE:
