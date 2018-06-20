@@ -73,9 +73,9 @@ public class Rule2 {
 		    for (int k = 0; k < flowsToKeep.size(); k++) {
 			Element flowToKeep = flowsToKeep.get(k);
 			model.setSource(flowToKeep.getAttribute("id"), gateway.getAttribute("id"));
-			
+
 			String newCondition = firstPartofCondition; // the inizialization value should not matter.
-			
+
 			secondPartofCondition = returnConditionString(flowToKeep);
 			// if both flows have a condition, I merge them with an AND in the middle.
 			// if else, I only keep the non - empty one.
@@ -88,7 +88,7 @@ public class Rule2 {
 			} else if (firstPartofCondition == "" && secondPartofCondition != "") {
 			    newCondition = secondPartofCondition;
 			}
-			
+
 			//Adding the newCondition
 			System.out.println(newCondition);
 			returnConditionElement(flowToKeep).setTextContent(newCondition);
@@ -167,27 +167,19 @@ public class Rule2 {
      * @return
      */
     public boolean hasCondition(Element sequenceFlow) {
-	ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	NodeList children =  sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
 
 	boolean hasCondition = false;
 
-	if (children.size() > 0) {
+	if (children.getLength() > 0) {
 	    hasCondition = true;
 	}
 	return hasCondition;
     }
 
     public static String returnConditionString (Element sequenceFlow) {
-	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
-	String condition = "";
-	if (children.getLength() > 0) {
-	    for (int i = 0; i < children.getLength(); i++) {
-		condition = children.item(i).getTextContent();
-		//NOTE it works because I expect only one children.
-		System.out.println("The condition that I have found is: " + condition);
-	    }
-	} else { System.out.println("The sequenceFlow " +  sequenceFlow.getAttribute("id") + "has no condition");
-	}
+	Element conditionElement = returnConditionElement(sequenceFlow);
+	String condition = conditionElement.getTextContent();
 	return condition;
     }
 

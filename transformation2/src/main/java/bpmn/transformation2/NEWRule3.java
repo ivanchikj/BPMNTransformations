@@ -131,10 +131,8 @@ public class NEWRule3 {
 	}
     }
     
-    // TODO integrate this into the first part of rule3
-    // NOTE that this has to execute before the other part of rule3 because
+    // NOTE this has to execute before the other part of rule3 because
     // otherwise it will never be applicable (no parallel gateways will be found)
-    // TODO create some bpmn graphs to test this
     public static void thirdPart (Model model) {
 	//	// create a collection of ParallelGateways ("A"):
 	//	Collection<ParallelGateway> parallelGatewayInstances = inputModel.getModelElementsByType(ParallelGateway.class);
