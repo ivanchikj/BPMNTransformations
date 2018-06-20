@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.StartEvent"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ConditionExpression"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.Gateway"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="java.io.FileNotFoundException"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ParallelGateway"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.ExclusiveGateway"/>
@@ -40,7 +37,6 @@
 <fullyQualifiedTypeName name="javax.xml.xpath.XPath"/>
 <fullyQualifiedTypeName name="javax.xml.transform.TransformerConfigurationException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.BpmndiUtilities"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="javax.swing.text.Document"/>
 <fullyQualifiedTypeName name="org.xml.sax.SAXException"/>
 <fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
@@ -51,11 +47,17 @@
 <fullyQualifiedTypeName name="java.lang.reflect.Array"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
-<fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
 <fullyQualifiedTypeName name="java.util.UUID"/>
 <fullyQualifiedTypeName name="org.w3c.dom.Node"/>
 <fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="java.lang.String"/>
-<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
+<fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
+<fullyQualifiedTypeName name="org.apache.ibatis.ognl.OgnlContext"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.NEWRule1"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="org.springframework.core.annotation.AnnotationAwareOrderComparator"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="javax.ws.rs.NotAcceptableException"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
 </qualifiedTypeNameHistroy>

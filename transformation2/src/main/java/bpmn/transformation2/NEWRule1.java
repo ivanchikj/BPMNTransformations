@@ -22,6 +22,7 @@ public class NEWRule1 {
 
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	// TODO this could be a method that returns a list of elements
+	// TODO make it such that it returns all gateways, not just parallel ones.
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
 
@@ -34,7 +35,7 @@ public class NEWRule1 {
 	//I cannot do edits in real time otherwise the program would behave recursively depending on which 
 	//elements it analyzes first.
 
-	// going through all of the parallelGateways in the model:
+	//going through all of the parallelGateways in the model:
 	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
 
 	    Element gateway = (Element) parallelGatewayInstances.item(i); //this will be the element in case
@@ -86,7 +87,7 @@ public class NEWRule1 {
     /**
      * This method checks if the rule1 is applicable on a given parallel gateway.
      * That is, if the gateway is preceded only by other gateways of the same type, AND those gateways are not preceded
-     * by a gateway of the same type themselves. 
+     * by a gateway of the same type themselves AND those gateways are 
      * then the rule is applicable.
      * @param model
      * @param parallelGateway

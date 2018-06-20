@@ -51,8 +51,6 @@ public class NEWRule4 {
 		    model.setTarget(incomingFlows.get(f).getAttribute("id"), successor.getAttribute("id"));
 		}
 
-
-
 		//let's delete the merge exclusive gateway
 		//NOTE if i delete it before changing the target of flows that were previousy attached to it,
 		//the program will have a problem because it will try to delete child elements from 
