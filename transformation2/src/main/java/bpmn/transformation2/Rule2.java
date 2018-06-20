@@ -53,17 +53,45 @@ public class Rule2 {
 		ArrayList<Element> successors = model.getSuccessors(gateway); //successors will be eliminated
 		for (int j = 0; j < successors.size(); j++) {
 
-		    Element succ = successors.get(j);
-		    ArrayList<Element> flowsToDelete = model.getIncomingFlows(succ); //this is also the incoming flow of the gateway at hand
-		    ArrayList<Element> flowsToKeep = model.getOutgoingFlows(succ);
 
+		    //Let's add the conditions of the incomingFlows to the OutgoingFlows
+
+
+
+
+		    Element succ = successors.get(j);
+		    ArrayList<Element> flowsToDelete = model.getIncomingFlows(succ); //this is also the outGoing flow of the gateway at hand. It should be only one.
+		    ArrayList<Element> flowsToKeep = model.getOutgoingFlows(succ);  
+		    String firstPartofCondition = "";
+		    String secondPartofCondition = "";
 		    //deleting all the flows (it should be only one) from the item to be deleted to its successor:
 		    for (int k = 0; k < flowsToDelete.size(); k++) {
 			model.delete(flowsToDelete.get(k).getAttribute("id"));
+			firstPartofCondition = returnConditionString(flowsToDelete.get(k));//TODO This works only because I have only one outGoing flow. Otherwise it should be outside of the for loop.
 		    }
 		    //changing the targets of all their sequence flows
 		    for (int k = 0; k < flowsToKeep.size(); k++) {
-			model.setSource(flowsToKeep.get(k).getAttribute("id"), gateway.getAttribute("id"));
+			Element flowToKeep = flowsToKeep.get(k);
+			model.setSource(flowToKeep.getAttribute("id"), gateway.getAttribute("id"));
+			
+			String newCondition = firstPartofCondition; // the inizialization value should not matter.
+			
+			secondPartofCondition = returnConditionString(flowToKeep);
+			// if both flows have a condition, I merge them with an AND in the middle.
+			// if else, I only keep the non - empty one.
+			if (firstPartofCondition != "" && secondPartofCondition != "") { 
+			    //changing the condition of that outgoing flow:
+			    newCondition = generateCondition(firstPartofCondition, secondPartofCondition);
+
+			} else if (firstPartofCondition != "" && secondPartofCondition == "") {
+			    newCondition = firstPartofCondition;
+			} else if (firstPartofCondition == "" && secondPartofCondition != "") {
+			    newCondition = secondPartofCondition;
+			}
+			
+			//Adding the newCondition
+			System.out.println(newCondition);
+			returnConditionElement(flowToKeep).setTextContent(newCondition);
 		    }
 		    //finally deleting the gateways
 		    model.delete(succ.getAttribute("id"));
@@ -135,6 +163,7 @@ public class Rule2 {
     /**
      * This checks whether a sequenceFlow has a condition or not.
      * If it has not, then there's no need to generate one and append it to the new flows.
+     * TODO delete this method and use returnCondition instead
      * @return
      */
     public boolean hasCondition(Element sequenceFlow) {
@@ -148,6 +177,27 @@ public class Rule2 {
 	return hasCondition;
     }
 
+    public static String returnConditionString (Element sequenceFlow) {
+	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	String condition = "";
+	if (children.getLength() > 0) {
+	    for (int i = 0; i < children.getLength(); i++) {
+		condition = children.item(i).getTextContent();
+		//NOTE it works because I expect only one children.
+		System.out.println("The condition that I have found is: " + condition);
+	    }
+	} else { System.out.println("The sequenceFlow " +  sequenceFlow.getAttribute("id") + "has no condition");
+	}
+	return condition;
+    }
+
+    public static Element returnConditionElement (Element sequenceFlow) {
+	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	if (children.getLength() > 1) {
+	    System.err.println("How can an array have more than one condition children?");
+	}
+	return (Element) children.item(0);
+    }
 
     /**
      * 
@@ -157,7 +207,7 @@ public class Rule2 {
      * is impossible.
      * @return the new condition
      */
-    public String generateCondition(String firstCondition, String secondCondition) {
+    public static String generateCondition(String firstCondition, String secondCondition) {
 	String newCondition = firstCondition + " && " + secondCondition;
 	return newCondition;
 

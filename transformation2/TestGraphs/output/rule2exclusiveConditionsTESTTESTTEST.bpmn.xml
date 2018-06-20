@@ -24,14 +24,14 @@
       <bpmn:outgoing>SequenceFlow_0x3ogwi</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_0c2e6cu" sourceRef="ExclusiveGateway_1xbtmkp" targetRef="Task_1utx49g">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">i</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d &amp;&amp; i</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1c5zlop">
       <bpmn:incoming>SequenceFlow_1mejb3n</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1r4u6lm</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1mejb3n" sourceRef="ExclusiveGateway_1xbtmkp" targetRef="Task_1c5zlop">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">l</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d &amp;&amp; l</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0o33bcv">
       <bpmn:incoming>SequenceFlow_0xtj0d5</bpmn:incoming>
@@ -42,35 +42,35 @@
       <bpmn:outgoing>SequenceFlow_1e2dqus</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1g9j197" sourceRef="ExclusiveGateway_0z5ig7t" targetRef="Task_1oxozfc">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">u</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">e &amp;&amp; u</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1dw0gvq">
       <bpmn:incoming>SequenceFlow_0vhdp6e</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0zlj6hj</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_0vhdp6e" sourceRef="ExclusiveGateway_0z5ig7t" targetRef="Task_1dw0gvq">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">e</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">f &amp;&amp; e</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0t299cm">
       <bpmn:incoming>SequenceFlow_17bzbep</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1bhs8yz</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_17bzbep" sourceRef="ExclusiveGateway_0z5ig7t" targetRef="Task_0t299cm">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">n</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">f &amp;&amp; n</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0wxojuv">
       <bpmn:incoming>SequenceFlow_10skzfa</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_15shlac</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_10skzfa" sourceRef="ExclusiveGateway_1xbtmkp" targetRef="Task_0wxojuv">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">h</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">c &amp;&amp; h</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1qo8krh">
       <bpmn:incoming>SequenceFlow_1jyagbt</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1aat9cs</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1jyagbt" sourceRef="ExclusiveGateway_1xbtmkp" targetRef="Task_1qo8krh">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">g</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">c &amp;&amp; g</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1aat9cs" sourceRef="Task_1qo8krh" targetRef="ExclusiveGateway_0bix9mb"/>
     <bpmn:sequenceFlow id="SequenceFlow_15shlac" sourceRef="Task_0wxojuv" targetRef="ExclusiveGateway_0bix9mb"/>
@@ -81,7 +81,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0zlj6hj" sourceRef="Task_1dw0gvq" targetRef="ExclusiveGateway_0fm4wea"/>
     <bpmn:sequenceFlow id="SequenceFlow_1bhs8yz" sourceRef="Task_0t299cm" targetRef="ExclusiveGateway_0fm4wea"/>
     <bpmn:sequenceFlow id="SequenceFlow_0xtj0d5" sourceRef="ExclusiveGateway_0z5ig7t" targetRef="Task_0o33bcv">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">r</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">e &amp;&amp; r</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_19w7zhb" sourceRef="ExclusiveGateway_0bix9mb" targetRef="ExclusiveGateway_11xq700"/>
     <bpmn:sequenceFlow id="SequenceFlow_0tq98nz" sourceRef="ExclusiveGateway_0i2n33b" targetRef="ExclusiveGateway_11xq700"/>
