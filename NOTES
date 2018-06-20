@@ -1,3 +1,5 @@
+IDEA: fare in modo che se qualcosa fallisce in un modello, non interrompe gli altri ma vengono eseguiti correttamente. Sia che c'è un errore nel modello di input, che nell'esecuzione del programma, che del programma di output. Ma questi errori devono essere scritti nel report.
+
 NOTE:
 	explain in the thesis the difference between :
  		<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language=""></bpmn:conditionExpression>

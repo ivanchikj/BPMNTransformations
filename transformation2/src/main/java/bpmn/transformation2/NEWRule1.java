@@ -16,7 +16,7 @@ public class NEWRule1 {
     //TODO applyRule will actually become just a (simple) method calling other specific methods
     //TODO this rule (as every other one) will return false or true depending if it applied the rule or not.
     //putting returns is also a way to interrupt the execution of the rule mid-method by returning false
-    @SuppressWarnings("null")
+    @SuppressWarnings("null") //TODO do I have to delete this?
     public static void applyRule(Model model) throws Exception {
 	System.out.println("I'm applying Rule1");
 
@@ -24,8 +24,6 @@ public class NEWRule1 {
 	// TODO this could be a method that returns a list of elements
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
-
-
 
 	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE4: there are no parallel gateways in this model");
 	//RETURN FALSE
