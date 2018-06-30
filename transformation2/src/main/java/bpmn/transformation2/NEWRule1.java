@@ -130,7 +130,6 @@ public class NEWRule1 {
 		    innerMost = true;
 		}
 		
-		
 		//Checking that all predecessors are splits
 		if (!model.isAMerge(predecessor)) {
 		    System.out.println("I have found a predecessor that is not a merge but rather a split!"); 

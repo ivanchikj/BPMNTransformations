@@ -44,12 +44,13 @@ public class Main {
 	//TODO create ad hoc models to test all of my XML functions
 	//String input = "./TestGraphs/rule1parallel.bpmn.xml";
 	//String input = "./TestGraphs/rule1recursive.bpmn.xml";
-	String input = "./TestGraphs/rule2exclusiveConditions.bpmn.xml";
+	//String input = "./TestGraphs/rule2exclusiveConditions.bpmn.xml";
 	//String input = "./TestGraphs/Rule3a.bpmn.xml";
 	//String input = "./TestGraphs/Rule3b.bpmn.xml";
 	//String input = "./TestGraphs/Rule4a.bpmn.xml";
 	//String input = "./TestGraphs/Rule4b.bpmn.xml";
 	//String input = "./TestGraphs/Rule4c.bpmn.xml";
+	String input = "./TestGraphs/TravelingTest.bpmn.xml";
 	
 	
 	if ( input.equals("") ){ //This is always expected to be true except when testing something.
@@ -120,13 +121,17 @@ public class Main {
 //	//model.setSource(seqFlow, newNodeId);
 	
 	//NEWRule1.applyRule(model);
-	Rule2.applyRule(model);
+	//Rule2.applyRule(model);
 	//NEWRule3.a(model);
 	//NEWRule3.b(model);
 	//NEWRule4.a(model);
 	//NEWRule4.b(model);
 	//NEWRule4.c(model);
-
+	
+	Travel travel = new Travel(model);
+	travel.travelModel();
+	travel.printPaths();
+	
     }
 
     // This lets the user decide the path of the file

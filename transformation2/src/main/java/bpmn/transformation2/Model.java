@@ -715,7 +715,6 @@ public class Model {
      */
     public boolean isAMerge(Element gateway) throws XPathExpressionException {
 	//if (gateway.getTagName()) TODO check that is a gateway and return a message when it's not
-
 	if (getIncomingFlows(gateway).size() > 1 && getOutgoingFlows(gateway).size() == 1) {
 	    return true;
 	} else { return false;

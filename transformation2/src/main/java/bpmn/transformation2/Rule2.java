@@ -172,7 +172,7 @@ public class Rule2 {
 	boolean hasCondition = false;
 
 	if (children.getLength() > 0) {
-	    hasCondition = true;
+	    hasCondition = true; 
 	}
 	return hasCondition;
     }

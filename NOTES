@@ -1,3 +1,5 @@
+IDEA: fare un "candidate system" dove per ogni regola hai un array di tutti i candidati e poi rimuovi quelli che non si applicano di volta in volta finché non rimani solo con gli array che ti servono, forse è un po'pi1u pulito come sistema? E poi si può riprendere di regola in regola
+
 IDEA:
 At this point I dont think it matters, but I could create a method
 that automatically removes empty nodes from the nodes list that I usually have to dea with
