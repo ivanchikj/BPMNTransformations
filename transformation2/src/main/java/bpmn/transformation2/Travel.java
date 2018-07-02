@@ -14,6 +14,7 @@ public class Travel {
     public Model model;
     public ArrayList<ArrayList<Element>> paths;
     public ArrayList<String> visited;
+    
 
     /**
      * Constructor
@@ -31,13 +32,12 @@ public class Travel {
      * @throws XPathExpressionException 
      */
     public ArrayList <Element> getAPath (ArrayList<Element> past) throws XPathExpressionException{
-	ArrayList<String> visited = new ArrayList<String>(); //contains the ID's of the visited elements
-	ArrayList<Element> path = new ArrayList<Element>();
 	
+	ArrayList<Element> path = new ArrayList<Element>();
 	
 	Element startingPoint = past.get(past.size()-1); //we start from the last element of this path
 	
-	System.out.println("Visiting element " + startingPoint.getAttribute("id"));
+	System.out.println("Visiting element " + startingPoint.getAttribute("name"));
 	//adding the startingPoint to the list of visited elements
 	visited.add(startingPoint.getAttribute("id"));
 	
@@ -46,18 +46,30 @@ public class Travel {
 	
 	
 	//going through all the immediate successors
-	for (Element successor : immediateSuccessors)
+	for (Element successor : immediateSuccessors) {
 	    //checking if the immediateSuccessors has been visited
-	    if (!visited.contains(successor.getAttribute("id"))) {
+	    
+	  //  if (!visited.contains(successor.getAttribute("id"))) {
 		past.add(successor);
-		getAPath(past);
-	    }
-	
-	
-	if (immediateSuccessors.size() == 0) {
-	    System.out.println("I've reached the end of the path");
-	    paths.add(past);
+		System.out.println("STARTING FROM " +  successor.getAttribute("name"));
+		
+		//I need to create a clone lest the past array remains editable in the future and would be changed 
+		//by this method's next travels
+		ArrayList<Element> newPast = (ArrayList<Element>) past.clone();
+		
+		getAPath(newPast);
+		
+		if (model.getSuccessors(successor).size() == 0) {
+		    System.out.println("I've reached the end of the path");
+		    paths.add(past);
+		}
+		
+	  //  }
+	    
 	}
+	
+	
+	
 	
 	
 	//poi usi il metodo getdeepsuccessors (questo) e appendi il risultato alla lista dei deepFollowers.
@@ -65,7 +77,6 @@ public class Travel {
 	//Quando c'è un IF crei un nuovo array (che corrisponde a un nuovo path), però prima copi il contenuto 
 	//del (singolo) path che c'era fino a quel momento. Altrimenti se non lo fai partiresti da troppo dopo
 	return path;
-
     }
 
     /**
@@ -102,12 +113,13 @@ public class Travel {
      */
     public void printPaths() {
 	System.out.println("======= PRINTING PATHS =======");
-
+	
 	for (ArrayList<Element> path : paths) {
+	    System.out.println("-----a path:-----");
 	    for (Element element : path) {
 		System.out.println(element.getAttribute("name"));
 	    }
-	    System.out.println("-----next path:-----");
+	    
 	}
     }
 

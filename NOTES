@@ -1,3 +1,7 @@
+Ho guardato un po'gli algo DFS, ma il mio 'problema' è che non voglio semplicemente visitare tutti i nodi e basta, ma voglio anche salvare i possibili path in un array. Magari spiegare questa differenza nella tesi.
+
+
+
 IDEA: fare un "candidate system" dove per ogni regola hai un array di tutti i candidati e poi rimuovi quelli che non si applicano di volta in volta finché non rimani solo con gli array che ti servono, forse è un po'pi1u pulito come sistema? E poi si può riprendere di regola in regola
 
 IDEA:
