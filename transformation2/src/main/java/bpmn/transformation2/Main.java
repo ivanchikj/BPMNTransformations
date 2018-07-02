@@ -129,7 +129,7 @@ public class Main {
 	//NEWRule4.c(model);
 	
 	Travel travel = new Travel(model);
-	travel.travelModel();
+	travel.getPaths();
 	travel.printPaths();
 	
     }
