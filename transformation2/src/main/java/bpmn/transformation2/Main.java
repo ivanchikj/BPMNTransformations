@@ -128,9 +128,10 @@ public class Main {
 	//NEWRule4.b(model);
 	//NEWRule4.c(model);
 	
-	Travel travel = new Travel(model);
-	travel.getPaths();
-	travel.printPaths();
+	TravelAgency travelAgency = new TravelAgency(model);
+	travelAgency.getPaths();
+	travelAgency.printPaths();
+	travelAgency.getMandatoryDeepSuccessors();
 	
     }
 
