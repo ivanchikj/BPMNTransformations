@@ -24,21 +24,47 @@ public class TravelAgency {
     public ArrayList<ArrayList<Element>> paths;
     public ArrayList<String> visited;
     public Element startingPoint;
+    public ArrayList<Element> startingList;
     public ArrayList<Element> mandatoryDeepSuccessors;
     //TODO decide if the starting point has to be a class variable
 
     /**
-     * Constructor
+     * Constructor with startingPoint
      * TODO 
      * Then initialize the variables using the methods I wrote.
      * @param model
+     * @throws XPathExpressionException 
      */
-    public TravelAgency (Model model) {
+    public TravelAgency (Model model, Element startingPoint) throws XPathExpressionException {
+
 	this.model = model;
-	paths = new ArrayList<ArrayList<Element>>();
+	this.startingPoint = startingPoint;
+
+	this.startingList = fromElementToArrayList();
+
+	this.paths = new ArrayList<ArrayList<Element>>();
+	
 	visited = new ArrayList<String>();
-	//startingPoint = ;
+
+	getPathsFrom(startingList);
+	
 	mandatoryDeepSuccessors = new ArrayList<Element>();
+	getMandatoryDeepSuccessors();
+
+    }
+
+    public TravelAgency (Model model) throws XPathExpressionException {
+
+	this.model = model;
+
+	this.visited = new ArrayList<String>();
+
+	this.paths = new ArrayList<ArrayList<Element>>();
+
+	getPaths();
+
+	mandatoryDeepSuccessors = new ArrayList<Element>();
+	getMandatoryDeepSuccessors();
 
     }
 
@@ -79,21 +105,20 @@ public class TravelAgency {
 	} else if (immediateSuccessors.size() == 0){
 	    System.out.println("THIS IS THE END");
 	    paths.add(past);
+	    printPaths();
 	}
 
 	return past;
     }
 
 
-
-    public ArrayList<Element> single (ArrayList<Element> past){
-	return past; 
-    }
-
     private boolean iHaveNotVisited(Element element) {
 	return !this.visited.contains(element.getAttribute("id"));
     }
 
+    /**
+     * Used only for testing
+     */
     private void printVisited() {
 	System.out.println("VISITED SO FAR: ");
 	for (String id : visited) {
@@ -105,6 +130,18 @@ public class TravelAgency {
 	System.out.println("I'm visiting: " + element.getAttribute("name"));
 	visited.add(element.getAttribute("id"));
     }
+    /**
+     * This serves when starting getPathsFrom() from an arbitrary element instead of the start
+     * I need to transform it into an arrayList to be able to use it as an input to
+     * getPathsFrom()
+     * @return
+     */
+    public ArrayList<Element> fromElementToArrayList(){
+	ArrayList<Element> list = new ArrayList<Element>();
+	list.add(startingPoint);
+	return list;
+    }
+
 
     public Element getLast (ArrayList<Element> past) {
 	return past.get(past.size()-1);
@@ -136,7 +173,6 @@ public class TravelAgency {
 	    firstPathIDs.retainAll(idForm);
 
 	}
-	System.out.println("SARÒ VUOTA? " + firstPathIDs.size());
 
 	mandatoryDeepSuccessors = fromIDsToElements(firstPathIDs);
 

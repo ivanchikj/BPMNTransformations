@@ -128,10 +128,14 @@ public class Main {
 	//NEWRule4.b(model);
 	//NEWRule4.c(model);
 	
-	TravelAgency travelAgency = new TravelAgency(model);
-	travelAgency.getPaths();
-	travelAgency.printPaths();
-	travelAgency.getMandatoryDeepSuccessors();
+	Element primo = model.findElemById("Task_13ns93v"); //test to start the travel agency from an arbitrary point
+	
+	TravelAgency travelAgency = new TravelAgency(model, primo);
+	
+	//TravelAgency travelAgency = new TravelAgency(model);
+	//travelAgency.getPaths();
+	//travelAgency.printPaths();
+	//travelAgency.getMandatoryDeepSuccessors();
 	
     }
 
