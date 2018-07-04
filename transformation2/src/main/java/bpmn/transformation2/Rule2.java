@@ -143,14 +143,16 @@ public class Rule2 {
 
 		//Checking that all predecessors are splits
 		if (model.isAMerge(successor)) {
-		    System.out.println("I have found a predecessor that is not a split but rather a merge!"); //TODO this includes 1in 1out gateways. Decide what to do with merges. I would do it more resistant. 
+		    //TODO this includes 1in 1out gateways. Decide what to do with merges. I would do it more resistant.
+		    System.out.println("I have found a predecessor that is not a split but rather a merge!");  
 		    noMergesInPreds = false;
 		}
 	    }
 	}
 	//Finally if all conditions are true, return true.
 	if ( sameType && innerMost && noMergesInPreds) {
-	    System.out.println("All predecessors are of same type AND they are all splits AND we are on the innermost level");
+	    System.out.println
+	    ("All predecessors are of same type AND they are all splits AND we are on the innermost level");
 	    return true;
 	} else { 
 	    return false;
@@ -194,9 +196,6 @@ public class Rule2 {
     /**
      * 
      * AS for now, this method just adds an AND between the first gateway's flow's condition and the second's.
-     * TODO maybe in the future I will find a way to better mix those conditions
-     * But I think just finding the "OR" and splitting it like in the slides
-     * is impossible.
      * @return the new condition
      */
     public static String generateCondition(String firstCondition, String secondCondition) {
@@ -212,7 +211,8 @@ public class Rule2 {
     public void applyCondition(Model model, Element sequenceFlow, String condition) {
 	if (hasCondition(sequenceFlow)) { 
 	    // getting all the conditions of a sequenceFlow
-	    ArrayList<Element> children = (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	    ArrayList<Element> children = 
+		    (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
 	    //removing all the previous conditions:
 	    for (int i = 0; i < children.size(); i++) {
 		sequenceFlow.removeChild(children.get(i));

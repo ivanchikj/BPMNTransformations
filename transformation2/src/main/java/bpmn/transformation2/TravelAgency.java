@@ -76,7 +76,7 @@ public class TravelAgency {
 
 	Element startingPoint = getLast(past);
 
-	//printVisited();
+	//printVisited(); //UNLOCKTHIS for testing
 
 	visit(startingPoint);
 

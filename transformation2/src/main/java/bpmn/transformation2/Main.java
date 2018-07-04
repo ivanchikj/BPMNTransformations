@@ -128,7 +128,7 @@ public class Main {
 	//NEWRule4.b(model);
 	//NEWRule4.c(model);
 	
-	Element primo = model.findElemById("Task_13ns93v"); //test to start the travel agency from an arbitrary point
+	Element primo = model.findElemById("ExclusiveGateway_1cok4ag"); //test to start the travel agency from an arbitrary point
 	
 	TravelAgency travelAgency = new TravelAgency(model, primo);
 	
