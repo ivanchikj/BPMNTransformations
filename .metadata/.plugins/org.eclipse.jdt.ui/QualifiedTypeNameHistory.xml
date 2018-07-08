@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.BpmnModelException"/>
-<fullyQualifiedTypeName name="bpmn.transformation2.Main"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.Query"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.xml.instance.ModelElementInstance"/>
-<fullyQualifiedTypeName name="javax.swing.text.html.HTMLDocument.Iterator"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.Process"/>
-<fullyQualifiedTypeName name="org.camunda.bpm.engine.task.Task"/>
-<fullyQualifiedTypeName name="java.util.Date"/>
-<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.bpmn.instance.EndEvent"/>
 <fullyQualifiedTypeName name="org.camunda.bpm.model.xml.ModelInstance"/>
 <fullyQualifiedTypeName name="java.io.FileOutputStream"/>
@@ -38,11 +29,9 @@
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="javax.xml.xpath.XPathConstants"/>
 <fullyQualifiedTypeName name="java.util.UUID"/>
-<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="org.apache.ibatis.ognl.OgnlContext"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.NEWRule1"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
-<fullyQualifiedTypeName name="org.springframework.core.annotation.AnnotationAwareOrderComparator"/>
 <fullyQualifiedTypeName name="javax.ws.rs.NotAcceptableException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Rule2"/>
 <fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
@@ -50,14 +39,25 @@
 <fullyQualifiedTypeName name="javax.ws.rs.GET"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Backup.ModelBackup"/>
 <fullyQualifiedTypeName name="org.apache.ibatis.annotations.ConstructorArgs"/>
-<fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
 <fullyQualifiedTypeName name="org.w3c.dom.Node"/>
 <fullyQualifiedTypeName name="java.lang.ArrayStoreException"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Path"/>
 <fullyQualifiedTypeName name="javax.swing.text.AbstractDocument.LeafElement"/>
 <fullyQualifiedTypeName name="javax.validation.constraints.Size"/>
 <fullyQualifiedTypeName name="bpmn.transformation2.Travel"/>
-<fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="org.omg.PortableInterceptor.ServerRequestInfo"/>
+<fullyQualifiedTypeName name="java.util.Set"/>
+<fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Collection"/>
+<fullyQualifiedTypeName name="org.springframework.util.CollectionUtils"/>
+<fullyQualifiedTypeName name="java.lang.reflect.Constructor"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Execution"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Model"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.TravelAgency"/>
+<fullyQualifiedTypeName name="org.springframework.core.annotation.AnnotationAwareOrderComparator"/>
+<fullyQualifiedTypeName name="bpmn.transformation2.Report"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
 </qualifiedTypeNameHistroy>

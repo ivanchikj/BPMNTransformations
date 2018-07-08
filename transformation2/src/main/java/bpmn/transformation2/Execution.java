@@ -9,17 +9,26 @@ import org.w3c.dom.Element;
 
 public class Execution {
 
-    public String log;
+    
     public String input;
     public ArrayList<Model> startingModels;
     public Report report;
+    public ArrayList<Parameter> parameters;
+    public String log;
 
     public Execution (String input) {
 
+    	//From input, let's get parameters and 
+
+    	this.input = input;
+    	
     }
+
+
 
     /**
      * TODO does this have to be static?
+     * TODO TEST THIS
      * @return 
      * @return 
      * @throws XPathExpressionException 
@@ -106,6 +115,13 @@ public class Execution {
 	}
 
 	return sequenceOfTypes;
+    }
+
+
+
+    public void execute() {
+	// TODO Auto-generated method stub
+	
     }
 
 

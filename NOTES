@@ -1,3 +1,9 @@
+ASKANA per quanto riguarda il report, invece di fare come facevo all'inizio,
+	 	ovvero per ogni regola inserire dei momenti in cui a seconda di quello che succedeva scrivevo qualcosa nel report oppure no
+	fare qualcosa così:
+		provare ad applicare ogni regola, poi comparare il modello com'era prima della regola e com'era dopo usando il mio metodo per comparare i grafici. Se sono diversi allora scrivere nel report che sei riuscito ad applicarla, altrimenti no.
+
+
 Ho guardato un po'gli algo DFS, ma il mio 'problema' è che non voglio semplicemente visitare tutti i nodi e basta, ma voglio anche salvare i possibili path in un array. Magari spiegare questa differenza nella tesi.
 
 
