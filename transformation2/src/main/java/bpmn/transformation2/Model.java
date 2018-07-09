@@ -1,7 +1,5 @@
 package bpmn.transformation2;
 
-import org.camunda.bpm.model.bpmn.impl.instance.TargetRef;
-import org.camunda.bpm.model.cmmn.instance.IfPart;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,9 +7,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import bpmn.transformation2.Main;
 
-import javax.print.Doc;
+
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,15 +24,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
-import java.util.PrimitiveIterator.OfDouble;
-import java.util.function.ToDoubleBiFunction;
 
 public class Model {
 
@@ -46,7 +38,7 @@ public class Model {
     private XPath xpath;
     private DocumentBuilder docBuilder;
 
-    //TODO fare metodo che prende un parallel gateway e controlla se è un merge. Mi serve in più di una classe mi sa.
+    //TODO fare metodo che prende un gateway e controlla se è un merge. Mi serve in più di una regola mi sa. Quindi è meglio metterlo qua
 
     /**
      * 
@@ -57,17 +49,8 @@ public class Model {
      * @throws ParserConfigurationException
      */
     public Model(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
-	load(path);
-    }
-
-    /**
-     * Used to (re)load the model. 
-     * TODO decide if it's better to delete this and just use it as a constructor
-     * @throws IOException 
-     * @throws SAXException 
-     * @throws ParserConfigurationException 
-     */
-    public void load(String path) throws SAXException, IOException, ParserConfigurationException {
+	System.out.println("New model instance: ");
+	
 	this.path = path;
 	// Xpath needed to easily interact with XMLs
 	XPathFactory xPathFactory = XPathFactory.newInstance();
@@ -94,7 +77,6 @@ public class Model {
 	System.out.println(
 		"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
     }
-
 
     /**
      * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"

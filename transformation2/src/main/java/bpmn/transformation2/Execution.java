@@ -12,19 +12,39 @@ public class Execution {
     
     public String input;
     public ArrayList<Model> startingModels;
-    public Report report;
     public ArrayList<Parameter> parameters;
+    public Report report;
     public String log;
 
     public Execution (String input) {
 
-    	//From input, let's get parameters and 
+    	//From input, let's get parameters and an array of models
 
     	this.input = input;
+    
     	
     }
 
-
+    public ArrayList<Model> getModels (String input) {
+	ArrayList<Model> models = new ArrayList<Model>();
+	
+	
+	
+	return models;
+    }
+    
+    public ArrayList<Parameter> getParameters (String input) {
+	ArrayList<Parameter> params = new ArrayList<Parameter>();
+	
+	return params;
+    }
+    
+    
+    public void execute() {
+	// TODO Auto-generated method stub
+	
+    }
+    
 
     /**
      * TODO does this have to be static?
@@ -117,12 +137,6 @@ public class Execution {
 	return sequenceOfTypes;
     }
 
-
-
-    public void execute() {
-	// TODO Auto-generated method stub
-	
-    }
 
 
 
