@@ -9,7 +9,7 @@ import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class NEWRule4 {
+public class Rule4 {
 
     public static void b(Model model) throws XPathExpressionException {
 	System.out.println("I'm applying Rule4b");

@@ -1,6 +1,7 @@
 package bpmn.transformation2;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,7 +13,7 @@ public class Report {
     public String rulesApplied;
     public String outputpath; //TODO do not use this
     public String inputPath;
-
+    public String text;
     public Report(){
 	
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -25,10 +26,10 @@ public class Report {
 	return "" + time + rulesApplied; //TODO complete this. Add also line breaks and spacing.
     }
     
-    private void saveToFile(String report, String folderPath) throws IOException {
+    private void saveToFile(String folderPath) throws IOException {
 	// saving the report as a txt
 	BufferedWriter writer = new BufferedWriter(new PrintWriter(folderPath + "Report" + this.time + ".txt"));
-	writer.write(report);
+	writer.write(text);
 	writer.close();
     }
 }

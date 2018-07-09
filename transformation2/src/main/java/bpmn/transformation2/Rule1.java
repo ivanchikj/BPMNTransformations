@@ -10,16 +10,15 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class NEWRule1 {
+public class Rule1 {
 
 
     //TODO applyRule will actually become just a (simple) method calling other specific methods
-    //TODO this rule (as every other one) will return false or true depending if it applied the rule or not.
-    //putting returns is also a way to interrupt the execution of the rule mid-method by returning false
-    @SuppressWarnings("null") //TODO do I have to delete this?
-    public static void applyRule(Model model) throws Exception {
+    public static Model applyRule(Model startingModel) throws Exception {
 	System.out.println("I'm applying Rule1");
-
+	
+	Model model = startingModel;
+	
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	// TODO this could be a method that returns a list of elements
 	// TODO make it such that it returns all gateways, not just parallel ones.
@@ -76,9 +75,7 @@ public class NEWRule1 {
 		}
 	    }
 	}
-
-
-
+	return model;
     }
 
 

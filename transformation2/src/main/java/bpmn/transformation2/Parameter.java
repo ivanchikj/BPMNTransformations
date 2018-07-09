@@ -10,7 +10,8 @@ public class Parameter {
     public String parameter;
     
     
-    public void Parameter (String parameter) {
+
+    public Parameter (String parameter) {
 	
 	if (isValid(parameter)) {
 	    this.parameter = parameter;

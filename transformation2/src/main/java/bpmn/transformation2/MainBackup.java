@@ -1,34 +1,15 @@
 package bpmn.transformation2;
 
+import org.w3c.dom.Element;
+
+import javax.xml.transform.TransformerException;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.camunda.bpm.model.bpmn.Bpmn;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.xml.ModelInstance;
-import org.camunda.bpm.model.xml.impl.util.IoUtil;
-import org.camunda.bpm.model.xml.instance.DomDocument;
-import org.joda.time.LocalDate;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 
 
@@ -186,7 +167,7 @@ public class MainBackup {
     }
     /**
      * 
-     * @param ModelInstance
+     * @param model
      * @param filename
      * @param folderPath
      * @throws IOException 

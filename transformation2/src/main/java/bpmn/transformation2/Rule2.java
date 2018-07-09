@@ -15,9 +15,9 @@ public class Rule2 {
      * @param model
      * @throws XPathExpressionException 
      */
-    public static void applyRule(Model model) throws XPathExpressionException {
+    public static Model applyRule(Model startingModel) throws XPathExpressionException {
 	System.out.println("I'm applying Rule1");
-
+	Model model = startingModel;
 	//TODO make it such that it works with every gateway, not just exclusive ones.
 	NodeList gatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
 	System.out.println("number of " + " gateway instances: " + gatewayInstances.getLength()); //TODO make it work with every gateway type.
@@ -99,6 +99,7 @@ public class Rule2 {
 		}
 	    }
 	}
+	return model;
     }
 
 
