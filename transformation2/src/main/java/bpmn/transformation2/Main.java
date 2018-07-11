@@ -70,9 +70,15 @@ public class Main{
 //	Model output = Rule4.c(test4c);
 //	
 	
-	String m4aR = "./TestGraphs/Rule4aR.bpmn.xml";
-	Model test4aR = new Model(m4aR);
-	Model output = Reverse4.a(test4aR);
+//	String m4aR = "./TestGraphs/Rule4aR.bpmn.xml";
+//	Model test4aR = new Model(m4aR);
+//	Model output = Reverse4.a(test4aR);
+	
+	String m4bR = "./TestGraphs/Rule4bR.bpmn.xml";
+	Model test4bR = new Model(m4bR);
+	Model output = Reverse4.b(test4bR);
+	
+	
 	
 	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	

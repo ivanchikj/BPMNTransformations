@@ -40,26 +40,26 @@ public class Reverse4 {
 
 	    //if it has more than one outgoing Flow then we can add a parallel in there
 	    if (outgoingFlows.size()>1) {
-		
+
 		//Before creating the new parallel gateway, we have to calculate its future position
-		
+
 		ArrayList<Element> successors = model.getSuccessors(task);
-		
+
 		String[] position = model.calculatePositionOfNewNode(task, successors);
-		
+
 		String newParallelID = model.newParallelGateway(position[0], position[1]);
-		
+
 		//finally here's the newly created parallel gateway
 		Element newParall = model.findElemById(newParallelID);
-		
+
 		//let's change the two outgoing flows of our task to have the parallel element as their source
 		for (Element flow : outgoingFlows) {
 		    model.setSource(flow.getAttribute("id"), newParallelID);
 		}
-		
+
 		//let's now create a new flow from the task to the new parallel
 		String newFlowID = model.newSequenceFlow(task.getAttribute("id"), newParallelID);
-		
+
 	    }
 
 	}
@@ -71,60 +71,47 @@ public class Reverse4 {
 
 
     public static Model b(Model startingModel) throws XPathExpressionException {
-	System.out.println("I'm applying Rule4b");
-	//We use the same way that we used in rule3a to distinguish
-	//merges. The difference is that now we WANT merges.
+
+	//TODO scrivi nella tesi 
+	//Ogni volta che vedi una task che ha due incoming, mettici un exclusive gateway merge davanti
+
+	System.out.println("I'm reverting rule 4b");
 
 	Model model = startingModel;
 
-	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
-	System.out.println("Number of exclusiveGateways in the model: " + exclusiveGatewayInstances.getLength());
-	int exclusiveGatewayCounter = 0;
-	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE4b: there are no exclusive gateways in this model");}
+	//TODO spiegare nella tesi perché non si può applicare alle altre cose che non sono task
+	NodeList tasks = model.doc.getElementsByTagName("bpmn:task");
 
-	for (int i = 0; i < exclusiveGatewayInstances.getLength(); i++) {
-	    //this will be the element in case
-	    Element oldExclusiveGateway = (Element) exclusiveGatewayInstances.item(i);
+	for (int i = 0; i < tasks.getLength(); i++) {
+	    Element task = (Element) tasks.item(i);
+	    ArrayList<Element> incomingFlows = model.getIncomingFlows(task);
 
-	    exclusiveGatewayCounter++;
+	    //if it has more than one incoming Flow then we can add a parallel in there
+	    if (incomingFlows.size()>1) {
 
-	    System.out.println("working on the " + exclusiveGatewayCounter + "nd exclusiveGateway");
-	    System.out.println("working on " + oldExclusiveGateway.getAttribute("id"));
-	    System.out.println("The id of the element is " + oldExclusiveGateway.getAttribute("id") );
+		//Before creating the new exclusive gateway, we have to calculate its future position
 
-	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldExclusiveGateway);
-	    ArrayList<Element> incomingFlows = model.getIncomingFlows(oldExclusiveGateway);
+		ArrayList<Element> predecessors = model.getPredecessors(task);
 
-	    //merges are gateways that have more than one incoming flow
-	    //but only one outgoingFlow
-	    if ((incomingFlows.size() > 1 && outgoingFlows.size() == 1 )) { //TODO check if this conditions is actually a solid way to distinguish merges
-		System.out.println(oldExclusiveGateway.getAttribute("id")+ " Is a merge exclusive gateway and will be deleted!");
+		String[] position = model.calculatePositionOfNewNode(predecessors, task);
 
+		String newExclusiveID = model.newExclusiveGateway(position[0], position[1]);
 
-		//let;s find out the successor:
-		ArrayList<Element> successors = model.getSuccessors(oldExclusiveGateway);
-		Element successor = successors.get(0);//we know it's gonna be only one successor, otherwise it would not be a merge
-		//let's delete the outGoingFlow
-		model.delete(outgoingFlows.get(0).getAttribute("id")); //we know it's gonna be only one outgoing flow, otherwise it would not be a merge
+		//finally here's the newly created exclusive gateway
+		Element newExclus = model.findElemById(newExclusiveID);
 
-		//let's connect it's predecessor to one of its followers
-		for (int f = 0; f < incomingFlows.size(); f++) { //TODO think what happens if one of the arrows has attributes. I think it works but let's write this in the thesis.
-		    model.setTarget(incomingFlows.get(f).getAttribute("id"), successor.getAttribute("id"));
+		//let's change the two incoming flows of our task to have the exclusive element as their Target
+		for (Element flow : incomingFlows) {
+		    model.setTarget(flow.getAttribute("id"), newExclusiveID);
 		}
 
-		//let's delete the merge exclusive gateway
-		//NOTE if i delete it before changing the target of flows that were previousy attached to it,
-		//the program will have a problem because it will try to delete child elements from 
-		//an element that doesnt exist anymore
-		//TODO see if you want to change this behavior.
-		//Maybe you want to create another version of SetSource / SetTarget that does not delete child elements?
-		//it would be useful when deleting elements like in this instance, instead of simply changing the direction of a flow
-		model.delete(oldExclusiveGateway.getAttribute("id"));
+		//let's now create a new flow from the task to the new exclusive
+		String newFlowID = model.newSequenceFlow(newExclusiveID, task.getAttribute("id"));
 
-	    } else {
-		System.out.println(oldExclusiveGateway.getAttribute("id")+ " Is a merge exclusive gateway!");
 	    }
+
 	}
+
 
 	return model;
     }

@@ -116,22 +116,22 @@ public class Model {
     public String newInclusiveGateway(String x, String y) { 
 	// PROCESS VIEW
 	String id = newId(); 
-	Element newTask = doc.createElement("bpmn:inclusiveGateway");
-	newTask.setAttribute("id", id);
-	newTask.setAttribute("name", "NEW");
-	process.appendChild(newTask);
+	Element newNode = doc.createElement("bpmn:inclusiveGateway");
+	newNode.setAttribute("id", id);
+	newNode.setAttribute("name", "NEW");
+	process.appendChild(newNode);
 
 	// BPMNDI VIEW
-	Element newGatDI = doc.createElement("bpmndi:BPMNShape");
+	Element newNodeDI = doc.createElement("bpmndi:BPMNShape");
 	//bpmndiDiagram.appendChild(newGatDI);
-	newGatDI.setAttribute("bpmnElement", id);
-	newGatDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	newNodeDI.setAttribute("bpmnElement", id);
+	newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
 	System.out.println("		I created a new Inclusive Gateway with the id " + id);
 
 	Element size = doc.createElement("dc:Bounds");
-	bpmndiPlane.appendChild(newGatDI);
+	bpmndiPlane.appendChild(newNodeDI);
 
-	newGatDI.appendChild(size);
+	newNodeDI.appendChild(size);
 	size.setAttribute("height", "50");
 	size.setAttribute("width", "50");
 	size.setAttribute("x", x);
@@ -144,22 +144,50 @@ public class Model {
 
 	// PROCESS VIEW
 	String id = newId(); 
-	Element newTask = doc.createElement("bpmn:parallelGateway");
-	newTask.setAttribute("id", id);
-	newTask.setAttribute("name", "NEW");
-	process.appendChild(newTask);
+	Element newNode = doc.createElement("bpmn:parallelGateway");
+	newNode.setAttribute("id", id);
+	newNode.setAttribute("name", "NEW");
+	process.appendChild(newNode);
 
 	// BPMNDI VIEW
-	Element newGatDI = doc.createElement("bpmndi:BPMNShape");
+	Element newNodeDI = doc.createElement("bpmndi:BPMNShape");
 	//bpmndiDiagram.appendChild(newGatDI);
-	newGatDI.setAttribute("bpmnElement", id);
-	newGatDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	newNodeDI.setAttribute("bpmnElement", id);
+	newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
 	System.out.println("		I created a new Parallel Gateway with the id " + id);
 
 	Element size = doc.createElement("dc:Bounds");
-	bpmndiPlane.appendChild(newGatDI);
+	bpmndiPlane.appendChild(newNodeDI);
 
-	newGatDI.appendChild(size);
+	newNodeDI.appendChild(size);
+	size.setAttribute("height", "50");
+	size.setAttribute("width", "50");
+	size.setAttribute("x", x);
+	size.setAttribute("y", y);
+	return id;
+    }
+    
+    
+    public String newExclusiveGateway(String x, String y) {
+
+	// PROCESS VIEW
+	String id = newId(); 
+	Element newNode = doc.createElement("bpmn:exclusiveGateway");
+	newNode.setAttribute("id", id);
+	newNode.setAttribute("name", "NEW");
+	process.appendChild(newNode);
+
+	// BPMNDI VIEW
+	Element newNodeDI = doc.createElement("bpmndi:BPMNShape");
+	//bpmndiDiagram.appendChild(newGatDI);
+	newNodeDI.setAttribute("bpmnElement", id);
+	newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	System.out.println("		I created a new Parallel Gateway with the id " + id);
+
+	Element size = doc.createElement("dc:Bounds");
+	bpmndiPlane.appendChild(newNodeDI);
+
+	newNodeDI.appendChild(size);
 	size.setAttribute("height", "50");
 	size.setAttribute("width", "50");
 	size.setAttribute("x", x);
@@ -348,7 +376,7 @@ public class Model {
      * And we place the new element in the average of the two averages.
      * 
      *
-     * TODO this is not tested nor finished
+     * TODO explain this in the thesis
      *  
      * @param predecessorId
      * @param successorId
@@ -369,7 +397,7 @@ public class Model {
 	//let's calculate the average positions of the predecessors on the Y axis
 	int avgPredY = 0;
 	for (Element predecessor : predecessors) {
-	    avgPredX += Double.parseDouble(getPosition(predecessor)[1]);
+	    avgPredY += Double.parseDouble(getPosition(predecessor)[1]);
 	}
 	avgPredY = avgPredY/predecessors.size();
 
@@ -390,7 +418,7 @@ public class Model {
 
 
 	String[] positions = new String[2];
-	positions[0] = "" + (avgPredX+avgSuccX)/2; //not super precise but who cares?
+	positions[0] = "" + (avgPredX+avgSuccX)/2; //not super precise but enough for our scope
 	positions[1] = "" + (avgPredY+avgSuccY)/2;
 
 	return positions;
