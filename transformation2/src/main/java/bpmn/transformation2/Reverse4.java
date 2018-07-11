@@ -1,70 +1,82 @@
 package bpmn.transformation2;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.sun.mail.handlers.image_gif;
+
+import javax.print.Doc;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+
 import java.util.ArrayList;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.model.bpmn.instance.ExclusiveGateway;
 import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class Rule4 {
 
+
+public class Reverse4 {
+
+
+    //TODO scrivi nella tesi ogni volta che vedi una task che ha due outgoingFlows, crea un parallel davanti e usa quello come split"
 
     public static Model a(Model startingModel) throws XPathExpressionException {
-	System.out.println("I'm applying rule 4a");
-	
+	System.out.println("I'm reverting rule 4a");
+
 	Model model = startingModel;
-	
-	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
-	System.out.println("Number of parallelGateways in the model: " + parallelGatewayInstances.getLength());
-	int parallelGatewayCounter = 0;
 
-	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
-	    Element oldParallelGateway = (Element) parallelGatewayInstances.item(i);
-	    parallelGatewayCounter++;
+	//TODO spiegare nella tesi perché non si può applicare alle altre cose.
+	NodeList tasks = model.doc.getElementsByTagName("bpmn:task");
 
-	    System.out.println("working on the " + parallelGatewayCounter + "nd parallelGateway");
-	    System.out.println("working on " + oldParallelGateway.getAttribute("id"));
-	    System.out.println("The id of the element is " + oldParallelGateway.getAttribute("id") );
+	for (int i = 0; i < tasks.getLength(); i++) {
+	    Element task = (Element) tasks.item(i);
+	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
-	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldParallelGateway);
-	    ArrayList<Element> incomingFlows = model.getIncomingFlows(oldParallelGateway);
-
-	    if ((incomingFlows.size() == 1)) { //TODO check if this conditions is actually a solid way to distinguish merges
-		System.out.println(oldParallelGateway.getAttribute("id")+ " has only one incoming flow and the rule 4a can be applied");
+	    //if it has more than one outgoing Flow then we can add a parallel in there
+	    if (outgoingFlows.size()>1) {
 		
-		//let's find out the predecessor
-		ArrayList<Element> predecessors = model.getPredecessors(oldParallelGateway);
-		Element predecessor = predecessors.get(0); //we know there's gonna be only one
+		//Before creating the new parallel gateway, we have to calculate its future position
 		
-		//let's connect the successors to it's predecessor
-		//TODO think what happens if one of the arrows has attributes. I think it works but let's write this in the thesis.
-		for (int f = 0; f < outgoingFlows.size(); f++) {
-		    model.setSource(outgoingFlows.get(f).getAttribute("id"), predecessor.getAttribute("id"));
+		ArrayList<Element> successors = model.getSuccessors(task);
+		
+		String[] position = model.calculatePositionOfNewNode(task, successors);
+		
+		String newParallelID = model.newParallelGateway(position[0], position[1]);
+		
+		//finally here's the newly created parallel gateway
+		Element newParall = model.findElemById(newParallelID);
+		
+		//let's change the two outgoing flows of our task to have the parallel element as their source
+		for (Element flow : outgoingFlows) {
+		    model.setSource(flow.getAttribute("id"), newParallelID);
 		}
-		//let's remember to delete the useless sequenceFlow
-		model.delete(incomingFlows.get(0).getAttribute("id"));
 		
-		model.delete(oldParallelGateway.getAttribute("id"));//TODO make the method "delete" take an Element as an input
+		//let's now create a new flow from the task to the new parallel
+		String newFlowID = model.newSequenceFlow(task.getAttribute("id"), newParallelID);
 		
-	    } else {
-		System.out.println(oldParallelGateway.getAttribute("id") + " has more than one incoming flow thus rule4a cannot be applied!");
 	    }
+
 	}
-    return model;
+
+
+	return model;
     }
-    
-    
-    
+
+
+
     public static Model b(Model startingModel) throws XPathExpressionException {
 	System.out.println("I'm applying Rule4b");
 	//We use the same way that we used in rule3a to distinguish
 	//merges. The difference is that now we WANT merges.
 
 	Model model = startingModel;
-	
+
 	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
 	System.out.println("Number of exclusiveGateways in the model: " + exclusiveGatewayInstances.getLength());
 	int exclusiveGatewayCounter = 0;
@@ -113,16 +125,16 @@ public class Rule4 {
 		System.out.println(oldExclusiveGateway.getAttribute("id")+ " Is a merge exclusive gateway!");
 	    }
 	}
-    
-    return model;
+
+	return model;
     }
-    
-    
+
+
     public static Model c(Model startingModel) throws XPathExpressionException {
 	System.out.println("I'm applying rule 4c");
-	
+
 	Model model = startingModel;
-	
+
 	NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:inclusiveGateway");
 	System.out.println("Number of inclusiveGateways in the model: " + inclusiveGatewayInstances.getLength());
 	int inclusiveGatewayCounter = 0;
@@ -140,11 +152,11 @@ public class Rule4 {
 
 	    if ((incomingFlows.size() == 1)) { //TODO check if this conditions is actually a solid way to distinguish merges
 		System.out.println(oldInclusiveGateway.getAttribute("id")+ " has only one incoming flow and the rule 4a can be applied");
-		
+
 		//let's find out the predecessor
 		ArrayList<Element> predecessors = model.getPredecessors(oldInclusiveGateway);
 		Element predecessor = predecessors.get(0); //we know there's gonna be only one
-		
+
 		//let's connect the successors to it's predecessor
 		//TODO think what happens if one of the arrows has attributes. I think it works but let's write this in the thesis.
 		for (int f = 0; f < outgoingFlows.size(); f++) {
@@ -158,14 +170,11 @@ public class Rule4 {
 		//let's remember to delete the useless sequenceFlow
 		model.delete(incomingFlows.get(0).getAttribute("id"));
 		model.delete(oldInclusiveGateway.getAttribute("id"));//TODO make the method "delete" take an Element as an input
-		
+
 	    } else {
 		System.out.println(oldInclusiveGateway.getAttribute("id") + " has more than one incoming flow thus rule4a cannot be applied!");
 	    }
 	}
-    return model;
+	return model;
     }
-    
 }
-
-

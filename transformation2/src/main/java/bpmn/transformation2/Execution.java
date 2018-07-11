@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.camunda.bpm.engine.impl.cmd.ExecuteFilterCountCmd;
@@ -17,9 +18,9 @@ public class Execution {
 
 
     public String input;
-    public String path;
-    public ArrayList<Model> startingModels;
-    public ArrayList<Parameter> parameters;
+    private String path;
+    private ArrayList<Model> startingModels;
+    private ArrayList<Parameter> parameters;
     public ArrayList<Transformation> activities;
     public ArrayList<Model> resultingModels;
     public Report report;
@@ -31,22 +32,22 @@ public class Execution {
 	//From input, let's get parameters and an array of models
 	this.input = input;
 
-	String[] pathAndParameters = separatePathAndParamters(input);
+	String[] pathAndParameters = separatePathAndParameters(input);
 	this.path = pathAndParameters[0];
 	findParameters(pathAndParameters[1]);
-	initalizeModels(path);
+	initializeModels(path);
 	Report report = new Report();
-	//TODO initalize the report
+	//TODO initialize the report
 
     }
 
     /**
      * TODO what if the path of a file contains " -" ??
-     * @param input
+     * @param input: user-provided input String
      * @return the path part of the string will be in position [0] while the params in string form will be in [1]
      */
-    private String[] separatePathAndParamters (String input) {
-	String path = "";
+    private String[] separatePathAndParameters (String input) {
+	String path;
 	String params = "";
 
 	//in case there are no parameters:
@@ -65,9 +66,7 @@ public class Execution {
 	return pathAndParams;
     }
 
-
-
-    public void initalizeModels (String path) throws IOException, SAXException, ParserConfigurationException {
+    public void initializeModels (String path) throws IOException, SAXException, ParserConfigurationException {
 
 	if (path.contains(".bpmn.xml")) {
 	    //it means we are getting a single file
@@ -93,8 +92,8 @@ public class Execution {
 
 
     //TODO make it more resistant to user mistakes, or remember to specify in the help to add a 'space' before every parameter
-    public void findParameters (String paramsWholeString) {
-
+	private void findParameters(String paramsWholeString) {
+	    
 	//let's separate the parameters between each other
 	ArrayList<String> paramStrings = new ArrayList<String>();
 
@@ -103,8 +102,8 @@ public class Execution {
 	//System.out.println("i have removed the empty space and now it looks like this: " + paramsString);
 
 	while (paramsWholeString.contains("-")) {
-	    String param = "";
-	    if (paramsWholeString.indexOf(" ")!= -1) {
+	    String param;
+	    if (paramsWholeString.contains(" ")) {
 		//it means it is not the last parameter
 		param = paramsWholeString.substring(paramsWholeString.indexOf("-"), paramsWholeString.indexOf(" "));
 		//System.out.println("param i have found " + param);
@@ -128,9 +127,6 @@ public class Execution {
 	}
     }
 
-
-
-
     /**
      * TODO does this have to be static?
      * TODO TEST THIS
@@ -138,7 +134,7 @@ public class Execution {
      * @return 
      * @throws XPathExpressionException 
      */
-    public static boolean modelsAreDifferent(Model a, Model b) throws XPathExpressionException {
+    static boolean modelsAreDifferent(Model a, Model b) throws XPathExpressionException {
 
 	System.out.println("I'm comparing two models.");
 
@@ -188,26 +184,29 @@ public class Execution {
 
 		    if (pathA.get(i) != pathB.get(i)) {
 			System.out.println("This node is of a different type");
-			foundAMatch = false;
+			//foundAMatch = false;
 		    }
 		}
 	    }
 
 	    //if I have gone through all paths in B and I havent found a match, the two models are different
 	    if (foundAMatch == false) {
+		System.out.println("The two models are different"); //UNLOCKTHIS for testing
 		return true;
 	    }
 	}
+	
 	//if I haven't returned false up until now, then it must mean that the two models are the same
+	System.out.println("The two models are the same"); //UNLOCKTHIS for testing
 	return false;
     }
 
-    //TODO do I also have to compare flows instead of just nodes?
+    //ASKANA do I also have to compare flows instead of just nodes?
     //I guess I do.
-    //But maybe I dont because I have no rule that changes just flows without changing nodes.
+    //But maybe I don't because I have no rule that changes just flows without changing nodes.
     /**
      * This method changes an array of elements into an array of tag types
-     * @param path
+     * @param path a path in the BPMN sense from an arbitrary node to the end of the path.
      * @return
      */
     private static ArrayList<String> fromElementToTypes (ArrayList<Element> path){
@@ -221,14 +220,24 @@ public class Execution {
 	return sequenceOfTypes;
     }
 
+    
     /**
-     * Used for all tipes of files, both the models and the Report
-     * TODO
-     * @param file
+     * 
+     * @param model
+     * @param filename
+     * @param folderPath
+     * @throws IOException 
+     * @throws TransformerException 
      */
-    public void saveFile (File file) {
+    public static void saveModelToFile(Model model, String filename, String folderPath, String rulesApplied) throws TransformerException {
 
+	//TODO remember to add rules applied like here: String newFilePath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
+	String outputFilepath = "./TestGraphs/output/Test.bpmn.xml"; //TODO this is wrong
+	
+	model.saveToFile(outputFilepath);
     }
+    
+    
 
 
 }

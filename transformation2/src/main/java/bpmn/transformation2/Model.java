@@ -41,7 +41,6 @@ public class Model {
     //TODO fare metodo che prende un gateway e controlla se è un merge. Mi serve in più di una regola mi sa. Quindi è meglio metterlo qua
 
     /**
-     * 
      * @param path
      * @return 
      * @throws IOException
@@ -50,7 +49,7 @@ public class Model {
      */
     public Model(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
 	System.out.println("New model instance: ");
-	
+
 	this.path = path;
 	// Xpath needed to easily interact with XMLs
 	XPathFactory xPathFactory = XPathFactory.newInstance();
@@ -81,8 +80,7 @@ public class Model {
     /**
      * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
      * isForCompensation="false" startQuantity="1", li devo aggiungere?
-     * 
-     * 
+     *
      * @return the id of the newTask
      * @throws ParserConfigurationException 
      * @throws IOException 
@@ -112,7 +110,7 @@ public class Model {
 	size.setAttribute("x", x);
 	size.setAttribute("y", y); // TODO Decide on how to calculate this.
 	return id;
-    } // ritorna l'id ? Forse è meglio void?
+    }
 
 
     public String newInclusiveGateway(String x, String y) { 
@@ -125,7 +123,7 @@ public class Model {
 
 	// BPMNDI VIEW
 	Element newGatDI = doc.createElement("bpmndi:BPMNShape");
-	bpmndiDiagram.appendChild(newGatDI);
+	//bpmndiDiagram.appendChild(newGatDI);
 	newGatDI.setAttribute("bpmnElement", id);
 	newGatDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
 	System.out.println("		I created a new Inclusive Gateway with the id " + id);
@@ -142,48 +140,83 @@ public class Model {
 
     }
 
-    /**
-     * 
-     * @param type
-     * @return
-     * @throws Exception
-     */
-    public String newNode(String type, String x, String y) throws Exception {
+    public String newParallelGateway(String x, String y) {
 
+	// PROCESS VIEW
+	String id = newId(); 
+	Element newTask = doc.createElement("bpmn:parallelGateway");
+	newTask.setAttribute("id", id);
+	newTask.setAttribute("name", "NEW");
+	process.appendChild(newTask);
 
-	// This checks that the provided type is a true BPMN type and applies the relative method
-	String id = null;
-	if (type.equals("bpmn:task")){
-	    id = this.newTask(x, y);
-	} else if (type.equals("bpmn:inclusiveGateway")) {
-	    id = this.newInclusiveGateway(x, y);
-	} else {
-	    System.err.println("		" + type + " is not a valid BPMN type");
-	}
-	System.out.println("		I created a new element of type " + type + " and with the id " + id);
-	doc.normalizeDocument();// dont know if this is useful
-	if (id.equals(null)) {} // Decide how to check that the newly created element's id is not null.
-	//Maybe this is also a way to discover if this is not a valid BPMN type.
+	// BPMNDI VIEW
+	Element newGatDI = doc.createElement("bpmndi:BPMNShape");
+	//bpmndiDiagram.appendChild(newGatDI);
+	newGatDI.setAttribute("bpmnElement", id);
+	newGatDI.setAttribute("id", id + "_di"); // I don't know if this is mandatory
+	System.out.println("		I created a new Parallel Gateway with the id " + id);
+
+	Element size = doc.createElement("dc:Bounds");
+	bpmndiPlane.appendChild(newGatDI);
+
+	newGatDI.appendChild(size);
+	size.setAttribute("height", "50");
+	size.setAttribute("width", "50");
+	size.setAttribute("x", x);
+	size.setAttribute("y", y);
 	return id;
     }
 
+    
+    
     /**
      * TODO manage BPMNDI TODO give option to create with a condition. Like, "if
      * condition is null, then apply none".
      * 
-     * @param source
-     * @param target
+     * @param sourceID
+     * @param targetID
      * @return
+     * @throws XPathExpressionException 
      */
-    public String newSequenceFlow(String source, String target) {
-	String id = newId();// TODO
+    public String newSequenceFlow(String sourceID, String targetID) throws XPathExpressionException {
+	String id = newId();
 	Element flow = doc.createElement("bpmn:sequenceFlow");
-	flow.setAttribute("sourceRef", source);
-	flow.setAttribute("TargetRef", target);
-	System.out.println("		I created a new SequenceFlow with the id " + id + " and the source " + source
-		+ " and the target " + target);
+	flow.setAttribute("id", id);
+	flow.setAttribute("sourceRef", sourceID);
+	flow.setAttribute("targetRef", targetID);
+	process.appendChild(flow);
+	
+	//BPMNDI
+	Element newFlowDI = doc.createElement("bpmndi:BPMNEdge");
+	bpmndiPlane.appendChild(newFlowDI);
+	newFlowDI.setAttribute("bpmnElement", id);
+	newFlowDI.setAttribute("id", id+"_di");
+	System.out.println("		I created a new SequenceFlow with the id " + id + " and the source " + sourceID
+		+ " and the target " + targetID);
+	
+	Element source = findElemById(sourceID);
+	Element target = findElemById(targetID);
+	
+
+//	//TODO fare un metodo per avere altezza, larghezza, e posizione di un elemento a partire da un ELEMENT e in una hashmap.
+//	//Perché così è brutto.
+
+	Element sourceWP = doc.createElement("di:waypoint");
+
+	Element targetWP = doc.createElement("di:waypoint");
+
+	newFlowDI.appendChild(sourceWP);
+	newFlowDI.appendChild(targetWP);
+	
+	setSource(id, sourceID);
+	setTarget(id, targetID);
+	
 	return id;
     }
+    
+ 
+
+
 
     /**
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
@@ -306,6 +339,78 @@ public class Model {
 	String [] coordinates = {dcBounds.getAttribute("x"), dcBounds.getAttribute("y")}; 
 	return coordinates;
     }    
+
+    /**
+     * This method calculates the x and y positions of a new element based on the position of its predecessors
+     * It will be useful when placing new elements based on the position of the predecessor and the successor.
+     * If as it often happens an element has more than one predecessor and more than one successor,
+     * first we calculate the average position of the successors, then the average position of the predecessors
+     * And we place the new element in the average of the two averages.
+     * 
+     *
+     * TODO this is not tested nor finished
+     *  
+     * @param predecessorId
+     * @param successorId
+     * @return positions, the coordinates of the X axis are in the [0] position while the y information is
+     *  stored on the [1] position
+     * @throws NumberFormatException 
+     * @throws XPathExpressionException 
+     */
+    public String[] calculatePositionOfNewNode(ArrayList<Element> predecessors, ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException {
+
+	//let's calculate the average positions of the predecessors on the X axis
+	int avgPredX = 0;
+	for (Element predecessor : predecessors) {
+	    avgPredX += Double.parseDouble(getPosition(predecessor)[0]);
+	}
+	avgPredX = avgPredX/predecessors.size();
+
+	//let's calculate the average positions of the predecessors on the Y axis
+	int avgPredY = 0;
+	for (Element predecessor : predecessors) {
+	    avgPredX += Double.parseDouble(getPosition(predecessor)[1]);
+	}
+	avgPredY = avgPredY/predecessors.size();
+
+
+	//let's calculate the average positions of the successors on the X axis
+	int avgSuccX = 0;
+	for (Element successor : successors) {
+	    avgSuccX += Double.parseDouble(getPosition(successor)[0]);
+	}
+	avgSuccX = avgSuccX/successors.size();
+
+	//let's calculate the average positions of the successors on the Y axis
+	int avgSuccY = 0;
+	for (Element successor : successors) {
+	    avgSuccY += Double.parseDouble(getPosition(successor)[1]);
+	}
+	avgSuccY = avgSuccY/successors.size();
+
+
+	String[] positions = new String[2];
+	positions[0] = "" + (avgPredX+avgSuccX)/2; //not super precise but who cares?
+	positions[1] = "" + (avgPredY+avgSuccY)/2;
+
+	return positions;
+    }
+
+    //Allowing for different situations, different inputs:
+    public String[] calculatePositionOfNewNode(ArrayList<Element> predecessors, Element successor) throws NumberFormatException, XPathExpressionException{
+	ArrayList<Element> successors = new ArrayList<Element>();
+	successors.add(successor);
+	String[] positions = calculatePositionOfNewNode(predecessors, successors);
+	return positions;
+    }
+    public String[] calculatePositionOfNewNode(Element predecessor, ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException{
+	ArrayList<Element> predecessors = new ArrayList<Element>();
+	predecessors.add(predecessor);
+	String[] positions = calculatePositionOfNewNode(predecessors, successors);
+	return positions;
+    }
+
+
 
     /**
      * TODO cambialo per avere due element invece di due id come parametri
@@ -512,15 +617,34 @@ public class Model {
 
     /**
      * Returns the type (tagname) of an element
-     * 
+     * TODO maybe this can be deleted. See which methods use it
      * @param id
      * @return
      */
     public String getType(String id) {
 	String type = doc.getElementById(id).getTagName();
-	System.out.println("		The type of element " + id + " is ");
 	return type;
     }
+
+
+    //TODO this would be better if I had a class sequenceFlow    
+    public Element getSource (Element sequenceFlow) throws XPathExpressionException {
+
+	String targetID = sequenceFlow.getAttribute("targetRef");
+	Element target = findElemById(targetID);
+	return target;
+
+    }
+
+    //TODO this would be better if I had a class sequenceFlow
+    public Element getTarget (Element sequenceFlow) throws XPathExpressionException {
+
+	String sourceID = sequenceFlow.getAttribute("sourceRef");
+	Element source = findElemById(sourceID);
+	return source;
+
+    }
+
 
     /**
      * TODO see if this works just as well as deleteElement This is much simpler
@@ -532,14 +656,72 @@ public class Model {
     public void delete(String id) throws XPathExpressionException {
 	System.out.println("		I'm deleting the element with id " + id);
 	Element elementToDelete = findElemById(id);
+	String type = elementToDelete.getTagName();
+
+
+	//If the element is a sequence flow, we also need to delete it from it's target / source children	
+	if (type == "bpmn:sequenceFlow") {
+	    //Finding the parents
+	    Element oldSource = getSource(elementToDelete);
+	    Element oldTarget = getTarget(elementToDelete);
+	    //removingTheElement
+	    deleteFlowFromOldSourceorTarget(elementToDelete, oldSource);
+	    deleteFlowFromOldSourceorTarget(elementToDelete, oldTarget);
+
+	}
+
+
+
+
+
+
+
+
+
+
+	//from the PROCESS
 	elementToDelete.getParentNode().removeChild(elementToDelete);
 	System.out.println("		I've deleted the element with id " + id);
 
+	//FROM THE BPMNDI
 	Element bpmndiElementToDelete = findBPMNDI(id);
 	System.out.println(bpmndiElementToDelete.getAttribute("bpmnElement"));
 	bpmndiElementToDelete.getParentNode().removeChild(bpmndiElementToDelete);
 
+
+
     }
+
+
+    //TODO use this inside the SetSource and SetTarget methods.
+    public void deleteFlowFromOldSourceorTarget (Element sequenceFlow, Element oldSourceOrTarget) {
+	if (sequenceFlow.getTagName() != "bpmn:sequenceFlow") {
+	    System.out.println("This method is only for sequenceFlows");
+	} else if (sequenceFlow.getTagName() == "bpmn:sequenceFlow") {
+	    String id = sequenceFlow.getAttribute("id");
+	    if (oldSourceOrTarget.hasChildNodes()) { //This is expected to be always true anyway
+		NodeList childList = oldSourceOrTarget.getChildNodes();
+		for (int i = 0; i < childList.getLength(); i++) {
+		    Node childInCase = childList.item(i);
+		    String textContentString = childInCase.getTextContent();
+		    System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		    System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		    //TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+		    //be checked in case the task is both the source and the target of a SequenceFlow!
+		    if (textContentString.equals(id)){
+			childInCase.getParentNode().removeChild(childInCase);
+			System.out.println("		I have found the child that I want to delete!!");
+			//TODO if you want, find a way to remove the blank space that gets created
+		    }
+
+		}
+
+	    }       
+	}
+    }
+
+
+
     /**
      * Replace the old element with the new.
      * In principle, nothing else should be affected (i.e. the incoming / outgoing sequenceFlows)
@@ -743,36 +925,9 @@ public class Model {
 
     }
 
-    /**
-     * This method calculates the x and y positions of a new element based on the position of its predecessors
-     * The method simply calculates the position as the average of the old elements on both axis
-     * the x position will be the first position of the array[0], while the y information is stored on the [1] position 
-     * 
-     * 
-     * TODO this is not tested nor finished
-     * 
-     * 
-     * @param predecessorId
-     * @param successorId
-     * @return
-     * @throws XPathExpressionException 
-     */
-    public String[] calculatePosition(String predecessorId, String successorId) throws XPathExpressionException {
-	Node predecessorBpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + predecessorId + "']", doc, XPathConstants.NODE);
-	Node successorBpmndi = (Node) xpath.evaluate("//*[@bpmnElement='" + successorId + "']", doc, XPathConstants.NODE);
-	// Predecessor position
-	int predX = Integer.parseInt(((Element) predecessorBpmndi.getFirstChild()).getAttribute("x")); //TODO getFirstChild does not works. use Xpath
-	int predY = Integer.parseInt(((Element) predecessorBpmndi.getFirstChild()).getAttribute("y")); //TODO getFirstChild does not works. use Xpath
-	// Successor position
-	int succX = Integer.parseInt(((Element) successorBpmndi.getFirstChild()).getAttribute("x")); //TODO getFirstChild does not works. use Xpath
-	int succY = Integer.parseInt(((Element) successorBpmndi.getFirstChild()).getAttribute("y")); //TODO getFirstChild does not works. use Xpath
 
-	String[] positions = new String[2];
-	positions[0] = "" + (predX+succX)/2; //not super precise but who cares?
-	positions[1] = "" + (predY+succY)/2;
 
-	return positions;
-    }
+
 
     /**
      * This method creates the waypoints used in the BPMNDI to position the sequenceFlows

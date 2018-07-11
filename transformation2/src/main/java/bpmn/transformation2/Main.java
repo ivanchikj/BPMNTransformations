@@ -3,53 +3,121 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
 
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class Main{
 
 
     private static String input;
-    public static String[] validParameters = {"1", "2" ,"3", "4", "R1", "R2", "R3", "R4"};
+    public static String[] validParameters = {"1", "2" , "3", "3a", "3b", "3c", "4", "4a", "4b", "4c", "R1", "R2", "R3", "R3a", "R3b", "R3c", "R4", "R4a", "R4b", "R4c",};
     private static Scanner reader = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException{
+    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException{
 
+	
+	
+	//input = ""; //default behavior when not testing
+	
+	input = "testing"; //UNLOCKTHIS used only to go in the manual testing method
+	
+	analyzeInput(input);
+    }
+
+    
+    /**
+     * This method allows me to easily test any public method
+     * @throws ParserConfigurationException 
+     * @throws SAXException 
+     * @throws IOException 
+     * @throws XPathExpressionException 
+     * @throws TransformerException 
+     */
+    public static void manualTest() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException {
 	//String input = "./TestGraphs/rule1parallel.bpmn.xml";
 	//String input = "./TestGraphs/rule1recursive.bpmn.xml";
 	//String input = "./TestGraphs/rule2exclusiveConditions.bpmn.xml";
 	//String input = "./TestGraphs/Rule3a.bpmn.xml";
 	//String input = "./TestGraphs/Rule3b.bpmn.xml";
-	//String input = "./TestGraphs/Rule4a.bpmn.xml";
+	
 	//String input = "./TestGraphs/Rule4b.bpmn.xml";
 	//String input = "./TestGraphs/Rule4c.bpmn.xml";
 	//String input = "./TestGraphs/TravelingTest.bpmn.xml";
 	//input = "./TestGraphs/multiple/"; //Testing more than one file.
+	
+//	String original = "./TestGraphs/DifferenceDetectingTest/Original.bpmn.xml"; 
+//	String different1 = "./TestGraphs/DifferenceDetectingTest/slightlyDifferent.bpmn.xml";
+//	String different2 = "./TestGraphs/DifferenceDetectingTest/different.bpmn.xml";
+//	String same = "./TestGraphs/DifferenceDetectingTest/same.bpmn.xml";
+//	String identical = "./TestGraphs/DifferenceDetectingTest/originalVariant.bpmn.xml";
 
-	input = ""; //default behavior when not testing
+	
+//	String m4a = "./TestGraphs/Rule4a.bpmn.xml";
+//	Model test4a = new Model(m4a);
+//	Model output = Rule4.a(test4a);
+	
+	
+//	String m4b = "./TestGraphs/Rule4b.bpmn.xml";
+//	Model test4b = new Model(m4b);
+//	Model output = Rule4.b(test4b);
 
-	analyzeInput(input); 
-
+	
+//	String m4c = "./TestGraphs/Rule4c.bpmn.xml";
+//	Model test4c = new Model(m4c);
+//	Model output = Rule4.c(test4c);
+//	
+	
+	String m4aR = "./TestGraphs/Rule4aR.bpmn.xml";
+	Model test4aR = new Model(m4aR);
+	Model output = Reverse4.a(test4aR);
+	
+	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
+	
+//	Model orgnl = new Model(original);
+//	Model diff1 = new Model(different1);
+//	Model diff2 = new Model(different2);
+//	Model sameModel = new Model(same);
+	//Model identicModel = new Model(identical);
+	//Element startingPointElement = orgnl.findElemById("StartEvent_1");
+	
+	//TravelAgency travelAgency = new TravelAgency(orgnl);
+	
+	//travelAgency.getPaths();
+	
+	//Execution.modelsAreDifferent(orgnl, identicModel);
+	
+	
+	
+	
+	
     }
-
+    
+    
     /**
      * Analyze input and decide
      * If we want to ask the user or not (maybe we are testing an hardcoded input)
      * If we want to print the user guide or not
-     * @param input
+     * @param input user-provided String containing the path of the input model(s) and facultative parameters
      * @throws ParserConfigurationException 
      * @throws SAXException 
      * @throws IOException 
+     * @throws XPathExpressionException 
+     * @throws TransformerException 
      */
-    private static void analyzeInput(String input) throws IOException, SAXException, ParserConfigurationException {
+    private static void analyzeInput(String input) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException {
 	System.out.println("Analizyng user input: " + input);
 	
 	if ( input.equals("") ){ //This is always expected to be true except when testing something.
 	    input = askForInput();
 	    analyzeInput(input);
-	}
-
-	if (input.equalsIgnoreCase("help")) {
+	} else if (input.equals("testing")) {
+	    System.out.println("This is a manual test!");
+	    manualTest();
+	    reader.close();    
+	} else if (input.equalsIgnoreCase("help")) {
 	    printHelp();
 	    input = askForInput();
 	    analyzeInput(input);
@@ -72,19 +140,28 @@ public class Main{
 	System.out.println("The resulting files will be saved in a subfolder of the current "
 		+ "path called 'output' alongside a report of the execution.");
 	System.out.println();
+	System.out.println();
 	System.out.print("LIST OF POSSIBLE PARAMETERS: ");
+	System.out.println();
 	for (int i = 0; i < validParameters.length; i++ ) {
 	    System.out.print("-" + validParameters[i] + " ");
 	}//the list of parameters is extrapolated from the actual array of strings, otherwise we could
 	//have differences between the list in help and the actual list
 	System.out.println();
 	System.out.println();
-	System.out.println("WARNING: the parameter has to be preceded by a blank space '_' and a dash");
-	System.out.println("	GOOD: './ExampleFolder/exampleModel.bpmn.xml -1 -R2'" );
+	System.out.println();
+	System.out.println("WARNING: the parameter has to be preceded by a blank space '_' and a dash:");
+	//TODO you probably can avoid this limitation by transforming every string in one without spaces and then changing the algorithm that you have
+	System.out.println();
+	System.out.println("	CORRECT: './ExampleFolder/exampleModel.bpmn.xml -1 -R2 -3a'" );
 	System.out.println("	WRONG: './ExampleFolder/exampleModel.bpmn.xml-1-R2'" );
 	System.out.println("	WRONG: './ExampleFolder/exampleModel.bpmn.xml -1-R2'" );
 	System.out.println();
-	System.out.println(" - - - - - - - - - - - - - - -- - - - - - - - - - ");
+	System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - - ");
+	
+	//TODO add more details on the behavior of the program, like in the slides. (EG mention recursivity, the behavior when having no parameters etc)
+	//TODO insert an URL with a detailed guide (could be the readme on github)
+	//In that guide the transformations done by the rules (with Ana's images) should be displayed
     }
 
     /**
@@ -93,8 +170,8 @@ public class Main{
      */
     private static String askForInput() {
 	
-	System.out.println("Please enter the path of the file(s) you want to transform. "
-		+ "Type 'help' to display the list of parameters.");
+	System.out.println("Please enter the path of the file(s) you want to transform.");
+	System.out.println("Type 'help' to display the list of parameters or if this is your first time using the program.");
 	String input = reader.next();
 	//reader.close();
 	System.out.println("Reading user input: " + input);

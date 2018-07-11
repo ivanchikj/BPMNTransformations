@@ -21,7 +21,6 @@ public class Rule3 {
     public static void a(Model model) throws Exception {
 	System.out.println("I'm applying Rule3a");
 
-	// TODO decide on this:
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
@@ -39,17 +38,15 @@ public class Rule3 {
 	    // Reason: After the gateway gets deleted from the model, it also gets deleted from parallelGatewayInstances
 	    // For some reason. The problem is that now the element at index 1 is now at index 0.
 	    // That why we use the same index every time until the list is empty.
-	    // TODO decide if I want to change that to be more intuitive
 	    
 
 	    System.out.println("working on the " + (i+1) + "nd parallelGateway");
-	    System.out.println("working on " + oldParallel.getAttribute("id"));
 	    System.out.println("The id of the element is " + oldParallel.getAttribute("id") );
 
 	    String[] oldParallelCoordinates = model.getPosition(oldParallel);
 
 	    // creating the substitute element in the position of the old one
-	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
+	    String newInclusiveGatewayId = model.newInclusiveGateway(oldParallelCoordinates[0], oldParallelCoordinates[1]);
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 	    model.replaceELement(oldParallel, newInclusiveGateway); 
 
@@ -68,7 +65,7 @@ public class Rule3 {
 
 	    //merges are gateways that have more than one incoming flow
 	    //but only one outgoingFlow
-	    if (!(incomingFlows.size() > 1 && outgoingFlows.size() == 1 )) { //TODO check if this conditions is actually a solid way to distinguish merges
+	    if (!(incomingFlows.size() > 1 && outgoingFlows.size() == 1 )) {
 		//then it's not a merge
 		//we can thus change its outgoingFlows conditions:
 		System.out.println("This is a not a merge. Its outgoingFlows will be changed");
@@ -77,14 +74,14 @@ public class Rule3 {
 		//inside model.java
 		//And one that creates a bpmn:conditionExpression element, inside newNode
 		for (int f = 0; f < outgoingFlows.size(); f++) {
-		    Element element = outgoingFlows.get(f); 
+		    Element flow = outgoingFlows.get(f);
 		    //this Cast only works because there are no line breaks as nodes. 
 		    //I should redo this with a condition to assure that it's not the case
-		    element.setAttribute("name", "1==1"); // TODO this is just for the demo
+		    flow.setAttribute("name", "1==1"); // TODO this is just for the demo
 		    Element condition = model.doc.createElement("bpmn:conditionExpression");
 		    condition.setAttribute("xsi:type", "bpmn:tFormalExpression");
 		    condition.appendChild(model.doc.createTextNode("1==1"));
-		    element.appendChild(condition);
+		    flow.appendChild(condition);
 		}
 	    } else { System.out.println("This is a merge. Its outgoingFlows will not be changed");}
 	}
@@ -92,9 +89,8 @@ public class Rule3 {
     }
 
     public static void b (Model model) throws Exception {
-	System.out.println("I'm applying Rule3a");
+	System.out.println("I'm applying Rule3b");
 
-	// TODO decide on this:
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
 	System.out.println("number of exclusive gateway instances: " + exclusiveGatewayInstances.getLength());
@@ -102,7 +98,7 @@ public class Rule3 {
 
 	if (exclusiveGatewayInstances.getLength() == 0) {System.out.println("RULE3b: there are no exclusive gateways in this model");}
 
-	//TODO the first part of the firstPart of rule 3 can be generalized for bot parallel and exclusive gateways
+	//TODO the first part of the firstPart of rule 3 can be generalized for both parallel and exclusive gateways
 
 	// going through all of the parallelGateways in the model:
 	for (int i = 0; i <= exclusiveGatewayInstances.getLength(); i++) {
@@ -122,7 +118,7 @@ public class Rule3 {
 	    String[] oldParallelCoordinates = model.getPosition(oldExclusive);
 
 	    // creating the substitute element in the position of the old one
-	    String newInclusiveGatewayId = model.newNode("bpmn:inclusiveGateway", oldParallelCoordinates[0], oldParallelCoordinates[1]);
+	    String newInclusiveGatewayId = model.newInclusiveGateway(oldParallelCoordinates[0], oldParallelCoordinates[1]);
 	    Element newInclusiveGateway = model.findElemById(newInclusiveGatewayId);
 	    model.replaceELement(oldExclusive, newInclusiveGateway); 
 

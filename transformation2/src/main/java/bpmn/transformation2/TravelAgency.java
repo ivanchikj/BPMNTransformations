@@ -43,13 +43,15 @@ public class TravelAgency {
 	this.startingList = fromElementToArrayList();
 
 	this.paths = new ArrayList<ArrayList<Element>>();
-	
+
 	visited = new ArrayList<String>();
 
 	getPathsFrom(startingList);
-	
+
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
+	
+	printPaths();//UNLOCKTHIS for testing
 
     }
 
@@ -65,6 +67,8 @@ public class TravelAgency {
 
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
+	
+	printPaths();//UNLOCKTHIS for testing
 
     }
 
@@ -72,7 +76,7 @@ public class TravelAgency {
      * From a starting point element, get all the possible paths
      * @throws XPathExpressionException 
      */
-    public ArrayList <Element> getPathsFrom (ArrayList<Element> past) throws XPathExpressionException{
+    private ArrayList <Element> getPathsFrom(ArrayList<Element> past) throws XPathExpressionException{
 
 	Element startingPoint = getLast(past);
 
@@ -98,14 +102,15 @@ public class TravelAgency {
 
 	} else if (immediateSuccessors.size() == 1){
 	    System.out.println("THIS IS NOT A SPLIT !");
-	    immediateSuccessors.get(0);
-	    past.add(immediateSuccessors.get(0));
+	    Element successor = immediateSuccessors.get(0);
+	    past.add(successor);
 	    getPathsFrom(past);
 
 	} else if (immediateSuccessors.size() == 0){
 	    System.out.println("THIS IS THE END");
 	    paths.add(past);
-	    printPaths();
+	    //printPaths(); //UNLOCKTHIS for testing
+	    return past;
 	}
 
 	return past;
@@ -126,24 +131,25 @@ public class TravelAgency {
 	}
     }
 
-    public void visit (Element element) {
-	System.out.println("I'm visiting: " + element.getAttribute("name"));
+    private void visit(Element element) {
+	System.out.println("I'm visiting: " + element.getAttribute("id"));
 	visited.add(element.getAttribute("id"));
     }
+
     /**
      * This serves when starting getPathsFrom() from an arbitrary element instead of the start
      * I need to transform it into an arrayList to be able to use it as an input to
      * getPathsFrom()
      * @return
      */
-    public ArrayList<Element> fromElementToArrayList(){
+    private ArrayList<Element> fromElementToArrayList(){
 	ArrayList<Element> list = new ArrayList<Element>();
 	list.add(startingPoint);
 	return list;
     }
 
 
-    public Element getLast (ArrayList<Element> past) {
+    private Element getLast(ArrayList<Element> past) {
 	return past.get(past.size()-1);
     }
 
@@ -157,7 +163,7 @@ public class TravelAgency {
      * the impression that two paths have a deepSuccessor in common while it is not the same exact element.
      * @throws XPathExpressionException 
      */
-    public ArrayList <Element> getMandatoryDeepSuccessors () throws XPathExpressionException{
+    private ArrayList <Element> getMandatoryDeepSuccessors() throws XPathExpressionException{
 
 	ArrayList<String> firstPathIDs = new ArrayList<String>();
 
@@ -179,7 +185,7 @@ public class TravelAgency {
 	//of course we remove the starting point because we know that will always be in common:
 	mandatoryDeepSuccessors.remove(0);
 
-	printMandatoryDeepSuccessors(); //for testing
+	//printMandatoryDeepSuccessors(); //UNLOCKTHIS for testing
 
 	return mandatoryDeepSuccessors;
 
@@ -212,7 +218,7 @@ public class TravelAgency {
     private void printMandatoryDeepSuccessors() {
 	System.out.println("PRINTING THE MANDATORY DEEP SUCCESSORS: ");
 	for (Element element : mandatoryDeepSuccessors) {
-	    System.out.println("                       " + element.getAttribute("name"));
+	    System.out.println("                       " + element.getAttribute("id"));
 	}
 
 
@@ -223,7 +229,7 @@ public class TravelAgency {
      * Navigate a model from its starting point
      * @throws XPathExpressionException
      */
-    public void getPaths() throws XPathExpressionException {
+    private void getPaths() throws XPathExpressionException {
 	//Finding the start element
 	Element start = (Element) model.doc.getElementsByTagName("bpmn:startEvent").item(0);
 	//Getting paths from the start element:
@@ -246,7 +252,7 @@ public class TravelAgency {
 	for (ArrayList<Element> path : paths) {
 	    System.out.println("-----a path:-----");
 	    for (Element element : path) {
-		System.out.println(element.getAttribute("name"));
+		System.out.println(element.getAttribute("id"));
 	    }
 
 	}

@@ -34,35 +34,81 @@ public class Transformation {
 	    resultingModel = Rule2.applyRule(startingModel);
 	}
 
-
 	if (parameter.equals("2")) {
-
+	    System.err.println("TODO");
 	}
 
 	if (parameter.equals("3")) {
-
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("3a")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("3b")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("3c")) {
+	    System.err.println("TODO");
 	}
 
 	if (parameter.equals("4")) {
-
+	    System.err.println("TODO");
 	}
-
+	
+	if (parameter.equals("4a")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("4b")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("4c")) {
+	    System.err.println("TODO");
+	}
+	
 	if (parameter.equals("R1")) {
-
+	    System.err.println("TODO");
 	}
 
 	if (parameter.equals("R2")) {
-
+	    System.err.println("TODO");
 	}
 
 	if (parameter.equals("R3")) {
-
+	    System.err.println("TODO");
 	}
 
+	if (parameter.equals("R3a")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("R3b")) {
+	    System.err.println("TODO");
+	}
+
+	if (parameter.equals("R3c")) {
+	    System.err.println("TODO");
+	}
+	
 	if (parameter.equals("R4")) {
-
+	    System.err.println("TODO");
 	}
 
+	if (parameter.equals("R4a")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("R4b")) {
+	    System.err.println("TODO");
+	}
+	
+	if (parameter.equals("R4c")) {
+	    System.err.println("TODO");
+	}
 
 	boolean valid = true; //TODO what if the resulting file is not valid? Insert the test here.
 	//if the models are different, it means that the transformation was successful
