@@ -74,11 +74,17 @@ public class Main{
 //	Model test4aR = new Model(m4aR);
 //	Model output = Reverse4.a(test4aR);
 	
-	String m4bR = "./TestGraphs/Rule4bR.bpmn.xml";
-	Model test4bR = new Model(m4bR);
-	Model output = Reverse4.b(test4bR);
+//	String m4bR = "./TestGraphs/Rule4bR.bpmn.xml";
+//	Model test4bR = new Model(m4bR);
+//	Model output = Reverse4.b(test4bR);
 	
-	
+//	String m4cR = "./TestGraphs/Rule4cR.bpmn.xml";
+//	Model test4cR = new Model(m4cR);
+//	Model output = Reverse4.c(test4cR);
+
+	String m3c = "./TestGraphs/Rule3cOneInsideTheOther.bpmn.xml";
+	Model test3c = new Model(m3c);
+	Model output = Rule3.c(test3c);
 	
 	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	

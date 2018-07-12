@@ -51,7 +51,7 @@ public class TravelAgency {
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
 	
-	printPaths();//UNLOCKTHIS for testing
+	//printPaths();//UNLOCKTHIS for testing
 
     }
 
@@ -68,7 +68,7 @@ public class TravelAgency {
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
 	
-	printPaths();//UNLOCKTHIS for testing
+	//printPaths();//UNLOCKTHIS for testing
 
     }
 
@@ -87,7 +87,7 @@ public class TravelAgency {
 	ArrayList<Element> immediateSuccessors = model.getSuccessors(startingPoint);
 
 	if (immediateSuccessors.size() > 1) {
-	    System.out.println("THIS IS A SPLIT !");
+	    //System.out.println("THIS IS A SPLIT !");
 
 	    for (Element successor : immediateSuccessors ) {
 
@@ -101,13 +101,13 @@ public class TravelAgency {
 	    }
 
 	} else if (immediateSuccessors.size() == 1){
-	    System.out.println("THIS IS NOT A SPLIT !");
+	    //System.out.println("THIS IS NOT A SPLIT !");
 	    Element successor = immediateSuccessors.get(0);
 	    past.add(successor);
 	    getPathsFrom(past);
 
 	} else if (immediateSuccessors.size() == 0){
-	    System.out.println("THIS IS THE END");
+	    //System.out.println("THIS IS THE END");
 	    paths.add(past);
 	    //printPaths(); //UNLOCKTHIS for testing
 	    return past;
@@ -132,7 +132,7 @@ public class TravelAgency {
     }
 
     private void visit(Element element) {
-	System.out.println("I'm visiting: " + element.getAttribute("id"));
+	//System.out.println("I'm visiting: " + element.getAttribute("id"));
 	visited.add(element.getAttribute("id"));
     }
 
@@ -163,7 +163,7 @@ public class TravelAgency {
      * the impression that two paths have a deepSuccessor in common while it is not the same exact element.
      * @throws XPathExpressionException 
      */
-    private ArrayList <Element> getMandatoryDeepSuccessors() throws XPathExpressionException{
+    public ArrayList <Element> getMandatoryDeepSuccessors() throws XPathExpressionException{
 
 	ArrayList<String> firstPathIDs = new ArrayList<String>();
 

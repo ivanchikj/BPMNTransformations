@@ -56,9 +56,6 @@ public class Rule2 {
 
 		    //Let's add the conditions of the incomingFlows to the OutgoingFlows
 
-
-
-
 		    Element succ = successors.get(j);
 		    ArrayList<Element> flowsToDelete = model.getIncomingFlows(succ); //this is also the outGoing flow of the gateway at hand. It should be only one.
 		    ArrayList<Element> flowsToKeep = model.getOutgoingFlows(succ);  
@@ -67,7 +64,7 @@ public class Rule2 {
 		    //deleting all the flows (it should be only one) from the item to be deleted to its successor:
 		    for (int k = 0; k < flowsToDelete.size(); k++) {
 			model.delete(flowsToDelete.get(k).getAttribute("id"));
-			firstPartofCondition = returnConditionString(flowsToDelete.get(k));//TODO This works only because I have only one outGoing flow. Otherwise it should be outside of the for loop.
+			firstPartofCondition = model.returnConditionString(flowsToDelete.get(k));//TODO This works only because I have only one outGoing flow. Otherwise it should be outside of the for loop.
 		    }
 		    //changing the targets of all their sequence flows
 		    for (int k = 0; k < flowsToKeep.size(); k++) {
@@ -76,7 +73,7 @@ public class Rule2 {
 
 			String newCondition = firstPartofCondition; // the inizialization value should not matter.
 
-			secondPartofCondition = returnConditionString(flowToKeep);
+			secondPartofCondition = model.returnConditionString(flowToKeep);
 			// if both flows have a condition, I merge them with an AND in the middle.
 			// if else, I only keep the non - empty one.
 			if (firstPartofCondition != "" && secondPartofCondition != "") { 
@@ -91,7 +88,7 @@ public class Rule2 {
 
 			//Adding the newCondition
 			System.out.println(newCondition);
-			returnConditionElement(flowToKeep).setTextContent(newCondition);
+			model.returnConditionElement(flowToKeep).setTextContent(newCondition);
 		    }
 		    //finally deleting the gateways
 		    model.delete(succ.getAttribute("id"));
@@ -164,64 +161,15 @@ public class Rule2 {
 
 
     /**
-     * This checks whether a sequenceFlow has a condition or not.
-     * If it has not, then there's no need to generate one and append it to the new flows.
-     * TODO delete this method and use returnCondition instead
-     * @return
-     */
-    public boolean hasCondition(Element sequenceFlow) {
-	NodeList children =  sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
-
-	boolean hasCondition = false;
-
-	if (children.getLength() > 0) {
-	    hasCondition = true; 
-	}
-	return hasCondition;
-    }
-
-    public static String returnConditionString (Element sequenceFlow) {
-	Element conditionElement = returnConditionElement(sequenceFlow);
-	String condition = conditionElement.getTextContent();
-	return condition;
-    }
-
-    public static Element returnConditionElement (Element sequenceFlow) {
-	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
-	if (children.getLength() > 1) {
-	    System.err.println("How can an array have more than one condition children?");
-	}
-	return (Element) children.item(0);
-    }
-
-    /**
      * 
      * AS for now, this method just adds an AND between the first gateway's flow's condition and the second's.
      * @return the new condition
      */
     public static String generateCondition(String firstCondition, String secondCondition) {
-	String newCondition = firstCondition + " && " + secondCondition;
-	return newCondition;
-
+        String newCondition = firstCondition + " && " + secondCondition;
+        return newCondition;
+    
     }
 
-    /**
-     * TODO maybe put this in the method class
-     * If a condition is present, it deletes it and then adds the new one inside.
-     */
-    public void applyCondition(Model model, Element sequenceFlow, String condition) {
-	if (hasCondition(sequenceFlow)) { 
-	    // getting all the conditions of a sequenceFlow
-	    ArrayList<Element> children = 
-		    (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
-	    //removing all the previous conditions:
-	    for (int i = 0; i < children.size(); i++) {
-		sequenceFlow.removeChild(children.get(i));
-	    }
-	}
-	Element conditionElement = model.doc.createElement("bpmn:conditionExpression");
-	conditionElement.setAttribute("xsi:type", "bpmn:tFormalExpression");
-	conditionElement.appendChild(model.doc.createTextNode(condition));
-	sequenceFlow.appendChild(conditionElement);
-    }
+
 }

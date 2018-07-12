@@ -25,7 +25,7 @@ public class Reverse4 {
 
 
     //TODO scrivi nella tesi ogni volta che vedi una task che ha due outgoingFlows, crea un parallel davanti e usa quello come split"
-
+    //TODO devo anche controllare che NON ci sia una condition in nessuno degli outgoingFlows
     public static Model a(Model startingModel) throws XPathExpressionException {
 	System.out.println("I'm reverting rule 4a");
 
@@ -39,47 +39,62 @@ public class Reverse4 {
 	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
 	    //if it has more than one outgoing Flow then we can add a parallel in there
+	    //BUT only if none of the incoming flows has a condiition
 	    if (outgoingFlows.size()>1) {
 
-		//Before creating the new parallel gateway, we have to calculate its future position
 
-		ArrayList<Element> successors = model.getSuccessors(task);
-
-		String[] position = model.calculatePositionOfNewNode(task, successors);
-
-		String newParallelID = model.newParallelGateway(position[0], position[1]);
-
-		//finally here's the newly created parallel gateway
-		Element newParall = model.findElemById(newParallelID);
-
-		//let's change the two outgoing flows of our task to have the parallel element as their source
+		//let's check that NONE of the outgoing flows has a condition
+		//TODO actually if the condition is always true, it doesn't matter.
+		//Write in the thesis that future improvements could consider that.
+		boolean oneFlowHasACondition = false;
 		for (Element flow : outgoingFlows) {
-		    model.setSource(flow.getAttribute("id"), newParallelID);
+		    if (model.hasCondition(flow)) {
+			oneFlowHasACondition = true;
+		    }
 		}
 
-		//let's now create a new flow from the task to the new parallel
-		String newFlowID = model.newSequenceFlow(task.getAttribute("id"), newParallelID);
+		//Now that we know that none of the multiple outgoing flows has a condition we can apply the rule
+		if (!oneFlowHasACondition) {
 
+		    //Before creating the new parallel gateway, we have to calculate its future position
+
+		    ArrayList<Element> successors = model.getSuccessors(task);
+
+		    String[] position = model.calculatePositionOfNewNode(task, successors);
+
+		    String newParallelID = model.newParallelGateway(position[0], position[1]);
+
+		    //finally here's the newly created parallel gateway
+		    Element newParall = model.findElemById(newParallelID);
+
+		    //let's change the two outgoing flows of our task to have the parallel element as their source
+		    for (Element flow : outgoingFlows) {
+			model.setSource(flow.getAttribute("id"), newParallelID);
+		    }
+
+		    //let's now create a new flow from the task to the new parallel
+		    String newFlowID = model.newSequenceFlow(task.getAttribute("id"), newParallelID);
+
+		}
 	    }
 
 	}
-
-
 	return model;
     }
 
 
-
+    //TODO scrivi nella tesi 
+    //Ogni volta che vedi una task che ha due incoming, mettici un exclusive gateway merge davanti
     public static Model b(Model startingModel) throws XPathExpressionException {
-
-	//TODO scrivi nella tesi 
-	//Ogni volta che vedi una task che ha due incoming, mettici un exclusive gateway merge davanti
 
 	System.out.println("I'm reverting rule 4b");
 
 	Model model = startingModel;
 
 	//TODO spiegare nella tesi perché non si può applicare alle altre cose che non sono task
+	//TODO Ana ha detto che si può applicare anche agli eventi. Basta cercarli con il loro tag e poi
+	//aggiungerli alla lista tasks (che a questo punto avrà un nome diverso)
+
 	NodeList tasks = model.doc.getElementsByTagName("bpmn:task");
 
 	for (int i = 0; i < tasks.getLength(); i++) {
@@ -87,6 +102,7 @@ public class Reverse4 {
 	    ArrayList<Element> incomingFlows = model.getIncomingFlows(task);
 
 	    //if it has more than one incoming Flow then we can add a parallel in there
+
 	    if (incomingFlows.size()>1) {
 
 		//Before creating the new exclusive gateway, we have to calculate its future position
@@ -111,57 +127,52 @@ public class Reverse4 {
 	    }
 
 	}
-
-
 	return model;
     }
 
-
+    //TODO to write in the thesis:
+    //This starts out like rule 4aR but we can apply regardless of the fact that the outgoingFlows of a task
+    //has a condition or not
     public static Model c(Model startingModel) throws XPathExpressionException {
-	System.out.println("I'm applying rule 4c");
+	System.out.println("I'm reverting rule 4ac");
 
 	Model model = startingModel;
 
-	NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:inclusiveGateway");
-	System.out.println("Number of inclusiveGateways in the model: " + inclusiveGatewayInstances.getLength());
-	int inclusiveGatewayCounter = 0;
+	//TODO spiegare nella tesi perché non si può applicare alle altre cose.
+	//TODO Ana ha detto che si può applicare anche agli eventi
+	NodeList tasks = model.doc.getElementsByTagName("bpmn:task");
 
-	for (int i = 0; i < inclusiveGatewayInstances.getLength(); i++) {
-	    Element oldInclusiveGateway = (Element) inclusiveGatewayInstances.item(i);
-	    inclusiveGatewayCounter++;
+	for (int i = 0; i < tasks.getLength(); i++) {
+	    Element task = (Element) tasks.item(i);
+	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
-	    System.out.println("working on the " + inclusiveGatewayCounter + "nd inclusiveGateway");
-	    System.out.println("working on " + oldInclusiveGateway.getAttribute("id"));
-	    System.out.println("The id of the element is " + oldInclusiveGateway.getAttribute("id") );
+	    //if it has more than one outgoing Flow then we can add a parallel in there
+	    //BUT only if none of the incoming flows has a condition
+	    
+	    if (outgoingFlows.size()>1) {
 
-	    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusiveGateway);
-	    ArrayList<Element> incomingFlows = model.getIncomingFlows(oldInclusiveGateway);
+		    //Before creating the new parallel gateway, we have to calculate its future position
 
-	    if ((incomingFlows.size() == 1)) { //TODO check if this conditions is actually a solid way to distinguish merges
-		System.out.println(oldInclusiveGateway.getAttribute("id")+ " has only one incoming flow and the rule 4a can be applied");
+		    ArrayList<Element> successors = model.getSuccessors(task);
 
-		//let's find out the predecessor
-		ArrayList<Element> predecessors = model.getPredecessors(oldInclusiveGateway);
-		Element predecessor = predecessors.get(0); //we know there's gonna be only one
+		    String[] position = model.calculatePositionOfNewNode(task, successors);
 
-		//let's connect the successors to it's predecessor
-		//TODO think what happens if one of the arrows has attributes. I think it works but let's write this in the thesis.
-		for (int f = 0; f < outgoingFlows.size(); f++) {
-		    Element outgoingFlow = outgoingFlows.get(f);
-		    model.setSource(outgoingFlow.getAttribute("id"), predecessor.getAttribute("id"));
-		    Element condition = model.doc.createElement("bpmn:conditionExpression");
-		    condition.setAttribute("xsi:type", "bpmn:tFormalExpression");
-		    condition.setAttribute("language", "");
-		    outgoingFlow.appendChild(condition);
+		    String newParallelID = model.newInclusiveGateway(position[0], position[1]);
+
+		    //finally here's the newly created parallel gateway
+		    Element newParall = model.findElemById(newParallelID);
+
+		    //let's change the two outgoing flows of our task to have the parallel element as their source
+		    for (Element flow : outgoingFlows) {
+			model.setSource(flow.getAttribute("id"), newParallelID);
+		    }
+
+		    //let's now create a new flow from the task to the new parallel
+		    String newFlowID = model.newSequenceFlow(task.getAttribute("id"), newParallelID);
+
 		}
-		//let's remember to delete the useless sequenceFlow
-		model.delete(incomingFlows.get(0).getAttribute("id"));
-		model.delete(oldInclusiveGateway.getAttribute("id"));//TODO make the method "delete" take an Element as an input
-
-	    } else {
-		System.out.println(oldInclusiveGateway.getAttribute("id") + " has more than one incoming flow thus rule4a cannot be applied!");
 	    }
-	}
+	
 	return model;
     }
 }

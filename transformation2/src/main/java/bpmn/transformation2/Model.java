@@ -578,7 +578,7 @@ public class Model {
 	for (int i = 0; i < outgoingFlows.size(); i++) {
 	    successors.add(findElemById(outgoingFlows.get(i).getAttribute("targetRef"))); 
 	}
-	System.out.println("		I have found " + successors.size() + " immediate successors");
+	//System.out.println("		I have found " + successors.size() + " immediate successors");
 	return successors;
     }
 
@@ -590,7 +590,7 @@ public class Model {
 	for (int i = 0; i < incomingFlows.size(); i++) {
 	    predecessors.add(findElemById(incomingFlows.get(i).getAttribute("sourceRef")));
 	}
-	System.out.println("		I have found " + predecessors.size() + " immediate predecessors");
+	//System.out.println("		I have found " + predecessors.size() + " immediate predecessors");
 	return predecessors;
     }
     /**
@@ -605,13 +605,13 @@ public class Model {
 	NodeList outgoingFlowsNodes = (NodeList) xpath.evaluate("//*[@sourceRef='" + id + "']", doc, XPathConstants.NODESET);
 	ArrayList<Element> outgoingFlows = new ArrayList<Element>();
 	for (int i = 0; i < outgoingFlowsNodes.getLength(); i++) { //TODO why not <=?
-	    System.out.println("Getting outgoingFlow: "+ ((Element) outgoingFlowsNodes.item(i)).getAttribute("id"));
+	    //System.out.println("Getting outgoingFlow: "+ ((Element) outgoingFlowsNodes.item(i)).getAttribute("id"));
 	    outgoingFlows.add((Element) outgoingFlowsNodes.item(i));
 	}
 	if (outgoingFlows.size() == 0) {
 	    System.out.println("this element has no outgoing Flows");
 	} else { 
-	    System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.size() + " outgoing Flows");
+	    //System.out.println("The element " + element.getAttribute("id") + " has " + outgoingFlows.size() + " outgoing Flows");
 	}
 
 	return outgoingFlows;
@@ -630,17 +630,70 @@ public class Model {
 	NodeList incomingFlowsNodes = (NodeList) xpath.evaluate("//*[@targetRef='" + id + "']", doc, XPathConstants.NODESET);
 	ArrayList<Element> incomingFlows = new ArrayList<Element>();
 	for (int i = 0; i < incomingFlowsNodes.getLength(); i++) { //TODO why not <=?
-	    System.out.println("Getting incomingFlow: "+ ((Element) incomingFlowsNodes.item(i)).getAttribute("id"));
+	    //System.out.println("Getting incomingFlow: "+ ((Element) incomingFlowsNodes.item(i)).getAttribute("id"));
 	    incomingFlows.add((Element) incomingFlowsNodes.item(i));
 	}
 	if (incomingFlows.size() == 0) {
 	    System.out.println("this element has no incoming Flows");
 	} else { 
+	    //
 	    System.out.println("The element " + element.getAttribute("id") + " has " + incomingFlows.size() + " incoming Flows");
 	}
 
 	return incomingFlows;
 
+    }
+    
+
+    /**
+     * This checks whether a sequenceFlow has a condition or not.
+     * If it has not, then there's no need to generate one and append it to the new flows.
+     * TODO delete this method and use returnCondition instead
+     * @return
+     */
+    public boolean hasCondition(Element sequenceFlow) {
+	NodeList children =  sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+
+	boolean hasCondition = false;
+
+	if (children.getLength() > 0) {
+	    hasCondition = true; 
+	}
+	return hasCondition;
+    }
+
+    public static String returnConditionString (Element sequenceFlow) {
+	Element conditionElement = returnConditionElement(sequenceFlow);
+	String condition = conditionElement.getTextContent();
+	return condition;
+    }
+
+    public static Element returnConditionElement (Element sequenceFlow) {
+	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	if (children.getLength() > 1) {
+	    System.err.println("How can an array have more than one condition children?");
+	}
+	return (Element) children.item(0);
+    }
+
+    /**
+     * TODO maybe put this in the method class
+     * If a condition is present, it deletes it and then adds the new one inside.
+     */
+    public void applyCondition(Element sequenceFlow, String condition) {
+	if (hasCondition(sequenceFlow)) { 
+	    // getting all the conditions of a sequenceFlow
+	    ArrayList<Element> children = 
+		    (ArrayList<Element>) sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
+	    //removing all the previous conditions:
+	    for (int i = 0; i < children.size(); i++) {
+		sequenceFlow.removeChild(children.get(i));
+	    }
+	}
+	Element conditionElement = doc.createElement("bpmn:conditionExpression");
+	conditionElement.setAttribute("xsi:type", "bpmn:tFormalExpression");
+	conditionElement.appendChild(doc.createTextNode(condition));
+	sequenceFlow.appendChild(conditionElement);
     }
 
     /**
@@ -697,14 +750,6 @@ public class Model {
 	    deleteFlowFromOldSourceorTarget(elementToDelete, oldTarget);
 
 	}
-
-
-
-
-
-
-
-
 
 
 	//from the PROCESS
