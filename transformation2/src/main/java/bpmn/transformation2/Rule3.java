@@ -1,10 +1,16 @@
 package bpmn.transformation2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.PrimitiveIterator.OfDouble;
 
 import javax.el.StaticFieldELResolver;
+import javax.print.Doc;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.ibatis.javassist.tools.framedump;
@@ -13,6 +19,7 @@ import org.omg.CosNaming._BindingIteratorImplBase;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class Rule3 {
 
@@ -130,104 +137,119 @@ public class Rule3 {
 	}
     }
 
-    // NOTE this has to execute before the other part of rule3 because
-    // otherwise it will never be applicable (no parallel gateways will be found)
+    //NOTE this has to execute before the other part of rule3 because
+    //otherwise it will never be applicable (no parallel gateways will be found)
     //TODO qua dovrebbe funzionare senza fare niente, ma nella tesi ricordati di spiegare 
     //che ci sono anche le conditions
-    public static Model c (Model startingModel) throws XPathExpressionException {
+    public static Model c (Model startingModel) throws XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, IOException, TransformerException {
 	System.out.println( " I'm applying Rule3c");
 
 	Model model = startingModel;
-	
+
 	System.out.println("Going through every parallel Element in the gateway");
-	
+
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	//but we only want splits
 	ArrayList<Element> parallelGatewaySplitInstances = new ArrayList<Element>();
-	
+
 	for (int j = 0; j < parallelGatewayInstances.getLength(); j++) {
 	    Element parallelElement = (Element) parallelGatewayInstances.item(j);
-	    if (model.getOutgoingFlows(parallelElement).size() > 1) { //TOOD check this condition and replace it with the future methods isAsplit or isAmerge
+	    if (model.getOutgoingFlows(parallelElement).size() > 1) { //TOOD replace it with the future methods isAsplit or isAmerge
 		parallelGatewaySplitInstances.add(parallelElement);
 	    }
 	}
-	
-	
-	
+
+
+
 	for (Element parallelGat : parallelGatewaySplitInstances) {
 
+
 	    //first we have to check that all paths from the starting parallel gateway meet at the same parallel gateway
-	    //TODO this "getTheFirstMandatoryDeepSuccessor" thing could become it's own method, as it is used here later
-	    //with he exclusive gateways
 	    TravelAgency parallelTA = new TravelAgency(model, parallelGat);
-	    Element firstParallelMeetingPoint = parallelTA.mandatoryDeepSuccessors.get(0);
-	    
-	    System.out.println("The first meeting point is " + firstParallelMeetingPoint.getAttribute("id"));
-	    
-	    //This always works because we meet at the end anyway
+	    Element firstParallelMeetingPoint = parallelTA.mandatoryDeepSuccessors.get(0); //This always works because we meet at the end anyway
 	    //TODO what happens when I have more than one end... it should return false but it should not break.
 	    //Right now I guess it would break.
 
+	    System.out.println("The first meeting point is " + firstParallelMeetingPoint.getAttribute("id"));
 
-	    if (firstParallelMeetingPoint.getTagName() == "bpmn:parallelGateway") {
-		System.out.println("All paths from the parallel " + parallelGat.getAttribute("id") + " meet in the same parallel");
+
+	    if (firstParallelMeetingPoint.getTagName() == "bpmn:parallelGateway") { //of course it has to be a parallel.
+
+		System.out.println("All paths from the parallel " + parallelGat.getAttribute("id") + " meet in the same parallel: " + firstParallelMeetingPoint.getAttribute("id"));
 
 		//we now have to check that all followers of our Parallel Gateway are exclusive Gateways
 		ArrayList<Element> exclusiveGatSuccessors = exclusiveGatSuccessors(parallelGat, model);
-		ArrayList<Element> successors = model.getSuccessors(parallelGat);
+		ArrayList<Element> successorsOfParallel = model.getSuccessors(parallelGat);
+
+		parallelGat.setAttribute("name", "primo passo startingPoint");
+
+		//we now also have to check that all predecessors of our firstParallelMeetingPoint are exclusive gateways
+		ArrayList<Element> exclusiveGatPredecessors = exclusiveGatPredecessors(firstParallelMeetingPoint, model);
+		ArrayList<Element> predecessorsOfFirstMeetingPoint = model.getPredecessors(firstParallelMeetingPoint);
+
+		firstParallelMeetingPoint.setAttribute("name", "primo passo meeting");
+
+		System.out.println("Number of predecessors of the firstParallelMeetingPoint " + predecessorsOfFirstMeetingPoint.size());
+		System.out.println("Number of exclusive predecessors " + exclusiveGatPredecessors.size());
 
 
-		if (exclusiveGatSuccessors.size() == successors.size()) {
+		if (exclusiveGatSuccessors.size() == successorsOfParallel.size() && exclusiveGatPredecessors.size() == predecessorsOfFirstMeetingPoint.size()) {
 		    System.out.println("Every follower of the parallel gateway " + parallelGat.getAttribute("id") + " is an exclusive gateway");
-		    //if every follower is exclusive we can check the next condition
+		    System.out.println("Every predecessor of the parallel gateway " + firstParallelMeetingPoint.getAttribute("id") + " is an exclusive gateway");
 
-		    //the next condition is that no matter which path i take from my exclusive gateway,
-		    //I always end up in another exclusive gateway.
+		    //if every follower of the original parallell is an exclusive gat.
+		    //AND
+		    //every predecessor of the first meeting point is is exclusive gat. we can now check the next condition
 
-		    //that is, the first element of the mandatoryDeepSuccessors of the exclusive gateway, should be another 
-		    //exclusive gateway
+
+		    //the next condition is that no matter which path i take from my the exclusive gateways that follow the first parallel,
+		    //I always end up in another exclusive gateway that is a predecessor of the first parallel meeting point
 
 		    for (Element exclusiveGatSuccessorOfTheParallel : exclusiveGatSuccessors) {
 			//using the exclusiveGat as a starting point i want to see if the first meeting point of
-			//every path that gets out of it meets in another exclusiveGateway.
+			//every path that gets out of it meets in another exclusiveGateway that is also a predecessor of the firstParallelMeetingPoint
 
-			TravelAgency exclusiveTA = new TravelAgency(model, exclusiveGatSuccessorOfTheParallel);
-			Element firstExclusiveMeetingPoint = exclusiveTA.mandatoryDeepSuccessors.get(0); //0 because we only care about the first
+			if (theyMeetInFrontOfTheFirstParallelMeetingPoint(exclusiveGatSuccessorOfTheParallel, firstParallelMeetingPoint, model)) {
 
+			    Element exclusiveGatPredecessorOfTheFirstParallelMeetingPoint = findExclusiveMeetingPoint(exclusiveGatSuccessorOfTheParallel, firstParallelMeetingPoint, model).get(0);
 
-			if (firstExclusiveMeetingPoint.getTagName().equals("bpmn:exclusiveGateway")) {
-			    System.out.println("All paths from the exclusiveGat " + exclusiveGatSuccessorOfTheParallel.getAttribute("id") + " meet at the same exclusiveGateway");
+			    //TODO DELETE THIS ArrayList<Element> emptyOutgoingFlows = outgoingFlowsPointingToExclusiveGateways(exclusiveGatSuccessorOfTheParallel, model, firstExclusiveMeetingPoint);
 
-			    //the next condition is that every parallel has at least an "empty" outgoingFlow 
-			    //that is, the pointing towards an exclusive gateway and that that exclusive gateway will be the same one the other paths point to.
-			    //NOTE that if there are only empty flows all pointing to the same exclusive gateway, then that is also acceptable.
-			    //TODO all the empty flows across exclusive gateways will be deleted but one.
-			    //TODO scrivere nella tesi che in realtà la vera condizione non è che siano vuoti, ma che siano uguali tra di loro
-			    //però l'unico modo per vedere se sono uguali sarebbe giudicarli dal nome, ma non mi sembra una buona soluzione //ASKANA
-
-			    ArrayList<Element> emptyOutgoingFlows = outgoingFlowsPointingToExclusiveGateways(exclusiveGatSuccessorOfTheParallel, model, firstExclusiveMeetingPoint);
-
-			    //But it's not enough to have at least an empty outgoing flow, we also want that every exclusive
-			    //gateway has MAXIMUM one non-empty flow. (Where we define non-empty has having a successor that is not the 
-			    //exclusive gateway (where all this paths will end up anyway)
-
-			    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(exclusiveGatSuccessorOfTheParallel);
-			    System.out.println("Number of outgoingFlows: " + outgoingFlows.size());
-			    System.out.println("Number of empty outgoingFlows: " + emptyOutgoingFlows.size());
-			    if (emptyOutgoingFlows.size() > 0 && outgoingFlows.size() - emptyOutgoingFlows.size() <= 1) {
-				//there's at least one outgoingFlow && maximum one non-empty flow 
-				System.out.println("there's at least one outgoingFlow && maximum one non-empty flow"); //add details about your starting point
-
-				//OK now every condition has been met and we can apply the rule
+			    //				    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(exclusiveGatSuccessorOfTheParallel);
+			    //				    System.out.println("Number of outgoingFlows: " + outgoingFlows.size());
+			    ////				    System.out.println("Number of empty outgoingFlows: " + emptyOutgoingFlows.size());
+			    //				    if (emptyOutgoingFlows.size() > 0 && outgoingFlows.size() - emptyOutgoingFlows.size() <= 1) {
+			    //					//there's at least one outgoingFlow && maximum one non-empty flow 
+			    //					System.out.println("there's at least one outgoingFlow && maximum one non-empty flow"); //add details about your starting point
+			    //
 
 
-				//First, let's transform our original parallel gateway and it's matching final gateways
-				//into inclusive gateways.
-				parallelGat.setAttribute("name", "PROVA");
-				//TODO continua da qua
+			    //OK now every condition has been met and we can apply the rule
 
 
-			    }
+			    //First, let's transform our original parallel gateway and it's matching final gateways
+			    //into inclusive gateways.
+			    parallelGat.setAttribute("name", "CandidateParallel");
+
+			    firstParallelMeetingPoint.setAttribute("name", "first parallel meeting point");
+
+			    exclusiveGatSuccessorOfTheParallel.setAttribute("name", "valid exclusive");
+
+			    exclusiveGatPredecessorOfTheFirstParallelMeetingPoint.setAttribute("name","first exclusive meeting point");
+
+			    
+			    //CONTINUA DA QUA li hai trovati tutti.
+
+			    //Ora il problema è che se cambi le cose adesso rompi tutto. Perché al secondo giro i metodi che hai usato non
+			    //trovano più gli elementi giusti.
+			    //Devi quindi salvarti tutto e poi modificare le cose alla fine.
+			    //Per ogni trasformazione bisogna salvarsi:
+			    //il primo parallel e l'ultimo, e tutti gli exclusive iniziali separati dagli exclusive finali. Meglio creare un oggetto.
+
+
+
+
+
 			}
 		    }
 
@@ -250,12 +272,32 @@ public class Rule3 {
 	return exclusiveGatSuccessors;
     }
 
+    private static ArrayList<Element> exclusiveGatPredecessors(Element parallelGatMeetingPoint, Model model) throws XPathExpressionException{
+	ArrayList<Element> exclusiveGatPredecessors = new ArrayList<Element>();
+	ArrayList<Element> predecessors = model.getPredecessors(parallelGatMeetingPoint);
+
+	for (Element predecessor : predecessors) {
+	    if (predecessor.getTagName().equals("bpmn:exclusiveGateway" )){
+		exclusiveGatPredecessors.add(predecessor);
+	    }
+	}
+	return exclusiveGatPredecessors;
+    }
+
     private  static ArrayList<Element> outgoingFlowsPointingToExclusiveGateways (Element element, Model model, Element target) throws XPathExpressionException {
 	ArrayList<Element> outgoingFlowsPointingtoExclGats = new ArrayList<Element>();
 
 	ArrayList<Element> outGoingFlows = model.getOutgoingFlows(element);
 
+	System.out.println("Number of outgoingFlows from element: " + element.getAttribute("id") + "IS: " + outGoingFlows.size() );
+
+	System.out.println("TARGET ID:");
+	System.out.println(target.getAttribute("id"));
 	for(Element flow : outGoingFlows) {
+	    System.out.println("Analyzing flow " + flow.getAttribute("id"));
+	    System.out.println("FLOW POINTS TO:");
+	    System.out.println(model.getTarget(flow).getAttribute("id"));
+
 	    if (model.getTarget(flow).getAttribute("id").equals(target.getAttribute("id"))){
 		outgoingFlowsPointingtoExclGats.add(flow);
 	    }
@@ -265,31 +307,54 @@ public class Rule3 {
     }
 
 
-    //	// create a collection of ParallelGateways ("A"):
-    //	Collection<ParallelGateway> parallelGatewayInstances = inputModel.getModelElementsByType(ParallelGateway.class);
-    //
-    //	//First i'looking for the necessary conditions to apply rule 3b
-    //	// FOR RULE 3B TO BE APPLICABLE:
-    //	// the parallel gateway can have 1 or more exclusive gateway as child elements
-    //	// (but only exclusive gateways; if there's something else, we stop and go to
-    //	// the next Parallel Gateway).
-    //	for (ParallelGateway parallelGateway : parallelGatewayInstances) {
-    //	    // ASKANA why is this a "query" instead of a collection as usual? ASKANA what is a FlowNode?
-    //	    Query<FlowNode> succedingNodes = parallelGateway.getSucceedingNodes();
-    //	    String a = succedingNodes.toString();
-    //	    System.out.println(a);
-    //	}
-    // the subsequent exclusive gateways ("B") have one or more conditional tasks as
-    // child element ("C").
+    private static ArrayList<Element> findExclusiveMeetingPoint (Element startingPoint, Element firstParallelMeetingPoint, Model model) throws XPathExpressionException {
+	TravelAgency ta = new TravelAgency(model, startingPoint);
+	ArrayList<Element> mandatoryDeepSuccessors = ta.getMandatoryDeepSuccessors();
+	ArrayList<Element> appropriateExclusiveMeetingPoints = new ArrayList<Element>();
+	ArrayList<Element> firstParallelMettingPointPredecessors = model.getPredecessors(firstParallelMeetingPoint);
 
-    // Both those tasks and the exclusive gateway must be connected to another
-    // exclusive gateway ("D"). (But not more than one i guess ? ASKANA)
+	for (Element mandatoryDeepSuccessor : mandatoryDeepSuccessors) {
+	    if (firstParallelMettingPointPredecessors.contains(mandatoryDeepSuccessor)){ //I dont know if this works, maybe I have to check the ID
+		System.out.println("Yes it's a predecessor");
+		appropriateExclusiveMeetingPoints.add(mandatoryDeepSuccessor);
+	    } else {
+		System.out.println("this is not a predecessor");
+	    }
+
+	}
 
 
+	return appropriateExclusiveMeetingPoints;
+    }
 
 
+    private static boolean theyMeetInFrontOfTheFirstParallelMeetingPoint (Element startingPoint, Element firstParallelMeetingPoint, Model model) throws XPathExpressionException {
 
+	if ( findExclusiveMeetingPoint(startingPoint, firstParallelMeetingPoint, model).size() > 0) {
+	    return true;
+	} else {
+	    return false;
+	}
 
-
+    }
 
 }
+//	// create a collection of ParallelGateways ("A"):
+//	Collection<ParallelGateway> parallelGatewayInstances = inputModel.getModelElementsByType(ParallelGateway.class);
+//
+//	//First i'looking for the necessary conditions to apply rule 3b
+//	// FOR RULE 3B TO BE APPLICABLE:
+//	// the parallel gateway can have 1 or more exclusive gateway as child elements
+//	// (but only exclusive gateways; if there's something else, we stop and go to
+//	// the next Parallel Gateway).
+//	for (ParallelGateway parallelGateway : parallelGatewayInstances) {
+//	    // ASKANA why is this a "query" instead of a collection as usual? ASKANA what is a FlowNode?
+//	    Query<FlowNode> succedingNodes = parallelGateway.getSucceedingNodes();
+//	    String a = succedingNodes.toString();
+//	    System.out.println(a);
+//	}
+// the subsequent exclusive gateways ("B") have one or more conditional tasks as
+// child element ("C").
+
+// Both those tasks and the exclusive gateway must be connected to another
+// exclusive gateway ("D"). (But not more than one i guess ? ASKANA)

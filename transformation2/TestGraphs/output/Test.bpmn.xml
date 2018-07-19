@@ -4,18 +4,18 @@
       <bpmn:outgoing>SequenceFlow_1569qzo</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1569qzo" sourceRef="StartEvent_0xsa3h5" targetRef="ExclusiveGateway_01a4hds"/>
-    <bpmn:parallelGateway id="ExclusiveGateway_01a4hds">
+    <bpmn:parallelGateway id="ExclusiveGateway_01a4hds" name="CandidateParallel">
       <bpmn:incoming>SequenceFlow_1569qzo</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ov2d84</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0nexfp4</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0tygkel">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0tygkel" name="valid exclusive">
       <bpmn:incoming>SequenceFlow_0ov2d84</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0dmc859</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1e0qlro</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0ov2d84" sourceRef="ExclusiveGateway_01a4hds" targetRef="ExclusiveGateway_0tygkel"/>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1mvesdm">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1mvesdm" name="valid exclusive">
       <bpmn:incoming>SequenceFlow_0nexfp4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1pb823x</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0v2jton</bpmn:outgoing>
@@ -24,7 +24,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_1pb823x" sourceRef="ExclusiveGateway_1mvesdm" targetRef="ExclusiveGateway_0lksf7l">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA["2==2"]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0itb8qf">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0itb8qf" name="first exclusive meeting point">
       <bpmn:incoming>SequenceFlow_0v2jton</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1umis34</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0q0cb31</bpmn:outgoing>
@@ -32,13 +32,13 @@
     <bpmn:sequenceFlow id="SequenceFlow_0dmc859" sourceRef="ExclusiveGateway_0tygkel" targetRef="Task_046o5gl">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA["1==1"]]></bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_02t6rty">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_02t6rty" name="first exclusive meeting point">
       <bpmn:incoming>SequenceFlow_1e0qlro</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0cxniaa</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0e5y87f</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0e5y87f" sourceRef="ExclusiveGateway_02t6rty" targetRef="ExclusiveGateway_00fblc5"/>
-    <bpmn:parallelGateway id="ExclusiveGateway_00fblc5" name="secondo">
+    <bpmn:parallelGateway id="ExclusiveGateway_00fblc5" name="first parallel meeting point">
       <bpmn:incoming>SequenceFlow_0e5y87f</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0q0cb31</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0c704of</bpmn:outgoing>
@@ -70,27 +70,29 @@
       <bpmn:outgoing>SequenceFlow_1t5ttef</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1atpgue</bpmn:outgoing>
     </bpmn:inclusiveGateway>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_01zztuo">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_01zztuo" name="valid exclusive">
       <bpmn:incoming>SequenceFlow_12moeb7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_12h2wwq</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_15rydv0</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1ycmx8q</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_12moeb7" sourceRef="ExclusiveGateway_0nj0vs9" targetRef="ExclusiveGateway_01zztuo"/>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0w174jl">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0w174jl" name="valid exclusive">
       <bpmn:incoming>SequenceFlow_1qk4bp3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1ybtzy2</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1vavzdy</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1qk4bp3" sourceRef="ExclusiveGateway_0nj0vs9" targetRef="ExclusiveGateway_0w174jl"/>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0rjf3ed">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0rjf3ed" name="first exclusive meeting point">
       <bpmn:incoming>SequenceFlow_1ybtzy2</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0mecw8o</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0zmpoc0</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1ybtzy2" sourceRef="ExclusiveGateway_0w174jl" targetRef="ExclusiveGateway_0rjf3ed"/>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1wrxbva">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1wrxbva" name="first exclusive meeting point">
       <bpmn:incoming>SequenceFlow_12h2wwq</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0fvk9w8</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1ycmx8q</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0x6ju3e</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_12h2wwq" sourceRef="ExclusiveGateway_01zztuo" targetRef="ExclusiveGateway_1wrxbva"/>
@@ -107,7 +109,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0mecw8o" sourceRef="Task_168g30w" targetRef="ExclusiveGateway_0rjf3ed"/>
     <bpmn:sequenceFlow id="SequenceFlow_0fvk9w8" sourceRef="Task_1fuonrj" targetRef="ExclusiveGateway_1wrxbva"/>
     <bpmn:sequenceFlow id="SequenceFlow_0x6ju3e" sourceRef="ExclusiveGateway_1wrxbva" targetRef="ExclusiveGateway_02o84pt"/>
-    <bpmn:parallelGateway id="ExclusiveGateway_02o84pt" name="Primo&#10;&#10;">
+    <bpmn:parallelGateway id="ExclusiveGateway_02o84pt" name="first parallel meeting point">
       <bpmn:incoming>SequenceFlow_0x6ju3e</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0zmpoc0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0cxniaa</bpmn:outgoing>
@@ -135,11 +137,12 @@
       <bpmn:incoming>SequenceFlow_0c704of</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0c704of" sourceRef="ExclusiveGateway_00fblc5" targetRef="EndEvent_02ml1zh"/>
-    <bpmn:parallelGateway id="ExclusiveGateway_0nj0vs9">
+    <bpmn:parallelGateway id="ExclusiveGateway_0nj0vs9" name="CandidateParallel">
       <bpmn:incoming>SequenceFlow_0yx1i2a</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_12moeb7</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1qk4bp3</bpmn:outgoing>
     </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1ycmx8q" sourceRef="ExclusiveGateway_01zztuo" targetRef="ExclusiveGateway_1wrxbva"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane bpmnElement="Process_1" id="BPMNPlane_1">
@@ -496,6 +499,14 @@
           <dc:Bounds height="13" width="0" x="443" y="76"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="SequenceFlow_1ycmx8q" id="SequenceFlow_1ycmx8q_di">
+        <di:waypoint x="380" xsi:type="dc:Point" y="-75"/>
+        <di:waypoint x="438" xsi:type="dc:Point" y="-176"/>
+        <di:waypoint x="380" xsi:type="dc:Point" y="-274"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="13" width="0" x="409" y="-147"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -1,5 +1,6 @@
 package bpmn.transformation2;
 
+import org.apache.taglibs.standard.lang.jstl.AndOperator;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -709,7 +710,7 @@ public class Model {
 
 
     //TODO this would be better if I had a class sequenceFlow    
-    public Element getSource (Element sequenceFlow) throws XPathExpressionException {
+    public Element getTarget (Element sequenceFlow) throws XPathExpressionException {
 
 	String targetID = sequenceFlow.getAttribute("targetRef");
 	Element target = findElemById(targetID);
@@ -718,7 +719,7 @@ public class Model {
     }
 
     //TODO this would be better if I had a class sequenceFlow
-    public Element getTarget (Element sequenceFlow) throws XPathExpressionException {
+    public Element getSource (Element sequenceFlow) throws XPathExpressionException {
 
 	String sourceID = sequenceFlow.getAttribute("sourceRef");
 	Element source = findElemById(sourceID);
@@ -824,17 +825,18 @@ public class Model {
 	}
 
 
-	//let's delete the old element
-	delete(oldId);
-
+	//let's delete the old element from the process
+	process.removeChild(oldElem);
+	bpmndiDiagram.removeChild(newElementBPMNDI);
+	//let's delete the BPMNDI of the new element (we will use that of the old element)
 
 	//let's change the ID of the new element to be equal to the id of the old one
 	newElem.setAttribute("id", oldId);
 	String newElemId = newElem.getAttribute("id");
 
 	//let's remember to change the id of the BPMNDI as well:
-	newElementBPMNDI.setAttribute("bpmnElement", newElemId);
-	newElementBPMNDI.setAttribute("id", newElemId + "_di");
+	//TODO DELETETHIS newElementBPMNDI.setAttribute("bpmnElement", newElemId);
+	//TODO DELETETHIS newElementBPMNDI.setAttribute("id", newElemId + "_di");
 
     }
 
