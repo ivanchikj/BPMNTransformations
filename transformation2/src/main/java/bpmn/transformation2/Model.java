@@ -839,6 +839,14 @@ public class Model {
 	//TODO DELETETHIS newElementBPMNDI.setAttribute("id", newElemId + "_di");
 
     }
+    
+    /**
+     * TODO test this
+     * @param element
+     */
+    public void changeType(Element element, String newType) {
+	doc.renameNode(element, element.getNamespaceURI(), newType);
+    }
 
     /**
      * This method is used to delete elements from the diagram in an XML file. Note

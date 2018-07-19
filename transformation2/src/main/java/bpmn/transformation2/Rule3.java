@@ -256,9 +256,23 @@ public class Rule3 {
 		}
 	    }
 	}
+	
+	//applyRule3c here
+	
 	return model;
     }
 
+    
+    /**
+     * 
+     * @param constructs
+     */
+    private static void applyRule3c (ArrayList<Rule3cConstruct> constructs) {
+	
+	
+    }
+    
+    
     private static ArrayList<Element> exclusiveGatSuccessors(Element parallelGat, Model model) throws XPathExpressionException {
 
 	ArrayList<Element> exclusiveGatSuccessors = new ArrayList<Element>();
