@@ -262,42 +262,44 @@ public class Model {
 	System.out.println("PROVAVAAVAVAVA" +  source);
 	String previousSourceId =  findElemById(id).getAttribute("sourceRef");
 	Element previousSource = findElemById(previousSourceId);
-	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
-	System.out.println("");
+	Element sequenceFlow = findElemById(id);
 
-	System.out.println("		Content of child: " + previousSource.getTextContent());
-
-	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
+//	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
+//	System.out.println("");
+//
+//	System.out.println("		Content of child: " + previousSource.getTextContent());
+//
+//	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
 
 	//TODO both the two lines above do the same thing.
 
-	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
-	    NodeList childList = previousSource.getChildNodes();
-	    for (int i = 0; i < childList.getLength(); i++) {
-		Node childInCase = childList.item(i);
-		String textContentString = childInCase.getTextContent();
-		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
-		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
-		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
-		//be checked in case the task is both the source and the target of a SequenceFlow!
-		if (textContentString.equals(id)){
-		    childInCase.getParentNode().removeChild(childInCase);
-		    System.out.println("		I have found the child that I want to delete!!");
-		    //TODO if you want, find a way to remove the blank space that gets created
-		}
+	deleteFlowFromOldSourceorTarget(sequenceFlow, previousSource);
+//	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
+//	    NodeList childList = previousSource.getChildNodes();
+//	    for (int i = 0; i < childList.getLength(); i++) {
+//		Node childInCase = childList.item(i);
+//		String textContentString = childInCase.getTextContent();
+//		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+//		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+//		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+//		//be checked in case the task is both the source and the target of a SequenceFlow!
+//		if (textContentString.equals(id)){
+//		    childInCase.getParentNode().removeChild(childInCase);
+//		    System.out.println("		I have found the child that I want to delete!!");
+//		    //TODO if you want, find a way to remove the blank space that gets created
+//		}
+//
+//	    }
+//
+//	}
 
-	    }
 
-	}
-
-
-	Element sequenceFlow = findElemById(id);
-	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
+//	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
 	sequenceFlow.setAttribute("sourceRef", source);
 	// We still need to change also the element of the Source to have my outgoing
 	// flow as a child
 	Element sourceElement = findElemById(source);
-	System.out.println("		The new source is: " + source);
+//	System.out.println("		The new source is: " + source);
 	Element outgoing = doc.createElement("bpmn:outgoing");
 	outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	sourceElement.appendChild(outgoing);
@@ -343,7 +345,7 @@ public class Model {
 	//let's remove the previous waypoints:
 	while (sequenceFlowBPMNDI.hasChildNodes()) {
 	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
-	    System.out.println("		Just deleted the a waypoint");
+//	    System.out.println("		Just deleted the a waypoint");
 	}
 
 	//let's now add the previously created waypoints:
@@ -355,111 +357,7 @@ public class Model {
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
     
-    
-    public void setSource(Element sequenceFlow, Element newSource) throws XPathExpressionException {
-
-	String previousSourceId =  sequenceFlow.getAttribute("sourceRef");
-	Element previousSource = findElemById(previousSourceId);
-	
-	String id = sequenceFlow.getAttribute("id");
-	
-	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
-	System.out.println("");
-
-	System.out.println("		Content of child: " + previousSource.getTextContent());
-
-	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
-
-	//TODO both the two lines above do the same thing.
-
-	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
-	    NodeList childList = previousSource.getChildNodes();
-	    for (int i = 0; i < childList.getLength(); i++) {
-		Node childInCase = childList.item(i);
-		String textContentString = childInCase.getTextContent();
-		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
-		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
-		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
-		//be checked in case the task is both the source and the target of a SequenceFlow!
-		if (textContentString.equals(id)){
-		    childInCase.getParentNode().removeChild(childInCase);
-		    System.out.println("		I have found the child that I want to delete!!");
-		    //TODO if you want, find a way to remove the blank space that gets created
-		}
-
-	    }
-
-	}
-
-
-	
-	System.out.println("		The id of the sequenceFlow that I have found is " + id);
-	sequenceFlow.setAttribute("sourceRef", newSource.getAttribute("id"));
-	// We still need to change also the element of the Source to have my outgoing
-	// flow as a child
-	
-	System.out.println("		The new source is: " + newSource.getAttribute("id"));
-	Element outgoing = doc.createElement("bpmn:outgoing");
-	outgoing.appendChild(doc.createTextNode(sequenceFlow.getAttribute("id"))); //This adds the id as a text inside the tags
-	newSource.appendChild(outgoing);
-
-
-	//Since it's impossible to distinguish the source waypoints from the target waipoints, 
-	//(aside from looking at the order, but this doesn't seem like a good solution
-	//it's best to simply delete all
-	//existing waypoints and create two of them from scratch.
-
-
-
-	//we want to get the position of the source to know where the flow will have to point
-
-	Element sourceBPMNDI = findBPMNDI(newSource.getAttribute("id"));
-
-	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
-
-	String xSource = sourceDcBounds.getAttribute("x");
-	String ySource = sourceDcBounds.getAttribute("y");
-	String sourceItemHeight = sourceDcBounds.getAttribute("height");
-	String sourceItemWidth = sourceDcBounds.getAttribute("width");
-
-
-	//we want to get the position of the target to know where the flow will have to point
-	String target = sequenceFlow.getAttribute("targetRef");
-	Element targetBPMNDI = findBPMNDI(target);
-	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
-	String xTarget = targetDcBounds.getAttribute("x");
-	String yTarget = targetDcBounds.getAttribute("y");
-	String targetItemHeight = targetDcBounds.getAttribute("height");
-	String targetItemWidth = targetDcBounds.getAttribute("width");
-
-	//Calculating the best options for the placement of the sequenceFlow
-	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
-
-	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
-	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
-
-	//This is the bpmndi corresponding to our sequenceFlow
-	Element sequenceFlowBPMNDI = findBPMNDI(id);
-
-	//let's remove the previous waypoints:
-	while (sequenceFlowBPMNDI.hasChildNodes()) {
-	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
-	    System.out.println("		Just deleted the a waypoint");
-	}
-
-	//let's now add the previously created waypoints:
-	//NOTE: the order in which the waypoints are added decides the order of the arrow!
-	//This is a little bit counterintuitive imho, but it is like it is.
-	sequenceFlowBPMNDI.appendChild(sourceWP);
-	sequenceFlowBPMNDI.appendChild(targetWP);
-
-	System.out.println("		I have changed the source of flow " + id + " to " + newSource.getAttribute("id"));
-    }
-    
-    
-    
-    
-    
+        
     /**
      * used to get an item's position
      * (for example when wanting to substitute it
@@ -563,41 +461,23 @@ public class Model {
 
 	String previousTargetId =  findElemById(id).getAttribute("targetRef");
 	Element previousTarget = findElemById(previousTargetId);
-	System.out.println("		This element's previous target is: " + previousTarget.getAttribute("id"));
-	System.out.println("");
-
-	System.out.println("		Content of child: " + previousTarget.getTextContent());
-
-	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousTarget));
-	//TODO see if there's any difference. See if it prints all of the child's content or not.
-
-	//TODO the following two if blocks can become a method used both by setTarget and setSource
-	if (previousTarget.hasChildNodes()) { //This is expected to be always true anyway
-	    NodeList childList = previousTarget.getChildNodes();
-	    for (int i = 0; i < childList.getLength(); i++) {
-		Node childInCase = childList.item(i);
-		String textContentString = childInCase.getTextContent();
-		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
-		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
-		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
-		//be checked in case the task is both the source and the target of a SequenceFlow!
-		if (textContentString.equals(id)){
-		    childInCase.getParentNode().removeChild(childInCase);
-		    System.out.println("		I have found the child that I want to delete!!");
-		    //TODO if you want, find a way to remove the blank space that gets created
-		}
-
-	    }
-
-	}
+//	System.out.println("		This element's previous target is: " + previousTarget.getAttribute("id"));
+//	System.out.println("");
+//
+//	System.out.println("		Content of child: " + previousTarget.getTextContent());
 
 	Element sequenceFlow = findElemById(id);
-	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
+
+
+	deleteFlowFromOldSourceorTarget(sequenceFlow, previousTarget);
+
+	
+//	System.out.println("		The id of the sequenceFlow that I have found is " + sequenceFlow.getAttribute("id"));
 	sequenceFlow.setAttribute("targetRef", target);
 	// We still need to change also the element of the Source to have my outgoing
 	// flow as a child
 	Element targetElement = findElemById(target);
-	System.out.println("		The new target is: " + targetElement.getAttribute("id"));
+//	System.out.println("		The new target is: " + targetElement.getAttribute("id"));
 	Element incoming = doc.createElement("bpmn:incoming");
 	incoming.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	targetElement.appendChild(incoming);
@@ -612,6 +492,7 @@ public class Model {
 	Element targetBPMNDI = findBPMNDI(target);
 
 	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
+	
 	//TODO make this position thing a separate method
 	System.out.println("Positions will follow");
 	String xTarget = targetDcBounds.getAttribute("x");
@@ -899,13 +780,13 @@ public class Model {
 		for (int i = 0; i < childList.getLength(); i++) {
 		    Node childInCase = childList.item(i);
 		    String textContentString = childInCase.getTextContent();
-		    System.out.println("		Searching for child to delete, child content in case: " + textContentString);
-		    System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		    //System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		    //System.out.println("		Searching for child to delete, child i'm looking for: " + id);
 		    //TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
 		    //be checked in case the task is both the source and the target of a SequenceFlow!
 		    if (textContentString.equals(id)){
 			childInCase.getParentNode().removeChild(childInCase);
-			System.out.println("		I have found the child that I want to delete!!");
+			//System.out.println("		I have found the child that I want to delete!!");
 			//TODO if you want, find a way to remove the blank space that gets created
 		    }
 
@@ -1002,7 +883,7 @@ public class Model {
 	System.out.println("		Deleted element " + id);
     }
     /**
-     * NOTE this is not tested but it should work
+     * NOTE this deletes all children of an element
      * @param id
      * @throws XPathExpressionException
      */
@@ -1013,13 +894,13 @@ public class Model {
 	    for (int i = 0; i < childList.getLength(); i++) {
 		Node childInCase = childList.item(i);
 		String textContentString = childInCase.getTextContent();
-		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
-		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		//System.out.println("		Searching for child to delete, child content in case: " + textContentString); UNLOCKTHIS
+		//System.out.println("		Searching for child to delete, child i'm looking for: " + id); UNLOCKTHIS
 		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
 		//be checked in case the task is both the source and the target of a SequenceFlow!
 		if (textContentString.equals(id)){
 		    childInCase.getParentNode().removeChild(childInCase);
-		    System.out.println("		I have found the child that I want to delete!!");
+		    //System.out.println("		I have found the child that I want to delete!!");
 		    //TODO if you want, find a way to remove the blank space that gets created
 		}
 

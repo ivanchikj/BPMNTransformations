@@ -318,9 +318,6 @@ public class Rule3 {
 		model.deleteIncomingFlows(successor);
 		model.delete(successor.getAttribute("id"));
 
-
-
-
 	    }
 	    for (Element predecessor : construct.exclusivePredecessors) {
 		//predecessor.setAttribute("name", "valid predecessor");UNLOCKTHIS
@@ -333,15 +330,41 @@ public class Rule3 {
 		model.deleteOutgoingFlows(predecessor);
 		model.delete(predecessor.getAttribute("id"));
 	    }    
-
-
+	    
+	    Element newInclusiveStartingPoint = model.findElemById(firstMeetingPointID);
+	    Element newInclusiveMeetingPoint = model.findElemById(firstParallelID);
+	    
+	    //let's clear the resulting multiple empty paths among the two inclusive but one
+	    
+	    keepOnlyOneEmptyPathAmong(newInclusiveStartingPoint, newInclusiveMeetingPoint, model);
 	}
 
-	//clear the resulting multiple empty paths among the two inclusive
 
 	return model;
 
 
+    }
+
+
+    private  static void  keepOnlyOneEmptyPathAmong(Element startingPoint, Element firstMeetingPoint, Model model) throws XPathExpressionException {
+
+	ArrayList<Element> outgoingFlows = model.getOutgoingFlows(startingPoint);
+	ArrayList<Element> emptyFlowsAmong = new ArrayList<Element>();
+	System.out.println("PROVA " + outgoingFlows.size());
+	
+	for (Element flow : outgoingFlows) {
+	    System.out.println("Is this path empty?");
+	    String idOfTarget = model.getTarget(flow).getAttribute("id");
+	    String idOfMeetingPoint = firstMeetingPoint.getAttribute("id");
+	    if (idOfTarget.equals(idOfMeetingPoint)) {
+		System.out.println("I've found an empty path"); //UNLOCKTHIS
+		emptyFlowsAmong.add(flow);
+	    }
+	}
+
+	for (int i = 1; i < emptyFlowsAmong.size(); i++) { // 'i' starts from 1 because I will keep one of the flows. //TODO scrivi nella tesi che fai sta cosa
+	    model.delete(emptyFlowsAmong.get(i).getAttribute("id"));
+	}
     }
 
 
