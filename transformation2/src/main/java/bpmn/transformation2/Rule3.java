@@ -144,6 +144,14 @@ public class Rule3 {
     public static Model c (Model startingModel) throws XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, IOException, TransformerException {
 	System.out.println( " I'm applying Rule3c");
 
+
+	ArrayList<Rule3cConstruct> constructs = new ArrayList<Rule3cConstruct>(); 
+	//here we will store the list of construct where we can safely apply rule3c
+	//the problem with rule3c is that it can contain a version of the construct inside another
+	//so if we apply the rule on a construct immediately after we find it, we might be unable to find another one later 
+	//on in the execution
+	//TODO scrivilo nella tesi
+
 	Model model = startingModel;
 
 	System.out.println("Going through every parallel Element in the gateway");
@@ -166,14 +174,20 @@ public class Rule3 {
 
 	    //first we have to check that all paths from the starting parallel gateway meet at the same parallel gateway
 	    TravelAgency parallelTA = new TravelAgency(model, parallelGat);
-	    Element firstParallelMeetingPoint = parallelTA.mandatoryDeepSuccessors.get(0); //This always works because we meet at the end anyway
-	    //TODO what happens when I have more than one end... it should return false but it should not break.
-	    //Right now I guess it would break.
+	    parallelTA.printPaths();
+	    Element firstParallelMeetingPoint = parallelTA.mandatoryDeepSuccessors.get(0); //This always works because we meet at the end anyway //TODO what happens when I have more than one end... it should return false but it should not break.
+	    //NOTE the name 'firstParallelMeetingPoint' might make it seem like there's another meeting point that comes before
+	    //the parallel but that is not a parallel. In fact, the first meeting point HAS to be a parallel for us to be able to apply the rule.
 
 	    System.out.println("The first meeting point is " + firstParallelMeetingPoint.getAttribute("id"));
 
+	    //Every parallel gat has a list of exclusivegateway successors that we will need to save in our construct
+	    ArrayList<Element> candidateExclusiveSuccessors = new ArrayList<Element>();
+	    //But also every firstMeetingPoint has a list of exclusivegateway successors that we will need to save in our construct
+	    ArrayList<Element> candidateExclusivePredecessors = new ArrayList<Element>();
 
-	    if (firstParallelMeetingPoint.getTagName() == "bpmn:parallelGateway") { //of course it has to be a parallel.
+	    if (firstParallelMeetingPoint.getTagName() == "bpmn:parallelGateway") { //of course it has to be a parallel for the rule to be applied
+
 
 		System.out.println("All paths from the parallel " + parallelGat.getAttribute("id") + " meet in the same parallel: " + firstParallelMeetingPoint.getAttribute("id"));
 
@@ -202,6 +216,7 @@ public class Rule3 {
 		    //every predecessor of the first meeting point is is exclusive gat. we can now check the next condition
 
 
+
 		    //the next condition is that no matter which path i take from my the exclusive gateways that follow the first parallel,
 		    //I always end up in another exclusive gateway that is a predecessor of the first parallel meeting point
 
@@ -213,41 +228,35 @@ public class Rule3 {
 
 			    Element exclusiveGatPredecessorOfTheFirstParallelMeetingPoint = findExclusiveMeetingPoint(exclusiveGatSuccessorOfTheParallel, firstParallelMeetingPoint, model).get(0);
 
-			    //TODO DELETE THIS ArrayList<Element> emptyOutgoingFlows = outgoingFlowsPointingToExclusiveGateways(exclusiveGatSuccessorOfTheParallel, model, firstExclusiveMeetingPoint);
 
-			    //				    ArrayList<Element> outgoingFlows = model.getOutgoingFlows(exclusiveGatSuccessorOfTheParallel);
-			    //				    System.out.println("Number of outgoingFlows: " + outgoingFlows.size());
-			    ////				    System.out.println("Number of empty outgoingFlows: " + emptyOutgoingFlows.size());
-			    //				    if (emptyOutgoingFlows.size() > 0 && outgoingFlows.size() - emptyOutgoingFlows.size() <= 1) {
-			    //					//there's at least one outgoingFlow && maximum one non-empty flow 
-			    //					System.out.println("there's at least one outgoingFlow && maximum one non-empty flow"); //add details about your starting point
-			    //
+			    //exclusiveGatSuccessorOfTheParallel.setAttribute("name", "valid exclusive");
+			    candidateExclusiveSuccessors.add(exclusiveGatSuccessorOfTheParallel); //let's add our gateway to the list of exclusives that succeed the first parallel 
+
+			    //exclusiveGatPredecessorOfTheFirstParallelMeetingPoint.setAttribute("name","first exclusive meeting point");
+			    candidateExclusivePredecessors.add(exclusiveGatPredecessorOfTheFirstParallelMeetingPoint); //let's add our gateway to the list of exclusives that preceed the first parallel meeting point
+			    //parallelGat.setAttribute("name", "CandidateParallel");
 
 
-			    //OK now every condition has been met and we can apply the rule
+			    //if all gateways following the first parallel
+			    //and all gateways preceeding the first meeting point
+			    //are in the list of gateways that are ready to accept the construct,
+			    //then the firstParallel and the firstMeetingPoint are ready to accept the rule as well.
+			    //NOTE that this condition is never met in the first pass, it can only become true after
+			    //all exclusivegateways have been put in the exclusiveGatewaysuccessors/predecessors arrays respectively
 
 
-			    //First, let's transform our original parallel gateway and it's matching final gateways
-			    //into inclusive gateways.
-			    parallelGat.setAttribute("name", "CandidateParallel");
+			    System.out.println("Successors of first parallel size: " + successorsOfParallel.size());
+			    System.out.println("candidate succesors: " + candidateExclusiveSuccessors.size());
 
-			    firstParallelMeetingPoint.setAttribute("name", "first parallel meeting point");
-
-			    exclusiveGatSuccessorOfTheParallel.setAttribute("name", "valid exclusive");
-
-			    exclusiveGatPredecessorOfTheFirstParallelMeetingPoint.setAttribute("name","first exclusive meeting point");
-
-			    
-			    //CONTINUA DA QUA li hai trovati tutti.
-
-			    //Ora il problema è che se cambi le cose adesso rompi tutto. Perché al secondo giro i metodi che hai usato non
-			    //trovano più gli elementi giusti.
-			    //Devi quindi salvarti tutto e poi modificare le cose alla fine.
-			    //Per ogni trasformazione bisogna salvarsi:
-			    //il primo parallel e l'ultimo, e tutti gli exclusive iniziali separati dagli exclusive finali. Meglio creare un oggetto.
+			    System.out.println("Predecessors of meetin point: " +  predecessorsOfFirstMeetingPoint.size());
+			    System.out.println("candidate successors: " + candidateExclusiveSuccessors.size());
 
 
-
+			    if (successorsOfParallel.size() == candidateExclusiveSuccessors.size() && predecessorsOfFirstMeetingPoint.size() == candidateExclusivePredecessors.size()){
+				System.out.println("I'm creating a new construct");
+				Rule3cConstruct construct = new Rule3cConstruct(parallelGat, firstParallelMeetingPoint, candidateExclusiveSuccessors, candidateExclusivePredecessors);
+				constructs.add(construct);
+			    }
 
 
 			}
@@ -255,24 +264,87 @@ public class Rule3 {
 
 		}
 	    }
+
+
+
+
+	    //if ()
+
+
+	    // Rule3cConstruct construct = new Rule3cConstruct(parallelGat,
 	}
-	
-	//applyRule3c here
-	
+
+	model = applyRule3c(constructs, model);
+
 	return model;
     }
 
-    
+
     /**
      * 
      * @param constructs
+     * @throws XPathExpressionException 
+     * @throws TransformerException 
+     * @throws IOException 
+     * @throws SAXException 
+     * @throws ParserConfigurationException 
+     * @throws TransformerConfigurationException 
      */
-    private static void applyRule3c (ArrayList<Rule3cConstruct> constructs) {
-	
-	
+    private static Model applyRule3c (ArrayList<Rule3cConstruct> constructs, Model model) throws XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, IOException, TransformerException {
+
+	for (Rule3cConstruct construct : constructs) {
+	    Element firstParallel = construct.firstParallel;
+	    Element firstMeetingPoint = construct.firstParallelMeetingPoint;
+
+	    String firstParallelID = firstParallel.getAttribute("id");
+	    String firstMeetingPointID = firstMeetingPoint.getAttribute("id");
+
+
+	    //firstParallel.setAttribute("name", "PRIMO PARALLEL"); UNLOCKTHIS
+	    //firstMeetingPoint.setAttribute("name","PARALLEL MEETING POINT");UNLOCKTHIS
+
+	    model.changeType(firstParallel, "bpmn:inclusiveGateway");
+	    model.changeType(firstMeetingPoint, "bpmn:inclusiveGateway");
+
+	    for (Element successor: construct.exclusiveSuccessors) {
+		//successor.setAttribute("name", "valid successor");UNLOCKTHIS
+		ArrayList<Element> outgoingFlows = model.getOutgoingFlows(successor);
+
+		for (Element flow : outgoingFlows) {
+		    model.setSource(flow.getAttribute("id"), firstParallelID);
+
+		}
+		//before deleting the exclusive gateway, we have to delete all it's incoming flows
+		model.deleteIncomingFlows(successor);
+		model.delete(successor.getAttribute("id"));
+
+
+
+
+	    }
+	    for (Element predecessor : construct.exclusivePredecessors) {
+		//predecessor.setAttribute("name", "valid predecessor");UNLOCKTHIS
+
+		ArrayList<Element> incomingFlows = model.getIncomingFlows(predecessor);
+		for (Element flow : incomingFlows) {
+		    model.setTarget(flow.getAttribute("id"), firstMeetingPointID);
+		}
+		//before deleting the exclusive gateway, we have to delete all it's outgoing flows
+		model.deleteOutgoingFlows(predecessor);
+		model.delete(predecessor.getAttribute("id"));
+	    }    
+
+
+	}
+
+	//clear the resulting multiple empty paths among the two inclusive
+
+	return model;
+
+
     }
-    
-    
+
+
     private static ArrayList<Element> exclusiveGatSuccessors(Element parallelGat, Model model) throws XPathExpressionException {
 
 	ArrayList<Element> exclusiveGatSuccessors = new ArrayList<Element>();

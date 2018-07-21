@@ -259,7 +259,7 @@ public class Model {
      * @throws XPathExpressionException
      */
     public void setSource(String id, String source) throws XPathExpressionException {
-
+	System.out.println("PROVAVAAVAVAVA" +  source);
 	String previousSourceId =  findElemById(id).getAttribute("sourceRef");
 	Element previousSource = findElemById(previousSourceId);
 	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
@@ -297,7 +297,7 @@ public class Model {
 	// We still need to change also the element of the Source to have my outgoing
 	// flow as a child
 	Element sourceElement = findElemById(source);
-	System.out.println("		The new source is: " + sourceElement.getAttribute("id"));
+	System.out.println("		The new source is: " + source);
 	Element outgoing = doc.createElement("bpmn:outgoing");
 	outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a text inside the tags
 	sourceElement.appendChild(outgoing);
@@ -354,6 +354,112 @@ public class Model {
 
 	System.out.println("		I have changed the source of flow " + id + " to " + source);
     }
+    
+    
+    public void setSource(Element sequenceFlow, Element newSource) throws XPathExpressionException {
+
+	String previousSourceId =  sequenceFlow.getAttribute("sourceRef");
+	Element previousSource = findElemById(previousSourceId);
+	
+	String id = sequenceFlow.getAttribute("id");
+	
+	System.out.println("		This element's previous source is: " + previousSource.getAttribute("id"));
+	System.out.println("");
+
+	System.out.println("		Content of child: " + previousSource.getTextContent());
+
+	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
+
+	//TODO both the two lines above do the same thing.
+
+	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
+	    NodeList childList = previousSource.getChildNodes();
+	    for (int i = 0; i < childList.getLength(); i++) {
+		Node childInCase = childList.item(i);
+		String textContentString = childInCase.getTextContent();
+		System.out.println("		Searching for child to delete, child content in case: " + textContentString);
+		System.out.println("		Searching for child to delete, child i'm looking for: " + id);
+		//TODO add a check to see if it's of the TAG bpmn:outgoing. It should 
+		//be checked in case the task is both the source and the target of a SequenceFlow!
+		if (textContentString.equals(id)){
+		    childInCase.getParentNode().removeChild(childInCase);
+		    System.out.println("		I have found the child that I want to delete!!");
+		    //TODO if you want, find a way to remove the blank space that gets created
+		}
+
+	    }
+
+	}
+
+
+	
+	System.out.println("		The id of the sequenceFlow that I have found is " + id);
+	sequenceFlow.setAttribute("sourceRef", newSource.getAttribute("id"));
+	// We still need to change also the element of the Source to have my outgoing
+	// flow as a child
+	
+	System.out.println("		The new source is: " + newSource.getAttribute("id"));
+	Element outgoing = doc.createElement("bpmn:outgoing");
+	outgoing.appendChild(doc.createTextNode(sequenceFlow.getAttribute("id"))); //This adds the id as a text inside the tags
+	newSource.appendChild(outgoing);
+
+
+	//Since it's impossible to distinguish the source waypoints from the target waipoints, 
+	//(aside from looking at the order, but this doesn't seem like a good solution
+	//it's best to simply delete all
+	//existing waypoints and create two of them from scratch.
+
+
+
+	//we want to get the position of the source to know where the flow will have to point
+
+	Element sourceBPMNDI = findBPMNDI(newSource.getAttribute("id"));
+
+	Element sourceDcBounds = findDcBounds(sourceBPMNDI); //the dc:bounds tag contains the info about the position
+
+	String xSource = sourceDcBounds.getAttribute("x");
+	String ySource = sourceDcBounds.getAttribute("y");
+	String sourceItemHeight = sourceDcBounds.getAttribute("height");
+	String sourceItemWidth = sourceDcBounds.getAttribute("width");
+
+
+	//we want to get the position of the target to know where the flow will have to point
+	String target = sequenceFlow.getAttribute("targetRef");
+	Element targetBPMNDI = findBPMNDI(target);
+	Element targetDcBounds = findDcBounds(targetBPMNDI); //the dc:bounds tag contains the info about the position
+	String xTarget = targetDcBounds.getAttribute("x");
+	String yTarget = targetDcBounds.getAttribute("y");
+	String targetItemHeight = targetDcBounds.getAttribute("height");
+	String targetItemWidth = targetDcBounds.getAttribute("width");
+
+	//Calculating the best options for the placement of the sequenceFlow
+	String[] seQFlowPositions = decideArrowPosition(xSource, ySource, sourceItemHeight, sourceItemWidth, xTarget, yTarget, targetItemHeight, targetItemWidth);
+
+	Element sourceWP = createWaypoint(seQFlowPositions[0], seQFlowPositions[1]);
+	Element targetWP = createWaypoint(seQFlowPositions[2], seQFlowPositions[3]);
+
+	//This is the bpmndi corresponding to our sequenceFlow
+	Element sequenceFlowBPMNDI = findBPMNDI(id);
+
+	//let's remove the previous waypoints:
+	while (sequenceFlowBPMNDI.hasChildNodes()) {
+	    sequenceFlowBPMNDI.removeChild(sequenceFlowBPMNDI.getFirstChild());
+	    System.out.println("		Just deleted the a waypoint");
+	}
+
+	//let's now add the previously created waypoints:
+	//NOTE: the order in which the waypoints are added decides the order of the arrow!
+	//This is a little bit counterintuitive imho, but it is like it is.
+	sequenceFlowBPMNDI.appendChild(sourceWP);
+	sequenceFlowBPMNDI.appendChild(targetWP);
+
+	System.out.println("		I have changed the source of flow " + id + " to " + newSource.getAttribute("id"));
+    }
+    
+    
+    
+    
+    
     /**
      * used to get an item's position
      * (for example when wanting to substitute it
@@ -727,10 +833,25 @@ public class Model {
 
     }
 
+    
+    //TODO use this method in other rules
+    public void deleteIncomingFlows(Element element) throws XPathExpressionException {
+	ArrayList<Element> incomingFlows = getIncomingFlows(element);
+	for (Element flow : incomingFlows) {
+	    delete(flow.getAttribute("id"));
+	}
+	
+    }
+    //TODO use this method in other rules
+    public void deleteOutgoingFlows(Element element) throws XPathExpressionException {
+	ArrayList<Element> outgoingFlows = getOutgoingFlows(element);
+	for (Element flow : outgoingFlows) {
+	    delete(flow.getAttribute("id"));
+	}
+    }
 
     /**
-     * TODO see if this works just as well as deleteElement This is much simpler
-     * TODO if it is a flow, remember to delete also the children of it's target/ source. But only the right child.
+     * TODO make this method use the element as input
      * @param id
      *            the ID of the element to delete
      * @throws XPathExpressionException
@@ -845,7 +966,7 @@ public class Model {
      * @param element
      */
     public void changeType(Element element, String newType) {
-	doc.renameNode(element, element.getNamespaceURI(), newType);
+	doc.renameNode(element, doc.getDocumentURI(), newType);
     }
 
     /**

@@ -83,16 +83,18 @@ public class TravelAgency {
 	//printVisited(); //UNLOCKTHIS for testing
 
 	visit(startingPoint);
+	
 
 	ArrayList<Element> immediateSuccessors = model.getSuccessors(startingPoint);
 
 	if (immediateSuccessors.size() > 1) {
-	    //System.out.println("THIS IS A SPLIT !");
+	    System.out.println("THIS IS A SPLIT !");
 
 	    for (Element successor : immediateSuccessors ) {
 
 		if (iHaveNotVisited(successor)){    
 
+		    @SuppressWarnings("unchecked")
 		    ArrayList<Element> newPast = (ArrayList<Element>) past.clone();
 		    newPast.add(successor);
 		    getPathsFrom(newPast);
@@ -248,7 +250,7 @@ public class TravelAgency {
      */
     public void printPaths() {
 	System.out.println("======= PRINTING PATHS =======");
-
+	System.out.println("STARTING POINT: " +  startingPoint.getAttribute("name"));
 	for (ArrayList<Element> path : paths) {
 	    System.out.println("-----a path:-----");
 	    for (Element element : path) {
@@ -256,6 +258,10 @@ public class TravelAgency {
 	    }
 
 	}
+    }
+    
+    public void printNumberOfPaths() {
+	System.out.println("THE NUMBER OF PATHS FROM STARTING POINT: " + startingPoint.getAttribute("id") + " is: " + paths.size()); 
     }
 
 }
