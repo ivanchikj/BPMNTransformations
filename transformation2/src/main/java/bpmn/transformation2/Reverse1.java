@@ -23,8 +23,8 @@ public class Reverse1 {
      */
     public static Model applyRule(Model startingModel, int aggregateBy ) throws XPathExpressionException {
 
-	if (aggregateBy < 1) {
-	    System.out.println("Levels must be bigger than 0");
+	if (aggregateBy < 2) {
+	    System.out.println("aggregate by must be bigger than 1");
 	    return startingModel;
 	}
 

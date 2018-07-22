@@ -1247,12 +1247,13 @@ public class Model {
 
 
     /**
-     * TODO maybe add a check that the ID is not already in use?
+     * TODO explain in the thesis that a QName (what is it?) cannot start with
+     * a number but a letter.
      * 
      * @return
      */
     public String newId() {
-	return UUID.randomUUID().toString();
+	return "USI" + UUID.randomUUID().toString(); //I added 'USI' because Ids cannot start with a digit.
     }
 
 }

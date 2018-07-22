@@ -91,10 +91,15 @@ public class Main{
 //	Model test1R = new Model(m1R);
 //	Model output = Reverse1.applyRule(test1R, 3); //NOTE that the int can be whatever positive number
 	
-	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
-	Model test2R = new Model(m2R);
-	Model output = Reverse2.applyRule(test2R, 3);
+//	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
+//	Model test2R = new Model(m2R);
+//	Model output = Reverse2.applyRule(test2R, 3);
 	
+	String m3cR = "./TestGraphs/Rule3cR.bpmn.xml";
+	Model test3cR = new Model(m3cR);
+	Model output = Reverse3.c(test3cR, 5);
+	
+		
 	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	
 	
