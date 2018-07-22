@@ -87,9 +87,13 @@ public class Main{
 //	Model output = Rule3.c(test3c);
 
 	
-	String m1R = "./TestGraphs/rule1R.bpmn.xml";
-	Model test1R = new Model(m1R);
-	Model output = Reverse1.applyRule(test1R, 2);
+//	String m1R = "./TestGraphs/rule1R.bpmn.xml";
+//	Model test1R = new Model(m1R);
+//	Model output = Reverse1.applyRule(test1R, 3); //NOTE that the int can be whatever positive number
+	
+	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
+	Model test2R = new Model(m2R);
+	Model output = Reverse2.applyRule(test2R, 3);
 	
 	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	

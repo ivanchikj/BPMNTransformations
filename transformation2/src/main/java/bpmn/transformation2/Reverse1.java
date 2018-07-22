@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.ibatis.annotations.One;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -46,7 +47,9 @@ public class Reverse1 {
 	//let's add in our candidate list only those gateways that are merges.
 	for (int i = 0; i < parallelGatewayInstances.getLength(); i++) {
 	    Element candidate = (Element) parallelGatewayInstances.item(i);
-	    if (model.isAMerge(candidate)) {
+	    //additionally, to avoid having a "one in, one out" type of gateway (which is undesired) we have to check that the number of
+	    //incomingFlows of our candidate is bigger than the parameter aggregateby
+	    if (model.isAMerge(candidate) && model.getIncomingFlows(candidate).size() > aggregateBy) {
 		candidates.add(candidate);
 	    }
 	}
@@ -54,7 +57,7 @@ public class Reverse1 {
 	//ok now we have our list of candidates
 	for (Element parallel : candidates) {
 	    ArrayList<Element> incomingFlows = model.getIncomingFlows(parallel);
-	    
+
 	    ArrayList<Element> predecessors = model.getPredecessors(parallel);
 
 	    //now we have to create some new parallels 
@@ -71,7 +74,7 @@ public class Reverse1 {
 	    //ok let's now create those new parallel:
 	    for (int n = 0; n < numberOfParallels; n++) {
 		ArrayList<Element> myPredecessors = new ArrayList<Element>();
-		
+
 		//we have to find the predecessors for the new gateway, among the ones that used to be 
 		//the predecessors of the original gateway
 		//obviously, the last parallel might not have enough predecessors to comply with the
@@ -84,28 +87,33 @@ public class Reverse1 {
 			predecessors.remove(0); //it's not a predecessor of the original parallel anymore
 		    }
 		}
-		System.out.println("My predecessors SIZEEEEEE " + myPredecessors.size());
+		//System.out.println("My predecessors SIZE " + myPredecessors.size()); UNLOCKTHIS
 		String[] position = model.calculatePositionOfNewNode(myPredecessors, parallel);
 
 		String newParallelID = model.newParallelGateway(position[0],position[1]); //TODO make this method accept a 'position' object
 		Element newParallel = model.findElemById(newParallelID);
-		
-		
+
+
 		newParallel.setAttribute("name", "NUOVO");//UNLOCKTHIS
-		
+
 		//now that I have created my parallel in a sensible position,
 		//I can connect it to the original parallel
-		
+
 		model.newSequenceFlow(newParallelID, parallel.getAttribute("id"));
-		
+
 		//now I can connect the element in myPredecessors to the new Parallel
-		
+
 		for (Element predecessor : myPredecessors) {
 		    Element outgoingFlow = model.getOutgoingFlows(predecessor).get(0); //we expect the predecessor to have only one outgoingFlow of course.
 		    model.setTarget(outgoingFlow.getAttribute("id"), newParallelID);
 		}
-		
-		
+
+		//one last thing. We want to avoid having "one in, one out" types of gateways, so to avoid this situation we want to 
+		//do one last check:
+		if (model.isUselessGateway(newParallel)) {
+		    model.deleteUselesGateway(newParallel);
+		}
+
 	    }
 
 

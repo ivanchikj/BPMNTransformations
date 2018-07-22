@@ -8,9 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-
-
+import javax.crypto.interfaces.DHPublicKey;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -767,6 +765,11 @@ public class Model {
 
 
     }
+    
+    public void delete(Element element) throws XPathExpressionException {
+	String id = element.getAttribute("id");
+	delete(id);
+    }
 
 
     //TODO use this inside the SetSource and SetTarget methods.
@@ -969,6 +972,49 @@ public class Model {
 	} else { 
 	    return false;
 	}
+    }
+    
+    //TODO spiega nella tesi che isAmerge e isASplit sono mutualmente esclusivi ma non del tutto
+    //perché potrebbe esserci un elemento che non è né uno split né un merge se ha un solo incoming e un solo outgoingflow
+    //anche se non sarebbe corretto secondo lo standard BPMN 2.0
+    public boolean isASplit(Element gateway) throws XPathExpressionException {
+	if (getOutgoingFlows(gateway).size() > 1 && getIncomingFlows(gateway).size()==1) {
+	    return true;
+	} else {
+	    return false;
+	}
+	
+    }
+    
+    /**
+     * An useless gateway is a gateway that has one incoming and one outgoing flow.
+     * It is illegal per BPMN 2.0
+     * 
+     * TODO ricordati di spiegarlo nella tesi
+     * @param gateway
+     * @return
+     * @throws XPathExpressionException 
+     */
+    public boolean isUselessGateway (Element gateway) throws XPathExpressionException {
+	if (getOutgoingFlows(gateway).size() == 1 && getIncomingFlows(gateway).size() == 1) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }
+    /*
+     * We delete an useless gateway by removing its incomingFlow, then setting its outgoing flow
+     * to have its predecessor as a target and finally deleting the gateway.
+     */
+    public void deleteUselesGateway(Element gateway) throws XPathExpressionException {
+	if (!isUselessGateway(gateway)) {
+	    System.out.println("This gateway is not useless and should not be deleted!");
+	} else {
+	    setSource(getOutgoingFlows(gateway).get(0).getAttribute("id"), getPredecessors(gateway).get(0).getAttribute("id"));
+	    delete(getIncomingFlows(gateway).get(0));
+	    delete(gateway);
+	}
+	
     }
 
     /**
