@@ -330,13 +330,15 @@ public class Rule3 {
 		model.deleteOutgoingFlows(predecessor);
 		model.delete(predecessor.getAttribute("id"));
 	    }    
-	    
+
 	    Element newInclusiveStartingPoint = model.findElemById(firstMeetingPointID);
 	    Element newInclusiveMeetingPoint = model.findElemById(firstParallelID);
-	    
+
 	    //let's clear the resulting multiple empty paths among the two inclusive but one
-	    
-	    keepOnlyOneEmptyPathAmong(newInclusiveStartingPoint, newInclusiveMeetingPoint, model);
+
+	    //keepOnlyOneEmptyPathAmong(newInclusiveStartingPoint, newInclusiveMeetingPoint, model); 
+	    //TODO this method doesn't work right now.
+	    //the program is not incorrect without it, but it could look better.
 	}
 
 
@@ -345,13 +347,18 @@ public class Rule3 {
 
     }
 
-
+    //TODO this method doesn't work right now.
+    //the program is not incorrect without it, but it could look better.
+    
+    //TODO another thing that we have to consider is that
+    //if we merge the empty paths and different conditions are present, we have to merge them.
+    //this time instead of adding an && we should add an ||
     private  static void  keepOnlyOneEmptyPathAmong(Element startingPoint, Element firstMeetingPoint, Model model) throws XPathExpressionException {
 
 	ArrayList<Element> outgoingFlows = model.getOutgoingFlows(startingPoint);
 	ArrayList<Element> emptyFlowsAmong = new ArrayList<Element>();
-	System.out.println("PROVA " + outgoingFlows.size());
-	
+	System.out.println("PROVA " + outgoingFlows.size()); //TODO This prints the wrong number of paths, that's why it doesn't work
+
 	for (Element flow : outgoingFlows) {
 	    System.out.println("Is this path empty?");
 	    String idOfTarget = model.getTarget(flow).getAttribute("id");

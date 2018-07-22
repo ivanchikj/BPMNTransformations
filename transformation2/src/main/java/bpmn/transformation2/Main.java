@@ -82,11 +82,19 @@ public class Main{
 //	Model test4cR = new Model(m4cR);
 //	Model output = Reverse4.c(test4cR);
 
-	String m3c = "./TestGraphs/Rule3cOneInsideTheOther.bpmn.xml";
-	Model test3c = new Model(m3c);
-	Model output = Rule3.c(test3c);
+//	String m3c = "./TestGraphs/Rule3cOneInsideTheOther.bpmn.xml";
+//	Model test3c = new Model(m3c);
+//	Model output = Rule3.c(test3c);
+
+	
+	String m1R = "./TestGraphs/rule1R.bpmn.xml";
+	Model test1R = new Model(m1R);
+	Model output = Reverse1.applyRule(test1R, 2);
 	
 	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
+	
+	
+	
 	
 //	Model orgnl = new Model(original);
 //	Model diff1 = new Model(different1);

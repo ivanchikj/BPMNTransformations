@@ -25,7 +25,7 @@ public class Rule1 {
 	NodeList parallelGatewayInstances = model.doc.getElementsByTagName("bpmn:parallelGateway");
 	System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
 
-	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE4: there are no parallel gateways in this model");
+	if (parallelGatewayInstances.getLength() == 0) {System.out.println("RULE1: there are no parallel gateways in this model");
 	//RETURN FALSE
 	}
 
