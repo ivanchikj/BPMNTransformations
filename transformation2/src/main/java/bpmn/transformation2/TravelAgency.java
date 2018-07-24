@@ -368,7 +368,7 @@ public class TravelAgency {
     /**
      * TODO this now prints names instead of ID's
      */   
-    private void printMandatoryDeepSuccessors() {
+    public void printMandatoryDeepSuccessors() {
 	System.out.println("PRINTING THE MANDATORY DEEP SUCCESSORS: ");
 	for (Element element : mandatoryDeepSuccessors) {
 	    System.out.println("                       " + element.getAttribute("id"));

@@ -174,13 +174,13 @@ public class Reverse3 {
 	    Element firstMeetingPoint = ta.mandatoryDeepSuccessors.get(0);
 	    if (firstMeetingPoint.getTagName().equals("bpmn:inclusiveGateway")) {
 		//ok now I can create a construct.
-		System.out.println("TUTTO BENeeeeeeeeeeeeeeeeeeeeeE");
+		System.out.println("TUTTO BENeeeeeeeeeeeeeeeeeeeeeE");//TODO ELIMINA STA ROBA
 		System.out.println(ta.paths.size());//UNLOCKTHIS
 		System.out.println(candidate.getAttribute("name"));
 		Reverse3cConstruct construct = new Reverse3cConstruct(candidate, firstMeetingPoint);
 		constructs.add(construct);
 	    } else {
-		System.out.println("MAMMA MIAAAAAAAAAAAAAAAA TI DEVI SPAVENTAREEEEE");
+		System.out.println("MAMMA MIAAAAAAAAAAAAAAAA TI DEVI SPAVENTAREEEEE"); //TODO ELIMINA STA ROBA
 		System.out.println(ta.paths.size());//UNLOCKTHIS
 		System.out.println(candidate.getAttribute("id"));
 		System.out.println(candidate.getAttribute("name"));

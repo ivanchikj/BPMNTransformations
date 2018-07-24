@@ -102,7 +102,7 @@ public class Reverse2 {
 
 		model.newSequenceFlow(exclusive.getAttribute("id"), newExclusiveID);
 
-		//now I can connect the element in myPredecessors to the new Parallel
+		//now I can connect the element in myPredecessors to the new exclusive
 
 		for (Element successor : mySuccessors) {
 		    Element incomingFlow = model.getIncomingFlows(successor).get(0); //we expect the successor to have only one incomingFlow of course.
@@ -114,6 +114,11 @@ public class Reverse2 {
 		if (model.isUselessGateway(newExclusive)) {
 		    model.deleteUselesGateway(newExclusive);
 		}
+		
+		//TODO spiegalo nella tesi:
+		//we now have to deal with the conditions.
+		//we create a new condition that leat to the new which is simply putting the condition of it's
+		//
 	    }
 
 
