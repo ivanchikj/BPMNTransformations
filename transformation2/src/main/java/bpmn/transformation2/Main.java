@@ -95,12 +95,19 @@ public class Main{
 //	Model test2R = new Model(m2R);
 //	Model output = Reverse2.applyRule(test2R, 3);
 	
-	String m3cR = "./TestGraphs/Rule3cR.bpmn.xml";
-	Model test3cR = new Model(m3cR);
-	Model output = Reverse3.c(test3cR, 5);
+//	String m3cR = "./TestGraphs/Rule3cR.bpmn.xml";
+//	Model test3cR = new Model(m3cR);
+//	Model output = Reverse3.c(test3cR, 5);
 	
-		
-	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
+	
+	//GETHPATH TEST:
+	String gPath = "./TestGraphs/GetPath.bpmn.xml";
+	Model testgPath = new Model(gPath);
+	TravelAgency tAgency = new TravelAgency(testgPath);
+	tAgency.printPaths();
+	 
+	
+	//Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	
 	
 	

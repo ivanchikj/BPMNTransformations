@@ -23,9 +23,11 @@ public class TravelAgency {
     public Model model;
     public ArrayList<ArrayList<Element>> paths;
     public ArrayList<String> visited;
+    public ArrayList<String> toVisit;
     public Element startingPoint;
     public ArrayList<Element> startingList;
     public ArrayList<Element> mandatoryDeepSuccessors;
+    public int pastID;
     //TODO decide if the starting point has to be a class variable
 
     /**
@@ -45,78 +47,226 @@ public class TravelAgency {
 	this.paths = new ArrayList<ArrayList<Element>>();
 
 	visited = new ArrayList<String>();
-
-	getPathsFrom(startingList);
+	toVisit = new ArrayList<String>();
+	
+	this.pastID = 0;
+	
+	//Past past = new Past(startingList, pastID++);
+	
+	//getPathsFrom(past);
+	
+	//getPathsFrom(startingList);
+	getPaths(startingPoint);
 
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
-	
+
 	//printPaths();//UNLOCKTHIS for testing
 
     }
-
+    /**
+     *  TODO scrivi la docum
+     *  Spiega che se non è specificato lo startingPoint, inizi dallo start
+     * @param model
+     * @throws XPathExpressionException
+     */
     public TravelAgency (Model model) throws XPathExpressionException {
 
 	this.model = model;
 
 	this.visited = new ArrayList<String>();
+	toVisit = new ArrayList<String>();
 
 	this.paths = new ArrayList<ArrayList<Element>>();
 
-	getPaths();
+
+	//Finding the start element
+	Element start = (Element) model.doc.getElementsByTagName("bpmn:startEvent").item(0);
+
+	this.startingPoint = start;
+
+	this.startingList = fromElementToArrayList();
+
+	//Past past = new Past(startingList, pastID++);
+	
+	//getPathsFrom(past);
+	
+	//getPathsFrom(startingList);
+	getPaths(startingPoint);
+
+	//getPaths(); TODO deletethis
 
 	mandatoryDeepSuccessors = new ArrayList<Element>();
 	getMandatoryDeepSuccessors();
-	
+
 	//printPaths();//UNLOCKTHIS for testing
 
     }
 
-    /**
-     * From a starting point element, get all the possible paths
-     * @throws XPathExpressionException 
-     */
-    private ArrayList <Element> getPathsFrom(ArrayList<Element> past) throws XPathExpressionException{
+    
+    private void getPaths(Element startingPoint) throws XPathExpressionException {
+	ArrayList<Element> path = new ArrayList<Element>();
+	getPathsFromPast(startingPoint, path);
+    }
+    
 
-	Element startingPoint = getLast(past);
-
-	//printVisited(); //UNLOCKTHIS for testing
-
-	visit(startingPoint);
+    private void getPathsFromPast(Element start, ArrayList<Element> past) throws XPathExpressionException { //TODO fai partire solo da uno startingPoint
+	past.add(start);
+	String id = start.getAttribute("id");
+	System.out.println("I'm visiting element " + id);
+	ArrayList<Element> successors = model.getSuccessors(start);
 	
-
-	ArrayList<Element> immediateSuccessors = model.getSuccessors(startingPoint);
-
-	if (immediateSuccessors.size() > 1) {
-	    System.out.println("THIS IS A SPLIT !");
-
-	    for (Element successor : immediateSuccessors ) {
-
-		if (iHaveNotVisited(successor)){    
-
-		    @SuppressWarnings("unchecked")
-		    ArrayList<Element> newPast = (ArrayList<Element>) past.clone();
-		    newPast.add(successor);
-		    getPathsFrom(newPast);
-
-		}
-	    }
-
-	} else if (immediateSuccessors.size() == 1){
-	    //System.out.println("THIS IS NOT A SPLIT !");
-	    Element successor = immediateSuccessors.get(0);
-	    past.add(successor);
-	    getPathsFrom(past);
-
-	} else if (immediateSuccessors.size() == 0){
-	    //System.out.println("THIS IS THE END");
+	if (successors.size() == 0) {
+	    System.out.println("this is the end: " + id);
 	    paths.add(past);
-	    //printPaths(); //UNLOCKTHIS for testing
-	    return past;
+	} else {
+	    for (Element successor : successors) {
+		ArrayList<Element> newPastArrayList = (ArrayList<Element>) past.clone();
+		getPathsFromPast(successor, newPastArrayList);
+	    }
+	}
+	
+    }
+    
+
+
+//    private void getPathsFrom (Past past) throws XPathExpressionException{
+//	ArrayList<Element> pastArrayList = past.elements;
+//	
+//	Element startingPoint = getLast(pastArrayList);
+//	String id = startingPoint.getAttribute("id");
+//	visit(startingPoint);
+//	printPast(past);
+//	ArrayList<Element> successors = model.getSuccessors(startingPoint);
+//
+//	if (successors.size() == 1) {
+//	    System.out.println(id + " IS NOT A SPLIT");
+//	    Element successor = successors.get(0);
+//	    pastArrayList.add(successor);
+//	    getPathsFrom(past);
+//	}
+//
+//	if (successors.size() == 0) {
+//	    System.out.println(id + " IS THE END");
+//	    paths.add(past.elements);
+//	}
+//
+//	if (successors.size() > 1 ) {
+//	    System.out.println(id + " IS A SPLIT");
+//
+//	    for (Element successor : successors) {
+//		String succId = successor.getAttribute("id");
+//		toVisit.add(succId);
+//		System.out.println("I have to remember I want to start from : " + succId );
+//	    }
+//	    for (String ElId : toVisit) {
+//		Element newSP = model.findElemById(ElId);
+//		if (iHaveNotVisited(newSP)) {
+//		    past.elements.remove(past.elements.size()-1);
+//		    
+//		    Past newPast = new Past(past.elements, pastID++);
+//
+//		    newPast.elements.add(newSP);
+//
+//		    getPathsFrom(newPast);
+//		    
+//		}
+//	    }
+//	}
+//
+//
+//    }
+
+
+
+    private void printPast(Past past) {
+	System.out.println( "          My Past:" + past.id);
+	for (Element element : past.elements) {
+	    System.out.println("                    " + element.getAttribute("id"));
 	}
 
-	return past;
     }
+
+
+
+    //    /**
+    //     * From a starting point element, get all the possible paths
+    //     * @throws XPathExpressionException 
+    //     */
+    //    private ArrayList <Element> getPathsFrom(ArrayList<Element> past) throws XPathExpressionException{
+    //
+    //	Element startingPoint = getLast(past);
+    //
+    //	//printVisited(); //UNLOCKTHIS for testing
+    //	visit(startingPoint);
+    //
+    //	ArrayList<Element> immediateSuccessors = model.getSuccessors(startingPoint);
+    //
+    //	if (immediateSuccessors.size() > 1) {
+    //	    System.out.println( startingPoint.getAttribute("id") + " IS A SPLIT !");
+    //
+    ////	    for (Element successor : immediateSuccessors ) {
+    ////
+    ////		if (iHaveNotVisited(successor)){    
+    ////
+    ////		    @SuppressWarnings("unchecked")
+    ////		    ArrayList<Element> newPast = (ArrayList<Element>) past.clone();
+    ////		    newPast.add(successor);
+    ////		    System.out.println("I decided to go there: " + successor.getAttribute("id"));
+    ////		    getPathsFrom(newPast);
+    ////		 
+    ////		}
+    ////	    }
+    //
+    //	    //creating a list of the unvisited successors:
+    //	    ArrayList< Element> unvisitedSuccessors = new ArrayList<Element>();
+    //	    
+    //	    for (Element successor : immediateSuccessors) { 
+    //		if (iHaveNotVisited(successor)) {
+    //		 unvisitedSuccessors.add(successor);   
+    //		}
+    //	    }
+    //	    
+    //	    
+    //	    while (unvisitedSuccessors.size() > 0) {
+    //		Element toVisit = unvisitedSuccessors.get(0);
+    //		ArrayList<Element> newPast = new ArrayList<Element>();
+    //		newPast.add(toVisit);
+    //		getPathsFrom(newPast);
+    //		unvisitedSuccessors.remove(toVisit);
+    //	    }
+    //	    
+    //	    
+    //	    
+    //	    return past;
+    //	    
+    //	} else if (immediateSuccessors.size() == 1){
+    //	    
+    //	    Element successor = immediateSuccessors.get(0);
+    //	    System.out.println(startingPoint.getAttribute("id") + " IS NOT A SPLIT !");
+    //	    past.add(successor);
+    //	    getPathsFrom(past);
+    //	    return past;
+    //
+    //	} else if (immediateSuccessors.size() == 0){
+    //	    //System.out.println("THIS IS THE END");
+    //	    paths.add(past);
+    //	    //printPaths(); //UNLOCKTHIS for testing
+    //	    return past;
+    //	} else {
+    //	     //this is impossible
+    //	    System.out.println("I did not expect for this to happen.");
+    //	    return past;
+    //	}
+    //    }
+
+
+    private boolean iHaveToVisit (Element element) {
+	return this.toVisit.contains(element.getAttribute("id"));
+    }
+
+
+
 
 
     private boolean iHaveNotVisited(Element element) {
@@ -134,8 +284,9 @@ public class TravelAgency {
     }
 
     private void visit(Element element) {
-	//System.out.println("I'm visiting: " + element.getAttribute("id"));
+	System.out.println("I'm visiting: " + element.getAttribute("id"));
 	visited.add(element.getAttribute("id"));
+	toVisit.remove(element.getAttribute("id"));
     }
 
     /**
@@ -239,7 +390,11 @@ public class TravelAgency {
 	ArrayList<Element> startingList = new ArrayList<Element>();
 
 	startingList.add(start);
-	getPathsFrom(startingList);
+	
+	//Past past = new Past(startingList, pastID++ );
+	//getPathsFrom(past);
+	
+	getPaths(start);
 
     }
 
@@ -251,15 +406,16 @@ public class TravelAgency {
     public void printPaths() {
 	System.out.println("======= PRINTING PATHS =======");
 	System.out.println("STARTING POINT: " +  startingPoint.getAttribute("name"));
+	int i = 1;
 	for (ArrayList<Element> path : paths) {
-	    System.out.println("-----a path:-----");
+	    System.out.println("-----Path number: "+ i + "-----");
 	    for (Element element : path) {
 		System.out.println(element.getAttribute("id"));
 	    }
-
+	    i++;
 	}
     }
-    
+
     public void printNumberOfPaths() {
 	System.out.println("THE NUMBER OF PATHS FROM STARTING POINT: " + startingPoint.getAttribute("id") + " is: " + paths.size()); 
     }
