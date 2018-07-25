@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.el.StaticFieldELResolver;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
@@ -141,66 +142,58 @@ public class Execution {
 	TravelAgency taA = new TravelAgency(a);
 	TravelAgency taB = new TravelAgency(b);
 
-	ArrayList<ArrayList<Element>> pA = taA.paths;
-	ArrayList<ArrayList<Element>> pB = taB.paths;
+	ArrayList<ArrayList<Element>> pathsA = taA.paths;
+	ArrayList<ArrayList<Element>> pathsB = taB.paths;
 
 	//First of all, if the two models have a different number of paths, we can stop
 	//right here knowing that they must be different
-	if (pA.size() != pB.size()) {
+	if (pathsA.size() != pathsB.size()) {
 	    System.out.println("The two models have a different number of paths so they must be different.");
 	    return true;
 	}
 
-	ArrayList<ArrayList<String>> pAInTypes = new ArrayList<ArrayList<String>>();
-	ArrayList<ArrayList<String>> pBInTypes = new ArrayList<ArrayList<String>>();
+	ArrayList<ArrayList<String>> pathsAInTypes = new ArrayList<ArrayList<String>>();
+	ArrayList<ArrayList<String>> pathsBInTypes = new ArrayList<ArrayList<String>>();
 
 	//transforming all the paths in A into sequences of types
 	//instead of paths of 
-	for (ArrayList<Element> path : pA) {
-	    pAInTypes.add(fromElementToTypes(path));
+	for (ArrayList<Element> path : pathsA) {
+	    pathsAInTypes.add(fromElementToTypes(path));
 	}
 
 	//transforming all the paths in B into sequences of types
 	//instead of paths of 
-	for (ArrayList<Element> path : pB) {
-	    pBInTypes.add(fromElementToTypes(path));
+	for (ArrayList<Element> path : pathsB) {
+	    pathsBInTypes.add(fromElementToTypes(path));
 	}
-
 
 	//let's see if for every type sequence in A i can find a match in B.
-	for (ArrayList<String> pathA : pAInTypes) {
-
-	    boolean foundAMatch = true; //let's assume the two paths will be equal unless we find a difference
-
-	    for (ArrayList<String> pathB : pBInTypes) {
-
-		//first of all we know that if they are of different length they cant be equal
-		if (pathA.size() != pathB.size()) {
-		    foundAMatch = false;
-		}
-
-		//let's go through every item and see if there's a difference between those two paths
-		for (int i = 0; i < pathA.size(); i++) {
-
-		    if (pathA.get(i) != pathB.get(i)) {
-			System.out.println("This node is of a different type");
-			//foundAMatch = false;
-		    }
-		}
-	    }
-
-	    //if I have gone through all paths in B and I havent found a match, the two models are different
-	    if (foundAMatch == false) {
-		System.out.println("The two models are different"); //UNLOCKTHIS for testing
-		return true;
+	for (ArrayList<String> pathInTypes : pathsAInTypes) {
+	    if (foundAMatch(pathInTypes, pathsBInTypes)) {
+		//found a match for this path. Lets keep analyzing the other paths.
+	    } else {
+		System.out.println("The models: " + a.path + " and " + b.path + " are different");
+		return true; //i have one path which doesn't have a match. The models must be different.
 	    }
 	}
-	
-	//if I haven't returned false up until now, then it must mean that the two models are the same
-	System.out.println("The two models are the same"); //UNLOCKTHIS for testing
+	System.out.println("The models: " + a.path + " and " + b.path + " are equal");
 	return false;
     }
 
+    
+    private static boolean foundAMatch (ArrayList<String> pathInTypes, ArrayList<ArrayList<String>> AllPathsInTypes) {
+	 
+	//let's go through every path in allPathsInTypes and see if there's one identical to pathInTypes
+	for (ArrayList<String> path : AllPathsInTypes) {
+	    
+	    if (path.equals(pathInTypes)) {
+		return true;
+	    }
+	    
+	}
+	
+	return false;
+    }
     //ASKANA do I also have to compare flows instead of just nodes?
     //I guess I do.
     //But maybe I don't because I have no rule that changes just flows without changing nodes.

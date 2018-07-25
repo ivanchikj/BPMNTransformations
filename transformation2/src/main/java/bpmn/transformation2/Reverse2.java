@@ -134,17 +134,14 @@ public class Reverse2 {
 		model.applyCondition(incomingFlow, conditionString);
 
 
-		//one last thing. We want to avoid having "one in, one out" types of gateways, so to avoid this situation we want to 
-		//do one last check:
+		//one last thing. We want to avoid having "one in, one out" types of gateways, 
+		//so to avoid this situation we want to do one last check:
 		if (model.isUselessGateway(newExclusive)) {
 		    model.deleteUselesGateway(newExclusive);
 		}
 	    }
 	}
-
-
 	return model;
-
     }
 
 

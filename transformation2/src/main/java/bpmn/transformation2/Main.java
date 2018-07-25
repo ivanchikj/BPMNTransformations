@@ -48,12 +48,31 @@ public class Main{
 	//String input = "./TestGraphs/TravelingTest.bpmn.xml";
 	//input = "./TestGraphs/multiple/"; //Testing more than one file.
 	
-//	String original = "./TestGraphs/DifferenceDetectingTest/Original.bpmn.xml"; 
-//	String different1 = "./TestGraphs/DifferenceDetectingTest/slightlyDifferent.bpmn.xml";
-//	String different2 = "./TestGraphs/DifferenceDetectingTest/different.bpmn.xml";
-//	String same = "./TestGraphs/DifferenceDetectingTest/same.bpmn.xml";
-//	String identical = "./TestGraphs/DifferenceDetectingTest/originalVariant.bpmn.xml";
-
+	String original = "./TestGraphs/DifferenceDetectingTest/Original.bpmn.xml"; 
+	String different1 = "./TestGraphs/DifferenceDetectingTest/slightlyDifferent.bpmn.xml";
+	String different2 = "./TestGraphs/DifferenceDetectingTest/different.bpmn.xml";
+	String same = "./TestGraphs/DifferenceDetectingTest/same.bpmn.xml";
+	String identical = "./TestGraphs/DifferenceDetectingTest/originalVariant.bpmn.xml";
+	
+	Model origina = new Model(original);
+	Model diff1 = new Model(different1);	
+	Model diff2 = new Model(different2);
+	Model sameModel = new Model(same);
+	Model identicModel = new Model(identical);
+	
+	TravelAgency ta1 = new TravelAgency(origina);
+	ta1.printNumberOfPaths();
+	TravelAgency ta2 = new TravelAgency(sameModel);
+	ta2.printNumberOfPaths();
+	
+	ta1.printMandatoryDeepSuccessors();
+	ta2.printMandatoryDeepSuccessors();
+	
+	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, sameModel));
+	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, origina));
+	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff1));
+	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff2));
+	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, identicModel));
 	
 //	String m4a = "./TestGraphs/Rule4a.bpmn.xml";
 //	Model test4a = new Model(m4a);
@@ -91,9 +110,9 @@ public class Main{
 //	Model test1R = new Model(m1R);
 //	Model output = Reverse1.applyRule(test1R, 3); //NOTE that the int can be whatever positive number
 	
-	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
-	Model test2R = new Model(m2R);
-	Model output = Reverse2.applyRule(test2R, 2);
+//	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
+//	Model test2R = new Model(m2R);
+//	Model output = Reverse2.applyRule(test2R, 2);
 
 //	String patSplitTest = "./TestGraphs/pathTest.bpmn.xml";
 //	Model testPath = new Model(patSplitTest);
@@ -115,7 +134,7 @@ public class Main{
 	
 	 
 	
-	Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
+	//Execution.saveModelToFile(output, "TODO", "TODO", "TODO");
 	
 	
 	
