@@ -94,6 +94,12 @@ public class Main{
 	String m2R = "./TestGraphs/Rule2R.bpmn.xml";
 	Model test2R = new Model(m2R);
 	Model output = Reverse2.applyRule(test2R, 2);
+
+//	String patSplitTest = "./TestGraphs/pathTest.bpmn.xml";
+//	Model testPath = new Model(patSplitTest);
+//	TravelAgency tAgency = new TravelAgency(testPath);
+//	tAgency.printPaths();
+//	tAgency.printMandatoryDeepSuccessors();
 	
 //	String m3cR = "./TestGraphs/Rule3cR.bpmn.xml";
 //	Model test3cR = new Model(m3cR);

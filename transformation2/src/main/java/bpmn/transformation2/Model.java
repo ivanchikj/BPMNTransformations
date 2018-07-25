@@ -648,13 +648,13 @@ public class Model {
 	return hasCondition;
     }
 
-    public static String returnConditionString (Element sequenceFlow) {
+    public String returnConditionString (Element sequenceFlow) {
 	Element conditionElement = returnConditionElement(sequenceFlow);
 	String condition = conditionElement.getTextContent();
 	return condition;
     }
 
-    public static Element returnConditionElement (Element sequenceFlow) {
+    public Element returnConditionElement (Element sequenceFlow) {
 	NodeList children = sequenceFlow.getElementsByTagName("bpmn:conditionExpression"); //TODO
 	if (children.getLength() > 1) {
 	    System.err.println("How can an array have more than one condition children?");

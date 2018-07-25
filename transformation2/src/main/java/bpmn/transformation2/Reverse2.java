@@ -88,7 +88,7 @@ public class Reverse2 {
 			successors.remove(0); //it's not a successor of the original parallel anymore
 		    }
 		}
-		System.out.println("My successors SIZEEEEEE " + mySuccessors.size());
+		System.out.println("My successors SIZE " + mySuccessors.size());
 		String[] position = model.calculatePositionOfNewNode(mySuccessors, exclusive);
 
 		String newExclusiveID = model.newExclusiveGateway(position[0],position[1]); //TODO make this method accept a 'position' object
@@ -109,25 +109,58 @@ public class Reverse2 {
 		    model.setSource(incomingFlow.getAttribute("id"), newExclusiveID);
 		}
 
+		//TODO spiegalo nella tesi:
+		//we now have to deal with the conditions.
+		//we create a new condition that lead to the new gateway which is simply 
+		// the addition of an "or" between its follower's conditions
+
+		ArrayList<Element> flowsWithConditions = model.getOutgoingFlows(newExclusive);
+		ArrayList<String> conditionStrings = new ArrayList<String>();
+		
+		for (Element flow : flowsWithConditions) {
+		    
+		    if (model.hasCondition(flow)) {
+			System.out.println(model.returnConditionString(flow));
+			conditionStrings.add(model.returnConditionString(flow));
+		    }
+		}
+
+		//now that we have all the conditions of the successors in one array
+		//we can calculate the new condition string
+		String conditionString = calculateNewCondition(conditionStrings);
+		System.out.println("NEW CONDITION: " + conditionString);
+		//and then applying it to the sequenceFlow that comes into our new exclusive:
+		Element incomingFlow = model.getIncomingFlows(newExclusive).get(0);
+		model.applyCondition(incomingFlow, conditionString);
+
+
 		//one last thing. We want to avoid having "one in, one out" types of gateways, so to avoid this situation we want to 
 		//do one last check:
 		if (model.isUselessGateway(newExclusive)) {
 		    model.deleteUselesGateway(newExclusive);
 		}
-		
-		//TODO spiegalo nella tesi:
-		//we now have to deal with the conditions.
-		//we create a new condition that leat to the new which is simply putting the condition of it's
-		//
 	    }
-
-
-
 	}
 
 
 	return model;
 
+    }
+
+
+    private static String calculateNewCondition (ArrayList<String> conditions) {
+
+	if (conditions.size() == 0) {
+	    return "";
+	}
+
+	String start = "" + conditions.get(0);
+
+	for (int i = 1; i < conditions.size(); i++) {
+	    start += " || " + conditions.get(i);
+	}
+
+	return start;
     }
 
 }

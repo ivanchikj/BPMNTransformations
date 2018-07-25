@@ -145,7 +145,7 @@ public class Rule3 {
 	System.out.println( " I'm applying Rule3c");
 
 
-	ArrayList<Reverse3cConstruct> constructs = new ArrayList<Reverse3cConstruct>(); 
+	ArrayList<Rule3cConstruct> constructs = new ArrayList<Rule3cConstruct>(); 
 	//here we will store the list of construct where we can safely apply rule3c
 	//the problem with rule3c is that it can contain a version of the construct inside another
 	//so if we apply the rule on a construct immediately after we find it, we might be unable to find another one later 
@@ -254,7 +254,7 @@ public class Rule3 {
 
 			    if (successorsOfParallel.size() == candidateExclusiveSuccessors.size() && predecessorsOfFirstMeetingPoint.size() == candidateExclusivePredecessors.size()){
 				System.out.println("I'm creating a new construct");
-				Reverse3cConstruct construct = new Reverse3cConstruct(parallelGat, firstParallelMeetingPoint, candidateExclusiveSuccessors, candidateExclusivePredecessors);
+				Rule3cConstruct construct = new Rule3cConstruct(parallelGat, firstParallelMeetingPoint, candidateExclusiveSuccessors, candidateExclusivePredecessors);
 				constructs.add(construct);
 			    }
 
@@ -290,10 +290,10 @@ public class Rule3 {
      * @throws ParserConfigurationException 
      * @throws TransformerConfigurationException 
      */
-    private static Model applyRule3c (ArrayList<Reverse3cConstruct> constructs, Model model) throws XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, IOException, TransformerException {
+    private static Model applyRule3c (ArrayList<Rule3cConstruct> constructs, Model model) throws XPathExpressionException, TransformerConfigurationException, ParserConfigurationException, SAXException, IOException, TransformerException {
 
-	for (Reverse3cConstruct construct : constructs) {
-	    Element firstParallel = construct.firstInclusive;
+	for (Rule3cConstruct construct : constructs) {
+	    Element firstParallel = construct.firstParallel;
 	    Element firstMeetingPoint = construct.firstParallelMeetingPoint;
 
 	    String firstParallelID = firstParallel.getAttribute("id");

@@ -1,5 +1,7 @@
 package bpmn.transformation2;
 
+import java.util.ArrayList;
+
 import org.w3c.dom.Element;
 
 public class Reverse3cConstruct {
@@ -7,6 +9,7 @@ public class Reverse3cConstruct {
 
     Element firstInclusive;
     Element firstInclusiveMeetingPoint;
+  
 
     Reverse3cConstruct(Element firstParallel, Element firstInclusiveMeetingPoint){
 	this.firstInclusive = firstParallel;

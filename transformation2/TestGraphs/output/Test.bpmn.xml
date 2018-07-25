@@ -8,14 +8,14 @@
       <bpmn:incoming>SequenceFlow_0g3yzdm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1jonr8u</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0g3yzdm" sourceRef="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee" targetRef="Task_0662equ">
+    <bpmn:sequenceFlow id="SequenceFlow_0g3yzdm" sourceRef="USI0461042c-0dcf-409e-82fb-844134acf462" targetRef="Task_0662equ">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0458gcq">
       <bpmn:incoming>SequenceFlow_0xbonpy</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1irjhi9</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0xbonpy" sourceRef="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee" targetRef="Task_0458gcq">
+    <bpmn:sequenceFlow id="SequenceFlow_0xbonpy" sourceRef="USI0461042c-0dcf-409e-82fb-844134acf462" targetRef="Task_0458gcq">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">b</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_04uj9va">
@@ -57,28 +57,28 @@
       <bpmn:incoming>SequenceFlow_18bvk6u</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_027ztn6</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_18bvk6u" sourceRef="USIff72aa18-8ab0-4dba-bc94-804835c3c12b" targetRef="Task_1esjt6o">
+    <bpmn:sequenceFlow id="SequenceFlow_18bvk6u" sourceRef="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc" targetRef="Task_1esjt6o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_07dznj6">
       <bpmn:incoming>SequenceFlow_0r2jk6a</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_031mzmq</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0r2jk6a" sourceRef="USIff72aa18-8ab0-4dba-bc94-804835c3c12b" targetRef="Task_07dznj6">
+    <bpmn:sequenceFlow id="SequenceFlow_0r2jk6a" sourceRef="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc" targetRef="Task_07dznj6">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">b</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_01ksy80">
       <bpmn:incoming>SequenceFlow_0oqm2q7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1nbpuyk</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0oqm2q7" sourceRef="USI20bfafbe-018d-40ba-8957-4c98bce9b797" targetRef="Task_01ksy80">
+    <bpmn:sequenceFlow id="SequenceFlow_0oqm2q7" sourceRef="USIe1c56143-e610-4633-95ef-afa75b892379" targetRef="Task_01ksy80">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">c</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1hbv78o">
       <bpmn:incoming>SequenceFlow_0ouh0ot</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0h8mpc8</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0ouh0ot" sourceRef="USI20bfafbe-018d-40ba-8957-4c98bce9b797" targetRef="Task_1hbv78o">
+    <bpmn:sequenceFlow id="SequenceFlow_0ouh0ot" sourceRef="USIe1c56143-e610-4633-95ef-afa75b892379" targetRef="Task_1hbv78o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_027ztn6" sourceRef="Task_1esjt6o" targetRef="ExclusiveGateway_0xjj2rx"/>
@@ -90,56 +90,56 @@
       <bpmn:incoming>SequenceFlow_1xgpr4d</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0ktebol</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1xgpr4d" sourceRef="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c" targetRef="Task_1lc7o4i">
+    <bpmn:sequenceFlow id="SequenceFlow_1xgpr4d" sourceRef="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1" targetRef="Task_1lc7o4i">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">b</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0httbqe">
       <bpmn:incoming>SequenceFlow_1hhs999</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0mzdich</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1hhs999" sourceRef="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c" targetRef="Task_0httbqe">
+    <bpmn:sequenceFlow id="SequenceFlow_1hhs999" sourceRef="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1" targetRef="Task_0httbqe">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">c</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1v9xynl">
       <bpmn:incoming>SequenceFlow_0i392u7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1txryxb</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0i392u7" sourceRef="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3" targetRef="Task_1v9xynl">
+    <bpmn:sequenceFlow id="SequenceFlow_0i392u7" sourceRef="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b" targetRef="Task_1v9xynl">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1e1bucq">
       <bpmn:incoming>SequenceFlow_173pvj5</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_187u7ie</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_173pvj5" sourceRef="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3" targetRef="Task_1e1bucq">
+    <bpmn:sequenceFlow id="SequenceFlow_173pvj5" sourceRef="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b" targetRef="Task_1e1bucq">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">e</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1kgly3y">
       <bpmn:incoming>SequenceFlow_101snki</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0a9cu1x</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_101snki" sourceRef="USI11030341-1e07-4773-846c-23a334d31c0e" targetRef="Task_1kgly3y">
+    <bpmn:sequenceFlow id="SequenceFlow_101snki" sourceRef="USIf99cf285-8b1e-4554-bc28-f6bded330694" targetRef="Task_1kgly3y">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">f</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1ilfhap">
       <bpmn:incoming>SequenceFlow_02eblwv</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1qwyaro</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_02eblwv" sourceRef="USI11030341-1e07-4773-846c-23a334d31c0e" targetRef="Task_1ilfhap">
+    <bpmn:sequenceFlow id="SequenceFlow_02eblwv" sourceRef="USIf99cf285-8b1e-4554-bc28-f6bded330694" targetRef="Task_1ilfhap">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">g</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1q6vind">
       <bpmn:incoming>SequenceFlow_1utzrj8</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04akd16</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1utzrj8" sourceRef="USI6fe84aec-59da-4ebb-9965-55cdff7e0946" targetRef="Task_1q6vind">
+    <bpmn:sequenceFlow id="SequenceFlow_1utzrj8" sourceRef="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e" targetRef="Task_1q6vind">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">h</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_1ri6if8">
       <bpmn:incoming>SequenceFlow_1oqzolh</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0mpsdi7</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_1oqzolh" sourceRef="USI6fe84aec-59da-4ebb-9965-55cdff7e0946" targetRef="Task_1ri6if8">
+    <bpmn:sequenceFlow id="SequenceFlow_1oqzolh" sourceRef="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e" targetRef="Task_1ri6if8">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">l</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="Task_0mm0x6d">
@@ -160,7 +160,7 @@
       
       
       
-    <bpmn:outgoing>USI9c6c6a74-f76f-4223-a586-a5be200ed130</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0h21a0h</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:outgoing>USI60df6181-a104-4be1-b53e-d518fc7feba6</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0h21a0h</bpmn:outgoing></bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0l97yc2" name="PrimoMerge">
       <bpmn:incoming>SequenceFlow_05hqny8</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1irjhi9</bpmn:incoming>
@@ -191,7 +191,7 @@
       
       
       
-    <bpmn:outgoing>USI29a6b19f-76b5-42fb-8851-c5bba353439a</bpmn:outgoing><bpmn:outgoing>USI8dcba114-c71c-4560-a7b8-b1f0600e69e6</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:outgoing>USI88f30263-561b-4bbc-9ac8-068ee40d6e60</bpmn:outgoing><bpmn:outgoing>USI8e743e9b-ad4b-4bb2-a470-6c3b7c8e72dc</bpmn:outgoing></bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="ExclusiveGateway_0xjj2rx">
       <bpmn:incoming>SequenceFlow_027ztn6</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1nbpuyk</bpmn:incoming>
@@ -210,7 +210,7 @@
       
       
       
-    <bpmn:outgoing>USIac0dc34e-9d34-48cb-ae2e-33df1ad7e2f1</bpmn:outgoing><bpmn:outgoing>USI83bed8e6-2be2-499b-a418-e2ed7f3a9ff1</bpmn:outgoing><bpmn:outgoing>USI7df23ff0-398b-4b40-bfa7-dc43087c8fc4</bpmn:outgoing><bpmn:outgoing>USId65faf9d-7c16-4339-ba53-0c939b63884a</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1b9dj0k</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:outgoing>USI8f99eabe-21b4-441b-bf94-e0493bcefe1f</bpmn:outgoing><bpmn:outgoing>USIe4642e41-e9e4-469e-8215-94ddd54b9b71</bpmn:outgoing><bpmn:outgoing>USI3b31b02c-f821-4c6e-a6e5-ca760c85d4d4</bpmn:outgoing><bpmn:outgoing>USI202bddfc-76c9-4240-952c-f21299784818</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1b9dj0k</bpmn:outgoing></bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="ExclusiveGateway_05fp6ju">
       <bpmn:incoming>SequenceFlow_1txryxb</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0a9cu1x</bpmn:incoming>
@@ -230,7 +230,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0ktebol" sourceRef="Task_1lc7o4i" targetRef="ExclusiveGateway_05fp6ju"/>
     <bpmn:sequenceFlow id="SequenceFlow_08oz90h" sourceRef="Task_0mm0x6d" targetRef="ExclusiveGateway_05fp6ju"/>
     <bpmn:sequenceFlow id="SequenceFlow_187u7ie" sourceRef="Task_1e1bucq" targetRef="ExclusiveGateway_05fp6ju"/>
-  <bpmn:exclusiveGateway id="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee" name="NUOVO"><bpmn:incoming>USI9c6c6a74-f76f-4223-a586-a5be200ed130</bpmn:incoming><bpmn:outgoing>SequenceFlow_0g3yzdm</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0xbonpy</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI9c6c6a74-f76f-4223-a586-a5be200ed130" sourceRef="ExclusiveGateway_0zu4kmc" targetRef="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee"/><bpmn:exclusiveGateway id="USIff72aa18-8ab0-4dba-bc94-804835c3c12b" name="NUOVO"><bpmn:incoming>USI29a6b19f-76b5-42fb-8851-c5bba353439a</bpmn:incoming><bpmn:outgoing>SequenceFlow_18bvk6u</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0r2jk6a</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI29a6b19f-76b5-42fb-8851-c5bba353439a" sourceRef="ExclusiveGateway_1gsdce5" targetRef="USIff72aa18-8ab0-4dba-bc94-804835c3c12b"/><bpmn:exclusiveGateway id="USI20bfafbe-018d-40ba-8957-4c98bce9b797" name="NUOVO"><bpmn:incoming>USI8dcba114-c71c-4560-a7b8-b1f0600e69e6</bpmn:incoming><bpmn:outgoing>SequenceFlow_0oqm2q7</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0ouh0ot</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI8dcba114-c71c-4560-a7b8-b1f0600e69e6" sourceRef="ExclusiveGateway_1gsdce5" targetRef="USI20bfafbe-018d-40ba-8957-4c98bce9b797"/><bpmn:exclusiveGateway id="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c" name="NUOVO"><bpmn:incoming>USIac0dc34e-9d34-48cb-ae2e-33df1ad7e2f1</bpmn:incoming><bpmn:outgoing>SequenceFlow_1xgpr4d</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1hhs999</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USIac0dc34e-9d34-48cb-ae2e-33df1ad7e2f1" sourceRef="ExclusiveGateway_14otk46" targetRef="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c"/><bpmn:exclusiveGateway id="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3" name="NUOVO"><bpmn:incoming>USI83bed8e6-2be2-499b-a418-e2ed7f3a9ff1</bpmn:incoming><bpmn:outgoing>SequenceFlow_0i392u7</bpmn:outgoing><bpmn:outgoing>SequenceFlow_173pvj5</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI83bed8e6-2be2-499b-a418-e2ed7f3a9ff1" sourceRef="ExclusiveGateway_14otk46" targetRef="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3"/><bpmn:exclusiveGateway id="USI11030341-1e07-4773-846c-23a334d31c0e" name="NUOVO"><bpmn:incoming>USI7df23ff0-398b-4b40-bfa7-dc43087c8fc4</bpmn:incoming><bpmn:outgoing>SequenceFlow_101snki</bpmn:outgoing><bpmn:outgoing>SequenceFlow_02eblwv</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI7df23ff0-398b-4b40-bfa7-dc43087c8fc4" sourceRef="ExclusiveGateway_14otk46" targetRef="USI11030341-1e07-4773-846c-23a334d31c0e"/><bpmn:exclusiveGateway id="USI6fe84aec-59da-4ebb-9965-55cdff7e0946" name="NUOVO"><bpmn:incoming>USId65faf9d-7c16-4339-ba53-0c939b63884a</bpmn:incoming><bpmn:outgoing>SequenceFlow_1utzrj8</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1oqzolh</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USId65faf9d-7c16-4339-ba53-0c939b63884a" sourceRef="ExclusiveGateway_14otk46" targetRef="USI6fe84aec-59da-4ebb-9965-55cdff7e0946"/></bpmn:process>
+  <bpmn:exclusiveGateway id="USI0461042c-0dcf-409e-82fb-844134acf462" name="NUOVO"><bpmn:incoming>USI60df6181-a104-4be1-b53e-d518fc7feba6</bpmn:incoming><bpmn:outgoing>SequenceFlow_0g3yzdm</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0xbonpy</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI60df6181-a104-4be1-b53e-d518fc7feba6" sourceRef="ExclusiveGateway_0zu4kmc" targetRef="USI0461042c-0dcf-409e-82fb-844134acf462"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a || b</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc" name="NUOVO"><bpmn:incoming>USI88f30263-561b-4bbc-9ac8-068ee40d6e60</bpmn:incoming><bpmn:outgoing>SequenceFlow_18bvk6u</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0r2jk6a</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI88f30263-561b-4bbc-9ac8-068ee40d6e60" sourceRef="ExclusiveGateway_1gsdce5" targetRef="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a || b</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USIe1c56143-e610-4633-95ef-afa75b892379" name="NUOVO"><bpmn:incoming>USI8e743e9b-ad4b-4bb2-a470-6c3b7c8e72dc</bpmn:incoming><bpmn:outgoing>SequenceFlow_0oqm2q7</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0ouh0ot</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI8e743e9b-ad4b-4bb2-a470-6c3b7c8e72dc" sourceRef="ExclusiveGateway_1gsdce5" targetRef="USIe1c56143-e610-4633-95ef-afa75b892379"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">c || d</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1" name="NUOVO"><bpmn:incoming>USI8f99eabe-21b4-441b-bf94-e0493bcefe1f</bpmn:incoming><bpmn:outgoing>SequenceFlow_1xgpr4d</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1hhs999</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI8f99eabe-21b4-441b-bf94-e0493bcefe1f" sourceRef="ExclusiveGateway_14otk46" targetRef="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">b || c</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b" name="NUOVO"><bpmn:incoming>USIe4642e41-e9e4-469e-8215-94ddd54b9b71</bpmn:incoming><bpmn:outgoing>SequenceFlow_0i392u7</bpmn:outgoing><bpmn:outgoing>SequenceFlow_173pvj5</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USIe4642e41-e9e4-469e-8215-94ddd54b9b71" sourceRef="ExclusiveGateway_14otk46" targetRef="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d || e</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USIf99cf285-8b1e-4554-bc28-f6bded330694" name="NUOVO"><bpmn:incoming>USI3b31b02c-f821-4c6e-a6e5-ca760c85d4d4</bpmn:incoming><bpmn:outgoing>SequenceFlow_101snki</bpmn:outgoing><bpmn:outgoing>SequenceFlow_02eblwv</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI3b31b02c-f821-4c6e-a6e5-ca760c85d4d4" sourceRef="ExclusiveGateway_14otk46" targetRef="USIf99cf285-8b1e-4554-bc28-f6bded330694"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">f || g</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:exclusiveGateway id="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e" name="NUOVO"><bpmn:incoming>USI202bddfc-76c9-4240-952c-f21299784818</bpmn:incoming><bpmn:outgoing>SequenceFlow_1utzrj8</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1oqzolh</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:sequenceFlow id="USI202bddfc-76c9-4240-952c-f21299784818" sourceRef="ExclusiveGateway_14otk46" targetRef="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">h || l</bpmn:conditionExpression></bpmn:sequenceFlow></bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane bpmnElement="Process_1" id="BPMNPlane_1">
       <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
@@ -594,6 +594,6 @@
           <dc:Bounds height="13" width="0" x="2950" y="8"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-    <bpmndi:BPMNShape bpmnElement="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee" id="USI8e1d8a15-11ff-40a1-8b9b-69c46f9f94ee_di"><dc:Bounds height="50" width="50" x="304" y="-66"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI9c6c6a74-f76f-4223-a586-a5be200ed130" id="USI9c6c6a74-f76f-4223-a586-a5be200ed130_di"><di:waypoint x="240.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="304.0" xsi:type="dc:Point" y="-41.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USIff72aa18-8ab0-4dba-bc94-804835c3c12b" id="USIff72aa18-8ab0-4dba-bc94-804835c3c12b_di"><dc:Bounds height="50" width="50" x="1667" y="-124"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI29a6b19f-76b5-42fb-8851-c5bba353439a" id="USI29a6b19f-76b5-42fb-8851-c5bba353439a_di"><di:waypoint x="1487.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="1667.0" xsi:type="dc:Point" y="-99.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI20bfafbe-018d-40ba-8957-4c98bce9b797" id="USI20bfafbe-018d-40ba-8957-4c98bce9b797_di"><dc:Bounds height="50" width="50" x="1667" y="53"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI8dcba114-c71c-4560-a7b8-b1f0600e69e6" id="USI8dcba114-c71c-4560-a7b8-b1f0600e69e6_di"><di:waypoint x="1487.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="1667.0" xsi:type="dc:Point" y="78.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c" id="USI3c80cb7e-8d60-4319-ba6c-4e73b280c89c_di"><dc:Bounds height="50" width="50" x="2523" y="-182"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USIac0dc34e-9d34-48cb-ae2e-33df1ad7e2f1" id="USIac0dc34e-9d34-48cb-ae2e-33df1ad7e2f1_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="-157.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3" id="USI824c7a54-b1a6-4e05-bfc5-5195308e2cd3_di"><dc:Bounds height="50" width="50" x="2523" y="-48"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI83bed8e6-2be2-499b-a418-e2ed7f3a9ff1" id="USI83bed8e6-2be2-499b-a418-e2ed7f3a9ff1_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="-23.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI11030341-1e07-4773-846c-23a334d31c0e" id="USI11030341-1e07-4773-846c-23a334d31c0e_di"><dc:Bounds height="50" width="50" x="2523" y="80"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI7df23ff0-398b-4b40-bfa7-dc43087c8fc4" id="USI7df23ff0-398b-4b40-bfa7-dc43087c8fc4_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="105.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI6fe84aec-59da-4ebb-9965-55cdff7e0946" id="USI6fe84aec-59da-4ebb-9965-55cdff7e0946_di"><dc:Bounds height="50" width="50" x="2523" y="204"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USId65faf9d-7c16-4339-ba53-0c939b63884a" id="USId65faf9d-7c16-4339-ba53-0c939b63884a_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="229.0"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane>
+    <bpmndi:BPMNShape bpmnElement="USI0461042c-0dcf-409e-82fb-844134acf462" id="USI0461042c-0dcf-409e-82fb-844134acf462_di"><dc:Bounds height="50" width="50" x="304" y="-66"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI60df6181-a104-4be1-b53e-d518fc7feba6" id="USI60df6181-a104-4be1-b53e-d518fc7feba6_di"><di:waypoint x="240.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="304.0" xsi:type="dc:Point" y="-41.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc" id="USI7218c05a-6329-4024-8ab6-b30c2a9d20cc_di"><dc:Bounds height="50" width="50" x="1667" y="-124"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI88f30263-561b-4bbc-9ac8-068ee40d6e60" id="USI88f30263-561b-4bbc-9ac8-068ee40d6e60_di"><di:waypoint x="1487.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="1667.0" xsi:type="dc:Point" y="-99.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USIe1c56143-e610-4633-95ef-afa75b892379" id="USIe1c56143-e610-4633-95ef-afa75b892379_di"><dc:Bounds height="50" width="50" x="1667" y="53"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI8e743e9b-ad4b-4bb2-a470-6c3b7c8e72dc" id="USI8e743e9b-ad4b-4bb2-a470-6c3b7c8e72dc_di"><di:waypoint x="1487.0" xsi:type="dc:Point" y="-3.0"/><di:waypoint x="1667.0" xsi:type="dc:Point" y="78.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1" id="USI29c28d6f-be68-48b9-b2ce-03b3aaf888f1_di"><dc:Bounds height="50" width="50" x="2523" y="-182"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI8f99eabe-21b4-441b-bf94-e0493bcefe1f" id="USI8f99eabe-21b4-441b-bf94-e0493bcefe1f_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="-157.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b" id="USI0b335e1e-db30-4ed2-85f4-5dbe4264e32b_di"><dc:Bounds height="50" width="50" x="2523" y="-48"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USIe4642e41-e9e4-469e-8215-94ddd54b9b71" id="USIe4642e41-e9e4-469e-8215-94ddd54b9b71_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="-23.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USIf99cf285-8b1e-4554-bc28-f6bded330694" id="USIf99cf285-8b1e-4554-bc28-f6bded330694_di"><dc:Bounds height="50" width="50" x="2523" y="80"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI3b31b02c-f821-4c6e-a6e5-ca760c85d4d4" id="USI3b31b02c-f821-4c6e-a6e5-ca760c85d4d4_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="105.0"/></bpmndi:BPMNEdge><bpmndi:BPMNShape bpmnElement="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e" id="USIc24e12a3-0f4d-45a1-8fe2-a75bb2427c2e_di"><dc:Bounds height="50" width="50" x="2523" y="204"/></bpmndi:BPMNShape><bpmndi:BPMNEdge bpmnElement="USI202bddfc-76c9-4240-952c-f21299784818" id="USI202bddfc-76c9-4240-952c-f21299784818_di"><di:waypoint x="2341.0" xsi:type="dc:Point" y="0.0"/><di:waypoint x="2523.0" xsi:type="dc:Point" y="229.0"/></bpmndi:BPMNEdge></bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
