@@ -12,8 +12,7 @@ import org.xml.sax.SAXException;
 public class Main{
 
 
-    private static String input;
-    public static String[] validParameters = {"1", "2" , "3", "3a", "3b", "3c", "4", "4a", "4b", "4c", "R1", "R2", "R3", "R3a", "R3b", "R3c", "R4", "R4a", "R4b", "R4c",};
+    private static String input; 
     private static Scanner reader = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException{
@@ -48,31 +47,45 @@ public class Main{
 	//String input = "./TestGraphs/TravelingTest.bpmn.xml";
 	//input = "./TestGraphs/multiple/"; //Testing more than one file.
 	
-	String original = "./TestGraphs/DifferenceDetectingTest/Original.bpmn.xml"; 
-	String different1 = "./TestGraphs/DifferenceDetectingTest/slightlyDifferent.bpmn.xml";
-	String different2 = "./TestGraphs/DifferenceDetectingTest/different.bpmn.xml";
-	String same = "./TestGraphs/DifferenceDetectingTest/same.bpmn.xml";
-	String identical = "./TestGraphs/DifferenceDetectingTest/originalVariant.bpmn.xml";
 	
-	Model origina = new Model(original);
-	Model diff1 = new Model(different1);	
-	Model diff2 = new Model(different2);
-	Model sameModel = new Model(same);
-	Model identicModel = new Model(identical);
 	
-	TravelAgency ta1 = new TravelAgency(origina);
-	ta1.printNumberOfPaths();
-	TravelAgency ta2 = new TravelAgency(sameModel);
-	ta2.printNumberOfPaths();
 	
-	ta1.printMandatoryDeepSuccessors();
-	ta2.printMandatoryDeepSuccessors();
 	
-	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, sameModel));
-	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, origina));
-	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff1));
-	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff2));
-	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, identicModel));
+//	String original = "./TestGraphs/DifferenceDetectingTest/Original.bpmn.xml"; 
+//	String different1 = "./TestGraphs/DifferenceDetectingTest/slightlyDifferent.bpmn.xml";
+//	String different2 = "./TestGraphs/DifferenceDetectingTest/different.bpmn.xml";
+//	String same = "./TestGraphs/DifferenceDetectingTest/same.bpmn.xml";
+//	String identical = "./TestGraphs/DifferenceDetectingTest/originalVariant.bpmn.xml";
+//	
+//	Model origina = new Model(original);
+//	Model diff1 = new Model(different1);	
+//	Model diff2 = new Model(different2);
+//	Model sameModel = new Model(same);
+//	Model identicModel = new Model(identical);
+//	
+//	TravelAgency ta1 = new TravelAgency(origina);
+//	ta1.printNumberOfPaths();
+//	TravelAgency ta2 = new TravelAgency(sameModel);
+//	ta2.printNumberOfPaths();
+//	
+//	ta1.printMandatoryDeepSuccessors();
+//	ta2.printMandatoryDeepSuccessors();
+//	
+//	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, sameModel));
+//	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, origina));
+//	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff1));
+//	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, diff2));
+//	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, identicModel));
+	
+	
+	String input = "./TestGraphs/ -r1*3-2-3";
+	Execution execution = new Execution(input);
+	
+	
+	//ExecutionTest execution = new ExecutionTest();
+	//execution.Execute();
+	
+	
 	
 //	String m4a = "./TestGraphs/Rule4a.bpmn.xml";
 //	Model test4a = new Model(m4a);
@@ -206,19 +219,42 @@ public class Main{
 	System.out.println();
 	System.out.print("LIST OF POSSIBLE PARAMETERS: ");
 	System.out.println();
-	for (int i = 0; i < validParameters.length; i++ ) {
-	    System.out.print("-" + validParameters[i] + " ");
+	for (int i = 0; i < Parameter.validParameters.length; i++ ) {
+	    System.out.print("-" + Parameter.validParameters[i] + " ");
 	}//the list of parameters is extrapolated from the actual array of strings, otherwise we could
 	//have differences between the list in help and the actual list
 	System.out.println();
 	System.out.println();
+	System.out.println("THE PARAMETER 'aggregateBY':");
 	System.out.println();
-	System.out.println("WARNING: the parameter has to be preceded by a blank space '_' and a dash:");
+	System.out.println("in the case of the rules 1R, 2R and 3cR it's possible to decide how to aggregate the");
+	System.out.println("sequenceFlows of the original gateway. E.g. 2by2, 3by3 etc. The default value is 2by2");
+	System.out.println("To decide how to aggregate the gateways simply add and asterisk '*' after the name of the rule");
+	System.out.println();
+	System.out.println();
+	System.out.println("TURNING ON PERMUTATIONS: "); //TODO ADD A CHECK FOR THIS
+	System.out.println();
+	System.out.println("In case you want to execute multiple permutation of the rules you have selected");
+	System.out.println("(i.e. apply those same rules in different orders and combinations");
+	System.out.println("Just add a question mark '?' in the input somewhere in between the parameters ");
+	System.out.println("WARNING: DO NOT TURN ON PERMUTATIONS WHEN A RULE AND ITS OPPOSITE ARE BOTH IN THE POOL OF RULES TO BE APPLIED TO AVOID INFINITE LOOPS.");
+	System.out.println();
+	System.out.println();
+	System.out.println("BLOCKING RECURSIVE BEHAVIOR: "); //TODO ADD A CHECK FOR THIS
+	System.out.println();
+	System.out.println("In case you want to block recursive behavior");
+	System.out.println("(i.e. when the program tries to apply the same rule(s))");
+	System.out.println("Just add an exclamation mark '!' in the input somewhere in between the parameters ");
+	System.out.println();
+	System.out.println();
+	System.out.println("EXAMPLES:");
 	//TODO you probably can avoid this limitation by transforming every string in one without spaces and then changing the algorithm that you have
 	System.out.println();
-	System.out.println("	CORRECT: './ExampleFolder/exampleModel.bpmn.xml -1 -R2 -3a'" );
-	System.out.println("	WRONG: './ExampleFolder/exampleModel.bpmn.xml-1-R2'" );
-	System.out.println("	WRONG: './ExampleFolder/exampleModel.bpmn.xml -1-R2'" );
+	System.out.println("	 './ExampleFolder/exampleModel.bpmn.xml -1 -R2*3 -3a'" ); //TODO così non funziona. Fai in modo che gli spazi non contino
+	System.out.println("	 './ExampleFolder/-1-R2*5'" );
+	System.out.println("	 './ExampleFolder/'" );
+	System.out.println("	 './ExampleFolder/ -2-4!'" );
+	
 	System.out.println();
 	System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - - ");
 	

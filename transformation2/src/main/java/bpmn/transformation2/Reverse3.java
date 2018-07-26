@@ -18,7 +18,7 @@ public class Reverse3 {
      * @param startingModel
      * @throws Exception
      */
-    public static void a (Model startingModel) throws Exception {
+    public static Model a (Model startingModel) throws Exception {
 	Model model = startingModel;
 	System.out.println("I'm reverting Rule3a");
 
@@ -81,6 +81,7 @@ public class Reverse3 {
 		System.out.println("This is a merge. Its outgoingFlows will not be changed");
 	    }
 	}
+	return model;
     }
 
 
@@ -89,9 +90,10 @@ public class Reverse3 {
     /**
      * Changing inclusive to exclusive.
      * @param startingModel
+     * @return 
      * @throws Exception
      */
-    public static void b (Model startingModel) throws Exception {
+    public static Model b (Model startingModel) throws Exception {
 	System.out.println("I'm reverting Rule3b");
 	Model model = startingModel;
 	// Here I'm creating a list of all the inclusive gateways in the inputModel
@@ -128,6 +130,7 @@ public class Reverse3 {
 	    //Here I dont need to distinguish between those that are merges and those that are not.
 	    //I dont need to touch the incoming/outgoing flows either
 	}
+	return model;
     }
 
     /**

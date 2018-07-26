@@ -28,7 +28,9 @@ public class Rule3 {
     //TODO applyRule will actually become just a (simple) method calling other specific methods referring to part 1, part 2 of rule 3 etc
     //this method will be renamed and be called by said method. 
 
-    public static void a(Model model) throws Exception {
+    public static Model a(Model startingModel) throws Exception {
+	Model model = startingModel;
+	
 	System.out.println("I'm applying Rule3a");
 
 	// Here I'm creating a list of all the parallel gateways in the inputModel
@@ -95,12 +97,12 @@ public class Rule3 {
 		}
 	    } else { System.out.println("This is a merge. Its outgoingFlows will not be changed");}
 	}
-
+	return model;
     }
 
-    public static void b (Model model) throws Exception {
+    public static Model b (Model startingModel) throws Exception {
 	System.out.println("I'm applying Rule3b");
-
+	Model model = startingModel;
 	// Here I'm creating a list of all the parallel gateways in the inputModel
 	NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName("bpmn:exclusiveGateway");
 	System.out.println("number of exclusive gateway instances: " + exclusiveGatewayInstances.getLength());
@@ -135,6 +137,7 @@ public class Rule3 {
 	    //Here I dont need to distinguish between those that are merges and those that are not.
 	    //I dont need to touch the incoming/outgoing flows either
 	}
+	return model;
     }
 
     //NOTE this has to execute before the other part of rule3 because
@@ -452,6 +455,21 @@ public class Rule3 {
 	    return false;
 	}
 
+    }
+
+    /**
+     * TODO spiega l'ordine nella tesi
+     * @param startingModel
+     * @return
+     * @throws Exception 
+     */
+    public static Model all(Model startingModel) throws Exception {
+	Model model = startingModel;
+	model = c(model);
+	model = a(model);
+	model = b(model);
+	
+	return model;
     }
 
 }

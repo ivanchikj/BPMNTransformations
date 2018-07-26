@@ -22,24 +22,29 @@ public class Execution {
     private String path;
     private ArrayList<Model> startingModels;
     private ArrayList<Parameter> parameters;
+    private boolean recursive;
     public ArrayList<Transformation> activities;
     public ArrayList<Model> resultingModels;
     public Report report;
-    //TODO is the log necessary?    	public String log;
     public String destinationPath;
 
     public Execution (String input) throws IOException, SAXException, ParserConfigurationException {
 
 	//From input, let's get parameters and an array of models
 	this.input = input;
-
+	this.parameters = new ArrayList<Parameter>();
+	this.startingModels = new ArrayList<Model>();
+	this.report = new Report();
+	
 	String[] pathAndParameters = separatePathAndParameters(input);
+
+	System.out.println("path: " + pathAndParameters[0]);
+	System.out.println("params: " + pathAndParameters[1]);
+
 	this.path = pathAndParameters[0];
 	findParameters(pathAndParameters[1]);
 	initializeModels(path);
-	Report report = new Report();
-	//TODO initialize the report
-
+	printParams();
     }
 
     /**
@@ -48,21 +53,28 @@ public class Execution {
      * @return the path part of the string will be in position [0] while the params in string form will be in [1]
      */
     private String[] separatePathAndParameters (String input) {
-	String path;
+	String path = "";
 	String params = "";
 
-	//in case there are no parameters:
-	if (!input.contains(" -")) {
-	    System.out.println("no parameters");
-	    path = input;
-	} else {
-	    path = input.substring(0, input.indexOf(" -")); //getting the part before the dash
-	    params = input.substring(input.indexOf(" -")); //getting the part after the dash
+	//let's ignore spaces
+	input = input.replaceAll(" ", "");
+	//let's ignore also uppercase / lowercase istances
+	input = input.toLowerCase();
+
+	//in case there is a whole folder:
+	if (!input.contains(".bpmn.xml")) {
+	    //System.out.println("whole folder. I will use '/' to distinguish path from params");
+	    path = input.substring(0, input.lastIndexOf('/') + 1);
+	    params = input.substring(input.lastIndexOf('/') + 1);
+
+	} else if (input.contains(".bpmn.xml")){
+	    path = input.substring(0, input.indexOf(".bpmn.xml") + 9);
+	    params = input.substring(input.indexOf(".bpmn.xml") + 9); //getting the part after the dash
 	}
 
 	String[] pathAndParams = {path, params};
-	System.out.println(pathAndParams[0]);
-	System.out.println(pathAndParams[1]);
+	//System.out.println(pathAndParams[0]);
+	//System.out.println(pathAndParams[1]);
 
 	return pathAndParams;
     }
@@ -91,129 +103,70 @@ public class Execution {
 
 
 
-
-    //TODO make it more resistant to user mistakes, or remember to specify in the help to add a 'space' before every parameter
-	private void findParameters(String paramsWholeString) {
-	    
+    private void findParameters(String paramsWholeString) {
+	String str = paramsWholeString;
+	System.out.println("String : " + str);
 	//let's separate the parameters between each other
 	ArrayList<String> paramStrings = new ArrayList<String>();
 
-	//first, let's remove the first space:
-	paramsWholeString = paramsWholeString.substring(1);
-	//System.out.println("i have removed the empty space and now it looks like this: " + paramsString);
-
-	while (paramsWholeString.contains("-")) {
+	while (str.contains("-") && str.indexOf("-") != str.lastIndexOf("-") ) {
+	    System.out.println(str);
 	    String param;
-	    if (paramsWholeString.contains(" ")) {
-		//it means it is not the last parameter
-		param = paramsWholeString.substring(paramsWholeString.indexOf("-"), paramsWholeString.indexOf(" "));
-		//System.out.println("param i have found " + param);
-		paramsWholeString = paramsWholeString.substring(param.length()+1);
-		paramStrings.add(param.substring(1));
-	    } else {
-		//System.out.println("we have reached the last parameter");
-		param = paramsWholeString;
-		//System.out.println("param i have found " + param);
-		paramStrings.add(param.substring(1));
-		paramsWholeString = paramsWholeString.substring(param.length());
+	    int firstDash = str.indexOf("-") + 1;
+	    int nextDash = str.indexOf("-", firstDash + 1);
 
-	    }
+	    param = str.substring(firstDash, nextDash);
 
-	}
-	System.out.println("List of found parameters: ");
-	for (String param : paramStrings) {
-	    System.out.println("            		 " + param);
-	    Parameter parameter = new Parameter(param); //Finally transforming our string into a Parameter
-	    parameters.add(parameter); //Adding it to the list of parameters
-	}
-    }
+	    //System.out.println("Parampapag " + param);
 
-    /**
-     * TODO does this have to be static?
-     * TODO TEST THIS
-     * @return 
-     * @return 
-     * @throws XPathExpressionException 
-     */
-    static boolean modelsAreDifferent(Model a, Model b) throws XPathExpressionException {
-
-	System.out.println("I'm comparing two models.");
-
-	TravelAgency taA = new TravelAgency(a);
-	TravelAgency taB = new TravelAgency(b);
-
-	ArrayList<ArrayList<Element>> pathsA = taA.paths;
-	ArrayList<ArrayList<Element>> pathsB = taB.paths;
-
-	//First of all, if the two models have a different number of paths, we can stop
-	//right here knowing that they must be different
-	if (pathsA.size() != pathsB.size()) {
-	    System.out.println("The two models have a different number of paths so they must be different.");
-	    return true;
-	}
-
-	ArrayList<ArrayList<String>> pathsAInTypes = new ArrayList<ArrayList<String>>();
-	ArrayList<ArrayList<String>> pathsBInTypes = new ArrayList<ArrayList<String>>();
-
-	//transforming all the paths in A into sequences of types
-	//instead of paths of 
-	for (ArrayList<Element> path : pathsA) {
-	    pathsAInTypes.add(fromElementToTypes(path));
-	}
-
-	//transforming all the paths in B into sequences of types
-	//instead of paths of 
-	for (ArrayList<Element> path : pathsB) {
-	    pathsBInTypes.add(fromElementToTypes(path));
-	}
-
-	//let's see if for every type sequence in A i can find a match in B.
-	for (ArrayList<String> pathInTypes : pathsAInTypes) {
-	    if (foundAMatch(pathInTypes, pathsBInTypes)) {
-		//found a match for this path. Lets keep analyzing the other paths.
-	    } else {
-		System.out.println("The models: " + a.path + " and " + b.path + " are different");
-		return true; //i have one path which doesn't have a match. The models must be different.
-	    }
-	}
-	System.out.println("The models: " + a.path + " and " + b.path + " are equal");
-	return false;
-    }
-
-    
-    private static boolean foundAMatch (ArrayList<String> pathInTypes, ArrayList<ArrayList<String>> AllPathsInTypes) {
-	 
-	//let's go through every path in allPathsInTypes and see if there's one identical to pathInTypes
-	for (ArrayList<String> path : AllPathsInTypes) {
-	    
-	    if (path.equals(pathInTypes)) {
-		return true;
-	    }
-	    
+	    paramStrings.add(param);
+	    System.out.println("str : " +  str);
+	    str = str.substring(param.length()+1);
+	    System.out.println("e adesso " +  str);
 	}
 	
-	return false;
-    }
-    //ASKANA do I also have to compare flows instead of just nodes?
-    //I guess I do.
-    //But maybe I don't because I have no rule that changes just flows without changing nodes.
-    /**
-     * This method changes an array of elements into an array of tag types
-     * @param path a path in the BPMN sense from an arbitrary node to the end of the path.
-     * @return
-     */
-    private static ArrayList<String> fromElementToTypes (ArrayList<Element> path){
-
-	ArrayList<String> sequenceOfTypes = new ArrayList<String>();
-
-	for (Element element : path) {
-	    sequenceOfTypes.add(element.getTagName());
+	if (str.contains("-")) { //let's add the last one:
+	    String lastParam = str.substring(str.indexOf("-")+1);
+	    paramStrings.add(lastParam);
 	}
 
-	return sequenceOfTypes;
+	System.out.println("I've finished separating the parameters in different strings");
+
+	for (String param : paramStrings) {
+	    if (param.contains("*")) { // it means we have to use a different contstructor because we have an aggregateBy param
+		int aggregateBy = Integer.parseInt(param.substring(param.indexOf("*")+1));
+		System.out.println("AggregateBY " + aggregateBy);
+		param = param.substring(0, param.indexOf("*"));
+		Parameter parameter = new Parameter(param, aggregateBy); //Finally transforming our string into a Parameter
+		this.parameters.add(parameter); //Adding it to the list of parameters
+	    } else {
+		Parameter parameter = new Parameter(param); //Finally transforming our string into a Parameter
+		this.parameters.add(parameter); //Adding it to the list of parameters	
+	    }
+	}
     }
 
-    
+
+    public void printParams() {
+	System.out.println("I found those parameters: ");
+	for (Parameter parameter : parameters) {
+	    if (parameter.aggregateBy == 0) {
+		System.out.println("      Param " + parameter.parameter);
+	    }
+	    if (parameter.aggregateBy != 0) {
+		System.out.println("      Param " + parameter.parameter + ", aggregateBy: " + parameter.aggregateBy);
+	    }
+	}
+    }
+
+    public void printModels() {
+	System.out.println("I found those starting models: ");
+	for (Model model : startingModels) {
+	    System.out.println(model.path);
+	}
+    }
+
+
     /**
      * 
      * @param model
@@ -226,11 +179,11 @@ public class Execution {
 
 	//TODO remember to add rules applied like here: String newFilePath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
 	String outputFilepath = "./TestGraphs/output/Test.bpmn.xml"; //TODO this is wrong
-	
+
 	model.saveToFile(outputFilepath);
     }
-    
-    
+
+
 
 
 }

@@ -24,8 +24,15 @@
       <file leaf-file-name="Reverse3.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/bpmn/transformation2/Reverse3.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="611">
+            <state relative-caret-position="1012">
               <caret line="266" column="67" selection-start-line="266" selection-start-column="67" selection-end-line="266" selection-end-column="67" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#6267#6287#0" expanded="true" />
+                <element signature="e#6576#6585#0" expanded="true" />
+                <element signature="e#8967#8976#0" expanded="true" />
+                <element signature="e#10966#10975#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -262,16 +269,15 @@
       <workItem from="1531240710584" duration="1885000" />
       <workItem from="1531242633626" duration="596000" />
       <workItem from="1531318430482" duration="726000" />
-      <workItem from="1532526457394" duration="720000" />
+      <workItem from="1532526457394" duration="907000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9220000" />
+    <option name="totallyTimeSpent" value="9407000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" weight="0.34581882" />
@@ -359,20 +365,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/bpmn/transformation2/ExecutionTest.java</url>
-          <line>154</line>
-          <properties />
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/bpmn/transformation2/ExecutionTest.java</url>
-          <line>147</line>
-          <properties />
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="7" />
     </breakpoint-manager>
   </component>
@@ -381,6 +373,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1155">
           <caret line="62" selection-start-line="62" selection-end-line="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6267#6287#0" expanded="true" />
+            <element signature="e#6576#6585#0" expanded="true" />
+            <element signature="e#8967#8976#0" expanded="true" />
+            <element signature="e#10966#10975#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -395,6 +394,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6267#6287#0" expanded="true" />
+            <element signature="e#6576#6585#0" expanded="true" />
+            <element signature="e#8967#8976#0" expanded="true" />
+            <element signature="e#10966#10975#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -433,6 +439,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6267#6287#0" expanded="true" />
+            <element signature="e#6576#6585#0" expanded="true" />
+            <element signature="e#8967#8976#0" expanded="true" />
+            <element signature="e#10966#10975#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -734,8 +747,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bpmn/transformation2/Reverse3.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="611">
+        <state relative-caret-position="1012">
           <caret line="266" column="67" selection-start-line="266" selection-start-column="67" selection-end-line="266" selection-end-column="67" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6267#6287#0" expanded="true" />
+            <element signature="e#6576#6585#0" expanded="true" />
+            <element signature="e#8967#8976#0" expanded="true" />
+            <element signature="e#10966#10975#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

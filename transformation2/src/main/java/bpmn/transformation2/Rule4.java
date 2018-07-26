@@ -165,6 +165,24 @@ public class Rule4 {
 	}
     return model;
     }
+
+
+/**
+ * TODO controlla l'ordine
+ * TODO spiega come hai scelto l'ordine
+ *
+ * @param startingModel
+ * @return
+ * @throws XPathExpressionException 
+ */
+    public static Model all(Model startingModel) throws XPathExpressionException {
+	Model model = startingModel;
+	model = a(startingModel);
+	model = b(model);
+	model = c(model);
+	
+	return model;
+    }
     
 }
 

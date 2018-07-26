@@ -1,6 +1,7 @@
 package bpmn.transformation2;
 
 import org.apache.taglibs.standard.lang.jstl.AndOperator;
+import org.jboss.com.sun.corba.se.impl.orbutil.closure.Constant;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -270,7 +271,7 @@ public class Model {
 //	System.out.println("		Content of 2child: " + xpath.evaluate("./text()", previousSource));
 
 	//TODO both the two lines above do the same thing.
-
+	
 	deleteFlowFromOldSourceorTarget(sequenceFlow, previousSource);
 //	if (previousSource.hasChildNodes()) { //This is expected to be always true anyway
 //	    NodeList childList = previousSource.getChildNodes();
