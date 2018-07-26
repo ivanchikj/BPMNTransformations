@@ -23,6 +23,7 @@ public class Execution {
     private ArrayList<Model> startingModels;
     private ArrayList<Parameter> parameters;
     private boolean recursive;
+    private boolean permutations;
     public ArrayList<Transformation> activities;
     public ArrayList<Model> resultingModels;
     public Report report;
@@ -35,7 +36,10 @@ public class Execution {
 	this.parameters = new ArrayList<Parameter>();
 	this.startingModels = new ArrayList<Model>();
 	this.report = new Report();
-	
+
+	searchForRecursive();
+	searchForPermutations();
+
 	String[] pathAndParameters = separatePathAndParameters(input);
 
 	System.out.println("path: " + pathAndParameters[0]);
@@ -44,7 +48,30 @@ public class Execution {
 	this.path = pathAndParameters[0];
 	findParameters(pathAndParameters[1]);
 	initializeModels(path);
-	printParams();
+	printExecutionStatus();
+	
+	//CONTINUE FROM HERE. We need to decide how to proceed . Devo passare da EXECUTION a transformation.
+	
+    }
+
+    private void searchForPermutations() {
+	if (input.contains("?")) {
+	    permutations = true;
+	} else {
+	    permutations = false;
+	}
+	input.replace("?", ""); //let's remember to delete the mark 
+	//TODO is it possible the question mark is in the filename?
+    }
+
+    private void searchForRecursive() {
+	if (input.contains("!")) {
+	    recursive = false;
+	} else {
+	    recursive = true;
+	}
+	input.replace("!", ""); //let's remember to delete the exclamation mark 
+	//TODO is it possible the exclamation mark is in the filename?
     }
 
     /**
@@ -124,7 +151,7 @@ public class Execution {
 	    str = str.substring(param.length()+1);
 	    System.out.println("e adesso " +  str);
 	}
-	
+
 	if (str.contains("-")) { //let's add the last one:
 	    String lastParam = str.substring(str.indexOf("-")+1);
 	    paramStrings.add(lastParam);
@@ -157,15 +184,25 @@ public class Execution {
 		System.out.println("      Param " + parameter.parameter + ", aggregateBy: " + parameter.aggregateBy);
 	    }
 	}
+	System.out.println();
     }
 
     public void printModels() {
+	System.out.println();
 	System.out.println("I found those starting models: ");
 	for (Model model : startingModels) {
-	    System.out.println(model.path);
+	    System.out.println("        " + model.path);
 	}
+	System.out.println();
     }
 
+    public void printExecutionStatus() {
+	System.out.println("EXECUTION SETTINGS: ");
+	printModels();
+	printParams();
+	System.out.println("Recursive behavior: " + recursive);
+	System.out.println("Permutations: " + permutations);
+    }
 
     /**
      * 
