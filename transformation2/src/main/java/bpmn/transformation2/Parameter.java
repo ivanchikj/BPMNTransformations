@@ -39,7 +39,7 @@ public class Parameter {
     if (isValid(parameter)) {
 	this.rule = parameter;
 	this.aggregateBy = aggregateBy;
-    }
+    } else { System.err.println( parameter + " is not a valid parameter"); }
     }
 
 

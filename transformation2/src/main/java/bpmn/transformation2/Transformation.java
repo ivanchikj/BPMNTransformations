@@ -24,15 +24,25 @@ public class Transformation {
 
 
 
-    public Transformation(Model startingModel, Parameter parameter) throws Exception {
+    public Transformation(Model startingModel, Parameter parameter, Execution execution) throws Exception {
 
-	this.startingModel = startingModel;
+	this.startingModel = new Model(startingModel.path);
 	this.parameter = parameter;
 	boolean successful = false; //default value
 	applyTheRule();
-	if (modelsAreDifferent(startingModel, resultingModel)) {
-
+	
+	boolean different = modelsAreDifferent(startingModel, resultingModel);
+	
+	boolean valid = true; // TODO ADD A CHECK
+	
+	if (different && valid) {
+	    successful = true;
 	}
+	
+	//execution.report.addOutcome(startingModel.path, ruleString, outcome);
+	
+	
+
     }
 
     /**
@@ -41,97 +51,89 @@ public class Transformation {
      * @throws Exception
      */
     private void applyTheRule() throws Exception {
-	if (parameter.equals("1")) {
+	if (parameter.rule.equals("1")) {
+	    System.out.println();
 	    System.out.println("IM APPLIYING RULE 1");
 	    resultingModel = Rule1.applyRule(startingModel);
 	}
 
-	if (parameter.equals("2")) {
+	if (parameter.rule.equals("2")) {
 	    resultingModel = Rule2.applyRule(startingModel);
 
 	}
 
-	if (parameter.equals("3")) {
+	if (parameter.rule.equals("3")) {
 	    resultingModel = Rule3.all(startingModel);
 	}
 
-	if (parameter.equals("3a")) {
+	if (parameter.rule.equals("3a")) {
 	    resultingModel = Rule3.a(startingModel);
 	}
 
-	if (parameter.equals("3b")) {
+	if (parameter.rule.equals("3b")) {
 	    resultingModel = Rule3.b(startingModel);
 	}
 
-	if (parameter.equals("3c")) {
+	if (parameter.rule.equals("3c")) {
 	    resultingModel = Rule3.c(startingModel);
 	}
 
-	if (parameter.equals("4")) {
+	if (parameter.rule.equals("4")) {
 	    resultingModel = Rule4.all(startingModel);
 	}
 
-	if (parameter.equals("4a")) {
+	if (parameter.rule.equals("4a")) {
 	    resultingModel = Rule4.a(startingModel);
 	}
 
-	if (parameter.equals("4b")) {
+	if (parameter.rule.equals("4b")) {
 	    resultingModel = Rule4.b(startingModel);
 	}
 
-	if (parameter.equals("4c")) {
+	if (parameter.rule.equals("4c")) {
 	    resultingModel = Rule4.c(startingModel);
 	}
 
-	if (parameter.equals("R1")) {
+	if (parameter.rule.equals("R1")) {
 	    resultingModel = Reverse1.applyRule(startingModel, parameter.aggregateBy);
 	}
 
-	if (parameter.equals("R2")) {
+	if (parameter.rule.equals("R2")) {
 	    resultingModel = Reverse2.applyRule(startingModel, parameter.aggregateBy);
 	}
 
-	if (parameter.equals("R3")) {
+	if (parameter.rule.equals("R3")) {
 	    resultingModel = Reverse3.applyRule(startingModel, parameter.aggregateBy);
 	}
 
-	if (parameter.equals("R3a")) {
+	if (parameter.rule.equals("R3a")) {
 	    resultingModel = Reverse3.a(startingModel);
 	}
 
-	if (parameter.equals("R3b")) {
+	if (parameter.rule.equals("R3b")) {
 	    resultingModel = Reverse3.b(startingModel);
 	}
 
-	if (parameter.equals("R3c")) {
+	if (parameter.rule.equals("R3c")) {
 	    //resultingModel = Reverse3.c(startingModel, aggregateBy)
 	}
 
-	if (parameter.equals("R4")) {
+	if (parameter.rule.equals("R4")) {
 	    System.err.println("TODO");
 	}
 
-	if (parameter.equals("R4a")) {
+	if (parameter.rule.equals("R4a")) {
 	    resultingModel = Reverse4.a(startingModel);
 	}
 
-	if (parameter.equals("R4b")) {
+	if (parameter.rule.equals("R4b")) {
 	    resultingModel = Reverse4.b(startingModel);
 	}
 
-	if (parameter.equals("R4c")) {
+	if (parameter.rule.equals("R4c")) {
 	    resultingModel = Reverse4.c(startingModel);
 	}
-
-	boolean valid = true; //TODO what if the resulting file is not valid? Insert the test here.
-	//if the models are different, it means that the transformation was successful
-	
-	boolean different = modelsAreDifferent(startingModel, resultingModel);
-
-	if (different && valid) {
-	    successful = true;
-	}
-
+	resultingModel.addRule(parameter);
     }
 
     /**

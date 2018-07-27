@@ -270,7 +270,7 @@ public class Execution {
 	    }
 	    for (Model startingModel : startingModels) {
 		for (Parameter param : parameters) {
-		    Transformation transf = new Transformation(startingModel, param);
+		    Transformation transf = new Transformation(startingModel, param, this);
 		    if (transf.successful) {
 			
 			String newName = startingModel.path.substring(0, startingModel.path.length() - 9) + ".bpmn.xml";

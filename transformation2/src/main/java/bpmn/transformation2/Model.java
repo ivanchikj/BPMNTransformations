@@ -37,6 +37,7 @@ public class Model {
     public String path; /// TODO decide whether this will be private or not.
     private XPath xpath;
     private DocumentBuilder docBuilder;
+    public ArrayList<String> rulesApplied; //this keeps track of the rules tha have been applied to a model
 
     //TODO fare metodo che prende un gateway e controlla se è un merge. Mi serve in più di una regola mi sa. Quindi è meglio metterlo qua
 
@@ -73,8 +74,25 @@ public class Model {
 	// TODO check if there's not always one single bmpdi:BMPNDiagram. In that case it's better to find a way to manage this
 	this.bpmndiPlane = (Element) doc.getElementsByTagName("bpmndi:BPMNPlane").item(0);
 	//System.out.println(	"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id")); //UNLOCKTHIS
+	
+	this.rulesApplied = new ArrayList<String>();
     }
 
+    /**
+     * used when editing the model. This, togheter with rulesApplied should always be upgraded togheter
+     * @param rule
+     */
+    private void addRuleToName(String rule, int aggregateBy) {
+	this.path = path.substring(0, path.lastIndexOf(".bpmn.xml")) + rule + "*" + aggregateBy + ".bpmn.xml";
+    }
+    
+    public void addRule(Parameter parameter) {
+	String rule = parameter.rule;
+	addRuleToName(rule, parameter.aggregateBy);
+	rulesApplied.add(rule);
+    }
+    
+    
     /**
      * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
      * isForCompensation="false" startQuantity="1", li devo aggiungere?
