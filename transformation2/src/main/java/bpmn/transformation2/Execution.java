@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.el.StaticFieldELResolver;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +21,9 @@ public class Execution {
 
     public String input;
     private String path;
+    private String folderPath;
+    private String outputPath;
+    boolean folder;
     private ArrayList<Model> startingModels;
     private ArrayList<Parameter> parameters;
     private boolean recursive;
@@ -29,29 +33,58 @@ public class Execution {
     public Report report;
     public String destinationPath;
 
-    public Execution (String input) throws IOException, SAXException, ParserConfigurationException {
+    public Execution (String input) throws Exception {
 
 	//From input, let's get parameters and an array of models
 	this.input = input;
 	this.parameters = new ArrayList<Parameter>();
 	this.startingModels = new ArrayList<Model>();
 	this.report = new Report();
-
+	
+	doesItLooksLikeAPath();
 	searchForRecursive();
 	searchForPermutations();
 
-	String[] pathAndParameters = separatePathAndParameters(input);
+	String[] pathAndParameters = separatePathAndParameters(this.input);
 
-	System.out.println("path: " + pathAndParameters[0]);
-	System.out.println("params: " + pathAndParameters[1]);
+	//System.out.println("path: " + pathAndParameters[0]); 
+	//System.out.println("params: " + pathAndParameters[1]); //TODO cancella questi due sysout
 
 	this.path = pathAndParameters[0];
+	
+	if (folder) {
+	folderPath = path;    
+	} else {
+	this.folderPath = getFolderPath(path);
+	}
+	
+	this.outputPath = folderPath + "output/";
+	
 	findParameters(pathAndParameters[1]);
 	initializeModels(path);
-	printExecutionStatus();
+	printExecutionStatus(); //UNLOCKTHIS used just for testing TODO this informations could be something to add in the report
+
+	execute();
 	
 	//CONTINUE FROM HERE. We need to decide how to proceed . Devo passare da EXECUTION a transformation.
+
+    }
+
+    
+    //TODO maybe we can have a better check than just looking for a slash.
+    private void doesItLooksLikeAPath() {
 	
+	if (!input.contains("/")) {
+	    System.err.println("This doesn't look like a path");
+	}
+	
+    }
+
+    private String getFolderPath(String path) {
+	
+	String folderPath = path.substring(0, path.lastIndexOf("/") + 1);
+	
+	return folderPath;
     }
 
     private void searchForPermutations() {
@@ -60,7 +93,7 @@ public class Execution {
 	} else {
 	    permutations = false;
 	}
-	input.replace("?", ""); //let's remember to delete the mark 
+	input = input.replace("?", ""); //let's remember to delete the mark 
 	//TODO is it possible the question mark is in the filename?
     }
 
@@ -70,7 +103,7 @@ public class Execution {
 	} else {
 	    recursive = true;
 	}
-	input.replace("!", ""); //let's remember to delete the exclamation mark 
+	input = input.replace("!", ""); //let's remember to delete the exclamation mark 
 	//TODO is it possible the exclamation mark is in the filename?
     }
 
@@ -136,7 +169,7 @@ public class Execution {
 	//let's separate the parameters between each other
 	ArrayList<String> paramStrings = new ArrayList<String>();
 
-	while (str.contains("-") && str.indexOf("-") != str.lastIndexOf("-") ) {
+	while (str.indexOf("-") != str.lastIndexOf("-") ) {
 	    System.out.println(str);
 	    String param;
 	    int firstDash = str.indexOf("-") + 1;
@@ -152,7 +185,7 @@ public class Execution {
 	    System.out.println("e adesso " +  str);
 	}
 
-	if (str.contains("-")) { //let's add the last one:
+	if (str.contains("-") && str.indexOf("-") == str.indexOf("-")) { //let's add the last one:
 	    String lastParam = str.substring(str.indexOf("-")+1);
 	    paramStrings.add(lastParam);
 	}
@@ -160,7 +193,7 @@ public class Execution {
 	System.out.println("I've finished separating the parameters in different strings");
 
 	for (String param : paramStrings) {
-	    if (param.contains("*")) { // it means we have to use a different contstructor because we have an aggregateBy param
+	    if (param.contains("*")) { // it means we have to use a different constructor because we have an aggregateBy param
 		int aggregateBy = Integer.parseInt(param.substring(param.indexOf("*")+1));
 		System.out.println("AggregateBY " + aggregateBy);
 		param = param.substring(0, param.indexOf("*"));
@@ -178,10 +211,10 @@ public class Execution {
 	System.out.println("I found those parameters: ");
 	for (Parameter parameter : parameters) {
 	    if (parameter.aggregateBy == 0) {
-		System.out.println("      Param " + parameter.parameter);
+		System.out.println("      Param " + parameter.rule);
 	    }
 	    if (parameter.aggregateBy != 0) {
-		System.out.println("      Param " + parameter.parameter + ", aggregateBy: " + parameter.aggregateBy);
+		System.out.println("      Param " + parameter.rule + ", aggregateBy: " + parameter.aggregateBy);
 	    }
 	}
 	System.out.println();
@@ -202,6 +235,7 @@ public class Execution {
 	printParams();
 	System.out.println("Recursive behavior: " + recursive);
 	System.out.println("Permutations: " + permutations);
+	System.out.println("Output Location: " + outputPath);
     }
 
     /**
@@ -212,15 +246,86 @@ public class Execution {
      * @throws IOException 
      * @throws TransformerException 
      */
-    public static void saveModelToFile(Model model, String filename, String folderPath, String rulesApplied) throws TransformerException {
+    public static void saveModelToFile(Model model, String filename, String folderPath) throws TransformerException {
 
 	//TODO remember to add rules applied like here: String newFilePath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
-	String outputFilepath = "./TestGraphs/output/Test.bpmn.xml"; //TODO this is wrong
-
+	//String outputFilepath = "./TestGraphs/output/Test.bpmn.xml"; //TODO this is wrong
+	String outputFilepath = folderPath + filename;
 	model.saveToFile(outputFilepath);
     }
 
+    
+    public void execute() throws Exception {
+	decideWhatToDo();
+    }
 
+    private void decideWhatToDo() throws Exception {
+
+	
+	if (!permutations && !recursive) { //we have a simple order of rules to be applied to the various startingModels
+	    System.out.println();
+	    System.out.print("Simple execution with rules: ");
+	    for (Parameter parameter : parameters) {
+		System.out.print(parameter.rule);
+	    }
+	    for (Model startingModel : startingModels) {
+		for (Parameter param : parameters) {
+		    Transformation transf = new Transformation(startingModel, param);
+		    if (transf.successful) {
+			
+			String newName = startingModel.path.substring(0, startingModel.path.length() - 9) + ".bpmn.xml";
+			
+			saveModelToFile(transf.resultingModel, newName, outputPath);
+		    }
+		    
+		}
+	    }
+	}
+    }
+
+
+    /**
+     * TODO this works but has false positives.
+     * This method wants to avoid having infinite loops of trying to apply a rule and 
+     * then immediately afterwards its opposite etc. 
+     * TODO this check is only applied when recursive behavior is on. Otherwise it's not needed because infinite 
+     * loops can only happen when recursive behavior is on.
+     * Moreover, it doesn't stop the program. It merely asks the user if he/she wishes to continue.
+     * @param parameter1
+     * @param parameter2
+     * @return
+     */
+    private boolean areRulesOpposite ( Parameter parameter1, Parameter parameter2 ) {
+	String p1 = parameter1.rule;
+	String p2 = parameter2.rule;
+
+	if ( p1.equals("r" + p2) || p2.equals("r" + p1) ) {
+	    return true;
+	}
+	else return false;
+
+    }
+
+
+    private boolean continueAfterWarning ( String warning ) {
+	System.out.println();
+	System.out.println();
+	System.out.println(" WARNING :" + warning);
+	System.out.println();
+	System.out.println(" Do you wish to continue?  - Y/N");
+	Scanner scanner = new Scanner(System.in);
+	String input = scanner.next().toLowerCase();
+
+	if (input.equals("y")) {
+	    return true;
+	} else if (input.equals("n")) {
+	    return false;
+	} else {
+	    System.out.println("You can only write - y/n");
+	    return continueAfterWarning(warning); //Does this works?
+	}
+
+    }
 
 
 }

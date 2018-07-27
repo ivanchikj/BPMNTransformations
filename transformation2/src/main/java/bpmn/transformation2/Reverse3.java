@@ -191,10 +191,10 @@ public class Reverse3 {
 	    }
 
 	}
-	
+
 	//now let's go through all constructs and do the necessary changes.
 	for (Reverse3cConstruct construct : constructs) {
-	    
+
 	    Element firstInclusive = construct.firstInclusive;
 	    Element firstMeetingPoint = construct.firstInclusiveMeetingPoint;
 
@@ -229,7 +229,7 @@ public class Reverse3 {
 		    }
 		}
 		System.out.println("My successors SIZEEEEEE " + mySuccessors.size());
-		
+
 		String[] position = model.calculatePositionOfNewNode(mySuccessors, firstInclusive);
 
 		String newExclusiveID = model.newExclusiveGateway(position[0],position[1]); //TODO make this method accept a 'position' object
@@ -245,7 +245,7 @@ public class Reverse3 {
 
 		//now I can connect the elements in mySuccessors to the new exclusive
 		for (Element successor : mySuccessors) {
-		   
+
 		    Element incomingFlow = model.getIncomingFlows(successor).get(0); //we expect the successor to have only one incomingFlow of course.
 		    model.setSource(incomingFlow.getAttribute("id"), newExclusiveID);
 		}
@@ -312,25 +312,17 @@ public class Reverse3 {
 
 	}
 
-
-
-
-	//	Reverse3c:
-	//
-	//	    Quando hai un inclusiveGateway che ha il
-	//	    firstMeetingPoint con un altro inclusiveGateway
-	//
-	//
-	//	    In quel caso puoi creare un exclusiveGateway
-	//	    subito dopo e il numero di exclusiveGateways
-	//	    che puoi creare è dato da un parametro
-	//	    Ma non può essere più alto del 
-	//
-	//	   numero di outGoingFlows del primo inclusive / 2
-	//	   (perché ogni nuovo gateway deve avere almeno due outgoingFlows)
-
-
 	return model;
+    }
+
+    //TODO DECIDE the ORDER AND EXPLAIN IN THE THESIS
+    public static Model applyRule(Model startingModel, int aggregateBy) throws Exception {
+	
+	Model resultingModel = c(startingModel, aggregateBy);
+	resultingModel = a(resultingModel);
+	resultingModel = b(resultingModel);
+	
+	return resultingModel;
     }
 
 }

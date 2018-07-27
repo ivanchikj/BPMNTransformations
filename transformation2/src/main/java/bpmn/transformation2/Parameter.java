@@ -7,7 +7,7 @@ import org.camunda.bpm.model.dmn.instance.Input;
 
 public class Parameter {
 
-    public String parameter;
+    public String rule;
     public int aggregateBy;
     public static String[] validParameters = 
 	{
@@ -28,7 +28,7 @@ public class Parameter {
     public Parameter (String parameter) {
 
 	if (isValid(parameter)) {
-	    this.parameter = parameter;
+	    this.rule = parameter;
 	}
     }
     
@@ -37,7 +37,7 @@ public class Parameter {
     //it will simply be ignored.
     public Parameter(String parameter, int aggregateBy) {;
     if (isValid(parameter)) {
-	this.parameter = parameter;
+	this.rule = parameter;
 	this.aggregateBy = aggregateBy;
     }
     }

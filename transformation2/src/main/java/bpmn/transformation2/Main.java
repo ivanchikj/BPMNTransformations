@@ -15,13 +15,13 @@ public class Main{
     private static String input; 
     private static Scanner reader = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException{
+    public static void main(String[] args) throws Exception{
 
 	
 	
-	//input = ""; //default behavior when not testing
+	input = ""; //default behavior when not testing //UNLOCKTHIS
 	
-	input = "testing"; //UNLOCKTHIS used only to go in the manual testing method
+	//input = "testing"; //UNLOCKTHIS used only to go in the manual testing method
 	
 	analyzeInput(input);
     }
@@ -29,13 +29,9 @@ public class Main{
     
     /**
      * This method allows me to easily test any public method
-     * @throws ParserConfigurationException 
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws XPathExpressionException 
-     * @throws TransformerException 
+     * @throws Exception 
      */
-    public static void manualTest() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException {
+    public static void manualTest() throws Exception {
 	//String input = "./TestGraphs/rule1parallel.bpmn.xml";
 	//String input = "./TestGraphs/rule1recursive.bpmn.xml";
 	//String input = "./TestGraphs/rule2exclusiveConditions.bpmn.xml";
@@ -177,13 +173,9 @@ public class Main{
      * If we want to ask the user or not (maybe we are testing an hardcoded input)
      * If we want to print the user guide or not
      * @param input user-provided String containing the path of the input model(s) and facultative parameters
-     * @throws ParserConfigurationException 
-     * @throws SAXException 
-     * @throws IOException 
-     * @throws XPathExpressionException 
-     * @throws TransformerException 
+     * @throws Exception 
      */
-    private static void analyzeInput(String input) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException, TransformerException {
+    private static void analyzeInput(String input) throws Exception {
 	System.out.println("Analizyng user input: " + input);
 	
 	if ( input.equals("") ){ //This is always expected to be true except when testing something.
@@ -198,7 +190,7 @@ public class Main{
 	    input = askForInput();
 	    analyzeInput(input);
 	} else { 
-	    Execution execution = new Execution(input);  
+	    Execution execution = new Execution(input);
 	    //execution.execute(); //TODO decide if execution should execute automatically
 	}
 	reader.close();
@@ -271,7 +263,7 @@ public class Main{
 	
 	System.out.println("Please enter the path of the file(s) you want to transform.");
 	System.out.println("Type 'help' to display the list of parameters or if this is your first time using the program.");
-	String input = reader.next();
+	String input = reader.nextLine();
 	//reader.close();
 	System.out.println("Reading user input: " + input);
 	return input;

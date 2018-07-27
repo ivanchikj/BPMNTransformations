@@ -1,10 +1,14 @@
 package bpmn.transformation2;
 
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Element;
+
+import camundafeel.de.odysseus.el.tree.impl.Scanner.ScanException;
 
 public class Transformation {
 
@@ -17,16 +21,18 @@ public class Transformation {
     //TODO if the resulting file does not pass the BPMN test, then it's not a success it's a fail. Thus the program will fail
     //gracefully, but that will be written in the report differently.
     public String newName;
-    
-    
-    
+
+
+
     public Transformation(Model startingModel, Parameter parameter) throws Exception {
 
 	this.startingModel = startingModel;
 	this.parameter = parameter;
 	boolean successful = false; //default value
 	applyTheRule();
+	if (modelsAreDifferent(startingModel, resultingModel)) {
 
+	}
     }
 
     /**
@@ -36,12 +42,13 @@ public class Transformation {
      */
     private void applyTheRule() throws Exception {
 	if (parameter.equals("1")) {
+	    System.out.println("IM APPLIYING RULE 1");
 	    resultingModel = Rule1.applyRule(startingModel);
 	}
 
 	if (parameter.equals("2")) {
 	    resultingModel = Rule2.applyRule(startingModel);
-	    
+
 	}
 
 	if (parameter.equals("3")) {
@@ -77,15 +84,15 @@ public class Transformation {
 	}
 
 	if (parameter.equals("R1")) {
-	    //resultingModel = Reverse1.applyRule(startingModel, aggregateBy)
+	    resultingModel = Reverse1.applyRule(startingModel, parameter.aggregateBy);
 	}
 
 	if (parameter.equals("R2")) {
-	    System.err.println("TODO");
+	    resultingModel = Reverse2.applyRule(startingModel, parameter.aggregateBy);
 	}
 
 	if (parameter.equals("R3")) {
-	    System.err.println("TODO");
+	    resultingModel = Reverse3.applyRule(startingModel, parameter.aggregateBy);
 	}
 
 	if (parameter.equals("R3a")) {
@@ -118,6 +125,7 @@ public class Transformation {
 
 	boolean valid = true; //TODO what if the resulting file is not valid? Insert the test here.
 	//if the models are different, it means that the transformation was successful
+	
 	boolean different = modelsAreDifferent(startingModel, resultingModel);
 
 	if (different && valid) {
@@ -192,8 +200,8 @@ public class Transformation {
 
 	return false;
     }
-    
-    
+
+
     //ASKANA do I also have to compare flows instead of just nodes?
     //I guess I do.
     //But maybe I don't because I have no rule that changes just flows without changing nodes.
@@ -212,6 +220,5 @@ public class Transformation {
 
 	return sequenceOfTypes;
     }
-
 
 }

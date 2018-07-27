@@ -48,7 +48,7 @@ public class Model {
      * @throws ParserConfigurationException
      */
     public Model(String path) throws IOException, org.xml.sax.SAXException, ParserConfigurationException {
-	System.out.println("New model instance: ");
+	//System.out.println("New model instance: "); //UNLOCKTHIS
 
 	this.path = path;
 	// Xpath needed to easily interact with XMLs
@@ -58,14 +58,13 @@ public class Model {
 	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	this.docBuilder = docFactory.newDocumentBuilder();
 
-	// TODO make it look better
-	System.out.println("		Opening file at position" + path);
+	//System.out.println("		Opening file at position" + path);//UNLOCKTHIS
 
 	this.doc = docBuilder.parse(path);
 	this.process = (Element) doc.getElementsByTagName("bpmn:process").item(0); // TODO what happens if there's more than
 	// one process? Is it possible? I have to
 	// do both i guess.
-	System.out.println("		I'm working on the following Process: " + process.getAttribute("id"));
+	//System.out.println("		I'm working on the following Process: " + process.getAttribute("id"));//UNLOCKTHIS
 
 	// there's always one single bmpdi:BMPNDiagram, and one single process so it's
 	// "item 0"
@@ -73,8 +72,7 @@ public class Model {
 
 	// TODO check if there's not always one single bmpdi:BMPNDiagram. In that case it's better to find a way to manage this
 	this.bpmndiPlane = (Element) doc.getElementsByTagName("bpmndi:BPMNPlane").item(0);
-	System.out.println(
-		"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id"));
+	//System.out.println(	"		I'm working on the following bpmndiDiagram: " + bpmndiDiagram.getAttribute("id")); //UNLOCKTHIS
     }
 
     /**
