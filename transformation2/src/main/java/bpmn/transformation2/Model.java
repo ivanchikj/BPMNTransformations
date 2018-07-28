@@ -52,6 +52,7 @@ public class Model {
 	//System.out.println("New model instance: "); //UNLOCKTHIS
 
 	this.path = path;
+	
 	// Xpath needed to easily interact with XMLs
 	XPathFactory xPathFactory = XPathFactory.newInstance();
 	this.xpath = xPathFactory.newXPath();
@@ -77,7 +78,7 @@ public class Model {
 	
 	this.rulesApplied = new ArrayList<String>();
     }
-
+    
     /**
      * used when editing the model. This, togheter with rulesApplied should always be upgraded togheter
      * @param rule
@@ -929,26 +930,6 @@ public class Model {
 	}
     }
 
-    public void saveToFile(String path) throws TransformerException {
-	// Saving the file
-	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	Transformer transformer = transformerFactory.newTransformer();
-	DOMSource source = new DOMSource(doc);
-	StreamResult result = new StreamResult(new File(path));
-	transformer.transform(source, result);
-	System.out.println("Saved the XML file in + " + path);
-
-    }
-
-    public void saveTemp(String tempPath) throws TransformerException {
-	// Saving the file
-	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	Transformer transformer = transformerFactory.newTransformer();
-	DOMSource source = new DOMSource(doc);
-	StreamResult result = new StreamResult(new File(tempPath));
-	transformer.transform(source, result);
-	System.out.println("		Saved the TEMPORARy XML file in + " + path);    
-    }
     /**
      * GetElementById doesn't work with our XML so this method serves that purpose.
      * The problem is that while our XML elements have an ID property, that is not
@@ -1273,4 +1254,29 @@ public class Model {
 	return "USI" + UUID.randomUUID().toString(); //I added 'USI' because Ids cannot start with a digit.
     }
 
+    /**
+     * This method allows me to save unfinished an malformed XMLs. Useful when testing.
+     * @param tempPath
+     * @throws TransformerException
+     */
+    public void saveTemp(String tempPath) throws TransformerException {
+        // Saving the file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(tempPath));
+        transformer.transform(source, result);
+        System.out.println("		Saved the TEMPORARy XML file in + " + path);    
+    }
+
+    public void saveToFile(String path) throws TransformerException {
+        // Saving the file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(path));
+        transformer.transform(source, result);
+        System.out.println("Saved the XML file in + " + path);
+    
+    }
 }

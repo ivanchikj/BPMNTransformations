@@ -1,9 +1,11 @@
 package bpmn.transformation2;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Element;
@@ -21,6 +23,7 @@ public class Transformation {
     //TODO if the resulting file does not pass the BPMN test, then it's not a success it's a fail. Thus the program will fail
     //gracefully, but that will be written in the report differently.
     public String newName;
+    
 
 
 
@@ -36,13 +39,9 @@ public class Transformation {
 	boolean valid = true; // TODO ADD A CHECK
 	
 	if (different && valid) {
-	    successful = true;
+	    this.successful = true;
+	    System.out.println("The transformation has been successfull!");
 	}
-	
-	//execution.report.addOutcome(startingModel.path, ruleString, outcome);
-	
-	
-
     }
 
     /**
@@ -223,4 +222,12 @@ public class Transformation {
 	return sequenceOfTypes;
     }
 
+    
+    
+    public void save(String folder) throws TransformerException {
+	resultingModel.saveToFile(folder);
+	
+    }
+    
+    
 }

@@ -39,6 +39,7 @@ public class Execution {
 	this.input = input;
 	this.parameters = new ArrayList<Parameter>();
 	this.startingModels = new ArrayList<Model>();
+	this.resultingModels = new ArrayList<Model>();
 	this.report = new Report();
 	
 	doesItLooksLikeAPath();
@@ -64,13 +65,48 @@ public class Execution {
 	initializeModels(path);
 	printExecutionStatus(); //UNLOCKTHIS used just for testing TODO this informations could be something to add in the report
 
-	execute();
+	decideWhatToDo(); //(and do it)
+	System.out.println("CIAONE: " + resultingModels.size());
+	saveResultingModels();
 	
 	//CONTINUE FROM HERE. We need to decide how to proceed . Devo passare da EXECUTION a transformation.
 
     }
 
     
+    private void saveResultingModels() throws TransformerException {
+	
+	for (Model m : resultingModels) {
+	    saveModel(m, outputPath);
+	}
+	
+    }
+
+    
+    /**
+     * TODO SPIEGA PERCHË QUESTO METODO ESISTE
+     * @param model
+     * @param filename
+     * @param folderPath
+     * @throws IOException 
+     * @throws TransformerException 
+     */
+    public void saveModel(Model model, String filename) throws TransformerException {
+	
+	//i need to add 'output/' in the new path
+	String original = model.path;
+	String name  = original.substring(original.lastIndexOf("/")+1);
+	String folder = original.substring(0, original.lastIndexOf(name)) + "output/";
+	
+	System.out.println("name " + name);
+	System.out.println("folder " + folder);
+	model.saveToFile(folder+name);
+	
+    }
+    
+
+    
+
     //TODO maybe we can have a better check than just looking for a slash.
     private void doesItLooksLikeAPath() {
 	
@@ -118,8 +154,6 @@ public class Execution {
 
 	//let's ignore spaces
 	input = input.replaceAll(" ", "");
-	//let's ignore also uppercase / lowercase istances
-	input = input.toLowerCase();
 
 	//in case there is a whole folder:
 	if (!input.contains(".bpmn.xml")) {
@@ -132,7 +166,8 @@ public class Execution {
 	    params = input.substring(input.indexOf(".bpmn.xml") + 9); //getting the part after the dash
 	}
 
-	String[] pathAndParams = {path, params};
+	String[] pathAndParams = {path, params.toLowerCase()}; 	//let's ignore also uppercase / lowercase istances for parameters
+	input = input.toLowerCase();
 	//System.out.println(pathAndParams[0]);
 	//System.out.println(pathAndParams[1]);
 
@@ -238,22 +273,6 @@ public class Execution {
 	System.out.println("Output Location: " + outputPath);
     }
 
-    /**
-     * 
-     * @param model
-     * @param filename
-     * @param folderPath
-     * @throws IOException 
-     * @throws TransformerException 
-     */
-    public static void saveModelToFile(Model model, String filename, String folderPath) throws TransformerException {
-
-	//TODO remember to add rules applied like here: String newFilePath = folderPath + "output/" + filename + rulesApplied + "TESTTESTTEST" + ".bpmn.xml";
-	//String outputFilepath = "./TestGraphs/output/Test.bpmn.xml"; //TODO this is wrong
-	String outputFilepath = folderPath + filename;
-	model.saveToFile(outputFilepath);
-    }
-
     
     public void execute() throws Exception {
 	decideWhatToDo();
@@ -271,11 +290,8 @@ public class Execution {
 	    for (Model startingModel : startingModels) {
 		for (Parameter param : parameters) {
 		    Transformation transf = new Transformation(startingModel, param, this);
-		    if (transf.successful) {
-			
-			String newName = startingModel.path.substring(0, startingModel.path.length() - 9) + ".bpmn.xml";
-			
-			saveModelToFile(transf.resultingModel, newName, outputPath);
+		    if (transf.successful) {		
+			resultingModels.add(transf.resultingModel);
 		    }
 		    
 		}
