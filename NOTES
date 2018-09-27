@@ -1,3 +1,8 @@
+
+Ho letto che è meglio avere tutti gli attributi private e usare dei metodi getters e setters.
+	una volta che hai i metodi setters, li puoi anche usare all'interno del costruttore
+
+
 ASKANA per quanto riguarda il report, invece di fare come facevo all'inizio,
 	 	ovvero per ogni regola inserire dei momenti in cui a seconda di quello che succedeva scrivevo qualcosa nel report oppure no
 	fare qualcosa così:

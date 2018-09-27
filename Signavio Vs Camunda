@@ -1,0 +1,34 @@
+Signavio Vs Camunda
+
+da spiegare nella tesi:
+
+camunda usa questo stile:
+
+	bpmn:parallelGateway
+
+invece signavio
+
+	parallelGateway
+
+
+Non posso usare contains mentre cerco i tagname, perché uso il metodo XML getElementsByTagName
+
+
+Quindi per ogni modello ho una variabile di classe che si ricorda il tipo di modello che ho (per adesso signavio e camunda )
+Quindi quando iniziallizzo il modello cerco il bpmn:startEvent
+Se lo trovo allora significa che sono su camunda, altrimenti cerco 
+startEvent. Se lo trovo significa che sono su signavio.
+
+Se non lo trovo allora stampo un messaggio di errore.
+
+Poi dopo faccio un metodo getElemByTagName che serve a rimpiazzare il metodo di XML e che applica la parola chiave corretta a seconda dei casi.
+
+ah, spiega anche che i bpmndi non sono diversi tra camunda e signavio quindi in quel caso non c'è differenza.
+
+
+purtroppo questo approccio non funziona perché non posso solo controllare le cose a un model-level, ma devo anche farlo sui children.
+
+
+
+
+Quindi la cosa più semplice è creare un metodo static che a partire da una stringa applica le modifiche necessarie e la ributta fuori. E poi usare sempre quella come input.
