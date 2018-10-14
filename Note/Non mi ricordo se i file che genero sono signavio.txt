@@ -1,0 +1,4 @@
+Non mi ricordo se i file che genero sono signavio o camunda style. La cosa migliore sarebbe fare in modo che lo stile cambi a seconda del file di input o che sia modificabile dall'utente.
+
+
+E inoltre sarebbe meglio mettere il metodo stye all'interno del metodo chiamato, e non del metodo chiamante.

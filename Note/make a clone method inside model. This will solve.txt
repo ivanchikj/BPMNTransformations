@@ -1,0 +1,11 @@
+make a clone method inside model. This will solve a lot of your problems.
+
+Copy the fields Like is written here:
+https://stackoverflow.com/questions/869033/how-do-i-copy-an-object-in-java
+
+Clone the model inside transformation, in the constructor.
+
+
+Now the rules can all be void, and the resulting model can be created inside "transformation".
+
+Rules applied field is also cloned, so the rules applied can be estrapolated from that list instead of being managed inside decidewhatToDo()

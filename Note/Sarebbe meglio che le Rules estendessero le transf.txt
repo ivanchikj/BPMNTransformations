@@ -1,0 +1,1 @@
+Sarebbe meglio che le Rules estendessero le transformation.

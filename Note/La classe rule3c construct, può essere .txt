@@ -1,1 +1,0 @@
-La classe rule3c construct, può essere una classe local
