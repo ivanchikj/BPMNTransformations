@@ -1,0 +1,3 @@
+In execution, invece di aggiornare l'outcome in tempo reale, creare un field che è un arraylist di outcomes (inner class) e poi gli outcome li salvo direttamente io come salvo i resultingModels.
+
+La classe outcome potrebbe essere anche un field di Transformation, quindi la classe outcome verrebbe generata direttamente lì dentro. E la classe execution potrebbe accedervi direttamente facendo transformation.outcome

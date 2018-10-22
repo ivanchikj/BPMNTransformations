@@ -7,17 +7,28 @@ List of tests:
 ./TestGraphs/ YRNP (-1 -r3*2) 
 ./TestGraphs/ NRNP (-1 -r3*2) 
 
+====
+./TestGraphs/ NRNP (-1)
+./TestGraphs/ NRNP (-1)
+
+        ./TestGraphs/Primaregoladuevolte.bpmn NRNP (-1 -3)
+./TestGraphs/Primaregoladuevolte.bpmn YRNP (-1 -2)
+        ./TestGraphs/Primaregoladuevolte.bpmn YRNP (-1 -3)
+s
+./TestGraphs/ NRNP (-1 -2)
+./TestGraphs/ NRNP (-1 -2 -3 -4)
+./TestGraphs/ YRYP (-1 -2 -3 -4)
+./TestGraphs/ NRYP (-1 -2 -3 -4)
+./TestGraphs/ YRNP (-1 -2 -3 -4)
 
 
 
 
-===================================================================================
-
-
-
+============================================================
 
 
 Vecchi test manuali:
+
 
 //String input = "./TestGraphs/rule1parallel.bpmn.xml";
         //String input = "./TestGraphs/rule1recursive.bpmn.xml"
