@@ -1,4 +1,0 @@
-Nuovo tipo di stringhe:
-
-
-path + ypnr + (-1 -3c -3c*2 -r2)

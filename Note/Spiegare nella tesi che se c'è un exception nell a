@@ -1,1 +1,0 @@
-Spiegare nella tesi che se c'è un exception nell applicazione di una regola su un modello, il programma registra la stacktrace nel report ma va avanti.

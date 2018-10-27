@@ -1,5 +1,0 @@
-Quando fai due esecuzioni nello stesso minuto,  i file della seconda esecuzione vengono aggiunti nella cartella della prima. 
-
-Non voglio aggiungere i secondi al nome della cartella perché diventa brutto,
-
-> Aggiungere un controllo, se la cartella esiste già crearne una con (1) tra parentesi nel nome. Fare in modo che automaticamente se esiste già la cartella 1 viene creata la due e così via.

@@ -1,8 +1,0 @@
-Riguarda le regole: nei casi in cui un nodo viene sostituito da uno di un altro tipo, non basta cambiare il tagname? Si può fare? In questo modo non rischio di perdere degli attributi, ad esempio il nome o altri.
-
-TODO se non si può fare, ricordati di cambiare il nome dei nuovi nodi con quello dei nodi che rimpiazzano. Lo puoi fare nel metodo "replace" in Model
-
-
-
-IDEA: se si può cambiare il tagname, allora diventa molto semplice creare un piccolo programma che prende dei modelli camunda e li traduce in signavio (o inubit) e viceversa.
-Sarebbe una cosa carina di aggiungere.

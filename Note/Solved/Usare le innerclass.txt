@@ -1,5 +1,0 @@
-Usare le innerclass
-Ad esempio in model per le coordinate
-Nel Rule3c construct
-E magari creare anche una innerclass per l'input "broken down" dove divido path da folderpath da parameters ecc e la uso come unico input nel costrutture di execution.
-Anche la rulepool potrebbe essere una innerclass

@@ -1,3 +1,0 @@
-# BPMNTransformations
-
-This project was the master thesis of...
