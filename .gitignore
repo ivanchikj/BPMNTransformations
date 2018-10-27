@@ -1,8 +1,8 @@
-/Users/rubenfolini/BPMNTransformations/TestGraphs/
+/TestGraphs/
 .DS_Store
 /.metadata/
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
+/.idea/
+/out/
+/temp/
+/.settings/
 BPMNTransformations.iml
