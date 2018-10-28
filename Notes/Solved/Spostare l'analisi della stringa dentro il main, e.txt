@@ -1,0 +1,5 @@
+Spostare l'analisi della stringa dentro il main, e creare l'execution direttamente con tutti i parametri, ha più senso.
+Quando crei l'execution gli metti direttamente dentro il path, e lei si trova l'outputh path, e anche permutation boolean e recursion boolean.
+
+
+Così se c'è qualcosa che manca nella stringa di input puoi direttamente chiederne una nuova.

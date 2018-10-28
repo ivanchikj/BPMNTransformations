@@ -7,64 +7,63 @@ public class Report {
 
     public String time;
     private String text;
-
-//    //TODO This is just an experiment constructor. Delete This after using it.
-//    public Report(){
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy
-// HH:mm:ss");
-//        this.text = "";
-//        this.time = dateFormat.format(new Date());
-//
-//    }
+    private String header;
+    private String resultingModels;
+    private String failedTransformations;
+    //TODO fai in modo che il report venga tutto ricomposto alla fine.
 
 
     Report (Execution execution) {
 
-        this.text = "";
+        this.header = "";
         this.time = execution.executionMoment;
 
         //let's write the header
         String newline = System.getProperty("line.separator");
-        text += "Execution time: " + time + newline;
-        text += newline;
-        text += "Original input: " + execution.input + newline;
-        text += newline;
-        text += "Recursive: " + execution.recursive;
-        text += newline;
-        text += "Permutations: " + execution.permutations + newline;
-        text += newline;
-        text += "Input Models: " + newline;
+        header += "Execution time: " + time + newline;
+        header += newline;
+        header += "Original input: " + execution.input + newline;
+        header += newline;
+        header += "Recursive: " + execution.recursive;
+        header += newline;
+        header += "Permutations: " + execution.permutations + newline;
+        header += newline;
+        header += "Input Models: " + newline;
         for (Model startingModel : execution.startingModels) {
-            //noinspection StringConcatenationInLoop
-            text += startingModel.path + newline;
+            header += startingModel.path + newline;
         }
-        text += newline;
-        text += newline;
-        text += newline;
-
-        text += "List of rules: " + newline;
+        header += newline;
+        header += newline;
+        header += newline;
+        for (Model resultingModel : execution.resultingModels) {
+            header += resultingModel.path + newline;
+        }
+        header += newline;
+        header += newline;
+        header += newline;
+        header += "List of rules: " + newline;
         for (Parameter param : execution.parameters) {
             if (param.aggregateBy != 0) {
-                text += param.rule + " aggregateBy: " + param.aggregateBy + newline;
+                header += param.rule + " aggregateBy: " + param.aggregateBy + newline;
             } else {
-                text += param.rule + " " + newline;
+                header += param.rule + " " + newline;
             }
         }
-        text += newline;
-        text += newline;
-        text += newline;
+        header += newline;
+        header += newline;
+        header += newline;
     }
 
 
     /**
      * @param startingModel  the starting Model in a transformation or in a
-     *                       series of trasformations.
+     *                       series of transformations.
      * @param resultingModel the resulting model. Can be null if the outcome
      *                       is false
      * @param ruleString     the rule or list of rules applied to the
      *                       starting model to obtain the resulting model.
      *                       Including the"aggregateBy" parameter if applicable.
-     * @param outcome        true if the transformation was successfull,
+     * @param outcome        true if the transformation was successful,
      *                       false if not (including cases where I had an
      *                       exception
      */
@@ -72,34 +71,47 @@ public class Report {
      String ruleString, boolean outcome) {
 
         String newline = System.getProperty("line.separator");
-        text += newline;
-        text +=
+        header += newline;
+        header +=
         "---------------------------------------------------------------------";
-        text += newline;
-        text += "Starting model: " + startingModel + newline;
-        text += newline;
-        text += "Rules applied: " + ruleString + newline;
-        text += newline;
-        text += "Successful: " + outcome + newline;
-        text += newline;
+        header += newline;
+        header += "Starting model: " + startingModel + newline;
+        header += newline;
+        header += "Rules applied: " + ruleString + newline;
+        header += newline;
+        header += "Successful: " + outcome + newline;
+        header += newline;
         //the resultingModel gets saved only if the transformation is
-        // successfull:
+        // successful:
         if (outcome) {
-            text += "The application of the rule was successful (the " +
+            header += "The application of the rule was successful (the " +
             "resulting model is different from the starting model)" + newline;
-            text += "Resulting model: " + resultingModel + newline;
-            text += newline;
+            header += "Resulting model: " + resultingModel + newline;
+            header += newline;
         } else {
-            text += "the application of the rule " + ruleString + " on model "
-             + startingModel + " was unsuccessful. The resulting model is " + "identical to the starting model and will not be saved";
+            header += "the application of the rule " + ruleString + " on " +
+             "model " + startingModel + " was unsuccessful. The resulting " +
+              "model is " + "identical to the starting model and will not be " +
+               "saved";
         }
 
-        text += newline;
+        header += newline;
+    }
+
+
+    void addFailedTransformation (Transformation t) {
+        //TODO
+    }
+
+
+    void Compose () {
+
+        text = header + resultingModels + failedTransformations;
     }
 
 
     //TODO it makes more sense to just use the transformation as a parameter,
-    // in that case i need a single addOuctome method instead of having one
+    // in that case i need a single addOutcome method instead of having one
     // for errors etc... It would make the code cleaner on "Transformation
     // .java" too.
     void addOutcome (Transformation transf) {
@@ -131,12 +143,12 @@ public class Report {
         //Se creo addTransformation non ho bisogno di questo metodo, gli
         // errori saranno gestiti lì dentro.
         String newline = System.getProperty("line.separator");
-        text += newline;
-        text += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
-         + "! ! ! ! !";
-        text += newline;
-        text += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
-        text += newline;
+        header += newline;
+        header += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! " +
+         "! " + "! ! ! ! !";
+        header += newline;
+        header += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
+        header += newline;
     }
 
 
@@ -145,7 +157,7 @@ public class Report {
         String filename = folderPath + "Report-" + this.time + ".txt";
         BufferedWriter writer = new BufferedWriter(new PrintWriter(filename));
         System.out.println("I'm saving a report in " + filename);
-        writer.write(text);
+        writer.write(header);
         writer.close();
     }
 

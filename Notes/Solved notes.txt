@@ -1,0 +1,41 @@
+
+here are some questions:
+
+now, by saving and XML file without verification I'm able to delete both flows and flowNodes, the problem is that I can delete them only from a process point of view. I cannot delete them from the bpmndi (the methods simply does not exist).
+
+I assume that the model could be executed by a machine without encountering problems (in fact i can even open them in camunda), but the bpmndi creates issues when saving the file because it contains references to items that don't exist anymore.
+
+I would suggest I create some methods to edit the bpmdi directly in XML form.
+To do so I have two options:
+	
+	everytime I delete an element I extract the xml form of my inputModel, i edit it as an xml (only the bpmdi part), and then I reopen it again as a BpmnModelInstance.
+
+	or
+
+	i create an array of all the ID's of the element that I want to delete, and right before I save the XML I call a method that deletes all of them.
+	This solution seems more 'elegant' but it's also less general (what If I want to do something different rather than just deleting stuff? But maybe I will never need it).
+
+
+Another major doubt that I have is:  "what if I create a new element from zero, instead of deleting it? The BPMDI information for that element would never exist."
+(I haven't tried it yet, but I have tried "deleting" the information of an element from the bpmndi of an xml)
+If I were to create a bpmndi block for it from scratch, I could try to deduce that element's ideal position from it's neighbors.
+
+
+-
+
+nome del plugin di eclipse
+
+-
+
+Intermediate presentation:
+
+ 	Spiegare com'è XML
+Spiegare che c'è Process e BMPNDI e che cos'è uno e l'altro.
+Spiegare che Camunda lavora solo con il process e quindi aprendo un file su camunda viewer vedi ancora gli elementi che sono stati cancellati.
+
+Spiega che per eliminare la cosa dovrei eliminare il BPMDI manualmente usando XML.
+Potrei quindi fare una lista di tutti gli elementi da cancellare con i loro ID e poi dopo aver salvato il file come XML lo riapro e cancello le cose dal BPMNDI e dopo lo risalvo.
+
+Oppure potrei estendere tutti i metodi di Camunda per fare quello che voglio io.
+
+Ma visto che camunda non fa niente di troppo complicato, tanto vale che agisco direttamente io sull'XML.

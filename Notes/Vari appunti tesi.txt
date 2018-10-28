@@ -1,0 +1,23 @@
+Spiega che una delle alternative poteva essere per ogni regola di mettere delle exit condition che ti permettono di 
+
+
+---
+
+
+spiega nella tesi che aggregateBy dev'essere più grande di 2
+
+
+--
+
+Nella reverse 2
+if hasCondition ALTRIMENTI COSA FAI FAILI??! //ASKANA!!
+
+
+
+--
+
+Nelle reverse 1 e 2 spiega
+che prima 'riempi' un gateway con il numero aggregateby e poi il resto lo metti in un gateway
+Se il resto è uno fai una linea diretta.
+
+Ad esempio, se ci sono 7 outgoing flow e aggregateBy è 4, allora ci sarà un gateway con 4 e uno con 3. Se aggregateBy è 6 allora ci sarà un gateway con 6 e un flow vuoto che parte dal gateway originale.

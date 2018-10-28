@@ -1,0 +1,6 @@
+Non mi ricordo se i file che genero sono signavio o camunda style. La cosa migliore sarebbe fare in modo che lo stile cambi a seconda del file di input o che sia modificabile dall'utente.
+
+RISPOSTA: lo style rimane lo stesso, non cambia. Se apro un modello signavio genero un modello signavio, se apro un modello camunda genero un modello camunda
+
+
+E inoltre sarebbe meglio mettere il metodo stye all'interno del metodo chiamato, e non del metodo chiamante.

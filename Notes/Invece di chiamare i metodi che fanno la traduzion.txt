@@ -1,0 +1,1 @@
+Invece di chiamare i metodi che fanno la traduzione da signavio a camunda dentro le regole, sarebbe meglio usare la traduzione come prima riga nei metodi di Model.java

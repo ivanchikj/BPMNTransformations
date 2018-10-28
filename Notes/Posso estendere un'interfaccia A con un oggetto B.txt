@@ -1,0 +1,18 @@
+Posso estendere un'interfaccia A con un oggetto B e poi istanziare questo oggetto B.
+
+
+public interface A
+{
+}
+public class B implements A
+{
+}
+
+public static void main(String[] args)
+{
+    A test = new B();
+    //A test = new A(); // wont compile
+}
+
+
+

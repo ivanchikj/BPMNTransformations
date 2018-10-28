@@ -8,7 +8,8 @@ class Transformation {
     Model resultingModel;
     Parameter parameter;
     String outcome; //can be "successful" or "unsuccessful" or the appropriate exception.
-    //NOTE it's used only in the report. Usually we use the boolean 'successful' to check if a transf was successfull:
+    //NOTE: it's used only in the report. Usually we use the boolean
+    // 'successful' to check if a transformation was successful:
     boolean successful; //if the resulting models are different, it's a success, otherwise it's a failure.
     Exception exception;
 

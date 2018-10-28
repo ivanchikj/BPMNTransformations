@@ -1,0 +1,12 @@
+
+
+mano a mano fai compare con modello immediatamente precedente,
+poi alla fine fai di nuovo compare tra tutti i modelli prima di salvarli per vedere se sono diversi
+usa i tipi invece degli ID
+
+
+Scrivi le assumption ad esempio che quando fai compare non "vedi" i flow
+ma dovrebbe andare bene lo stesso perché ogni volta che tocco i flow cambio anche
+i nodi quindi è impossibile che cambio un flow e non me ne accorgo usando compare()
+
+

@@ -1,0 +1,41 @@
+I propose the following:
+
+
+I create my own methods to delete and to create elements.
+
+I need to create:
+
+	create a method that takes a BPMNModelElement as source
+	and then goes to the parent element and then deletes it from there. It works because I always have a parent element. Then it adds the ID to my list.
+
+	A method that creates the bpmndi of an element based on the positioning of its predecessors and successors. *
+
+	A method that creates the edges of a method dependin on the positioning (and the type) of its target and its source.
+
+I need to test:
+
+	The method to delete all of my ids from the bpmndi.
+
+* To do those things:
+
+	I cannot create a single object that contains both the BpmnModelInstance form and the XML form because they would become very different after the first few operations. I cannot have them open in both ways simultaneously.
+
+	I need to sometimes have my model in BpmnModelInstace form and in XML form some other times. In some cases I can simply create a variable that rembers all of the changes that I want to do to my XML and actually do them only later.
+
+	If I want to delete them I only need to remember the IDs, but if I want to create nodes or sequenceflows I want to remember the "previous" and the "following node". To remember this, I could create a somewhat complex data structure that "remembers" everything it needs to create new flows / gateways / etc in the BPMDI and only creates them at the end.
+
+	for example istead of having just 
+	 	bpmndiItemsToDelete<IDs>
+
+	i can also have
+
+	 	Nodes to create <ID, Type, ID of predecessor, ID of successor>
+	 	Edges to create <ID, Target, Source>
+
+
+	A third option is to have in every method that needs to see the model in XML form, I can save the ModelInstance, open the file in XML, save it again, and later reopen it as a BpmnModelInstance and return it as such.
+	Then, in the "main" method I can rewrite BpmnModelInstance everytime.
+
+	This is less elegant in the sense that I save and open and close the same model everytime I do a change to it, but it's more elegant in the sense that it's a more general solution to all my problems. And I think it would also be easier to switch from this system to a new one in the future.
+
+	The problem is that if I have a gateway as a variable already opened inside a method, and then I reopen the inputModel separately, I cannot use that variable to make modifications. But I can find them easily again if I use the IDs. I could also use only Strings IDs everytime instead of Nodes etc

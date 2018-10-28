@@ -1,0 +1,23 @@
+PERMETTERE ALL UTENTE DI SCEGLIERE LA RULEPOOL
+
+Non per forza usare le 4 regole, ma permettere all'utente di scegliere quali regole usare nella rulepool.
+
+Se non specificano niente, allora usare le quattro regole con permutations e con recursion
+
+	
+
+
+
+	Ma come scegliere l'input?
+
+	Per trovare parole chiave nell'input, fare un metodo che cerca parole come quello che cerca il filepath. Dopo che ho rimosso il filepath, cercare la configurazione.
+
+	l'utente ha tre opzioni:
+
+	YPYR || YRYP (Yes Perm Yes Rec)
+	NPNR || NRNP (No Perm No Rec)
+	YPNR || NRYP (Yes Perm No Rec)
+	NPYR || YRNP (No Perm Yes Rec) //USELESS. Create a message that tells the user that this is useless, and then proceed lice in NPNR
+
+
+	Posso creare anche delle versioni allungate delle keyword, sullo stile YesPermNoRec ad esempio.

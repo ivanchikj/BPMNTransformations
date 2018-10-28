@@ -1,0 +1,5 @@
+Final presentation:
+
+Spiegare BPMN perché quelli del committee non lo conosceranno.
+
+Here I would concentrate more on the way BPMN works rather than on it's purpose. I would briefly explain what the various symbols mean and then show the 4 rules. To keep the presentation short, I would skip those symbols that are not involved in the rules (events, messages…)

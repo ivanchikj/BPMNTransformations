@@ -19,7 +19,8 @@ public class Main {
     public static void main (String[] args) throws Exception {
 
         String input = "";
-        // input = "testing"; //UNLOCKTHIS used only to go in the manual testing method
+        // input = "testing"; //UNLOCKTHIS used only to go in the manual
+        // testing method
         readInput(input);
     }
 
@@ -41,25 +42,30 @@ public class Main {
      */
     private static String askForInput () {
 
-        System.out.println("Please enter the path of the file(s) you want to transform.");
-        System.out.println("Type 'help' to display the list of parameters or if this is your first time using the program.");
+        System.out.println("Please enter the path of the file(s) you want to " +
+         "transform.");
+        System.out.println("Type 'help' to display the list of parameters or " +
+         "if this is your first time using the program.");
         return reader.nextLine();
     }
 
 
     /**
      * Analyze input and decide
-     * If we want to ask the user or not (maybe we are testing an hardcoded input)
+     * If we want to ask the user or not (maybe we are testing an hardcoded
+     * input)
      * If we want to print the user guide or not
      * Try to create an execution based on the provided input
      *
-     * @param input user-provided String containing the path of the input model(s) and facultative parameters
+     * @param input user-provided String containing the path of the input
+     * model(s) and facultative parameters
      */
     private static void readInput (String input) throws Exception {
 
         System.out.println("Analizyng user input: " + input);
 
-        if (input.equals("")) { //This is always expected to be true except when testing something.
+        if (input.equals("")) { //This is always expected to be true except
+        // when testing something.
             input = askForInput();
             readInput(input);
         } else if (input.equals("testing")) {
@@ -72,10 +78,11 @@ public class Main {
             readInput(input);
         } else {
             try {
-                analyzeinput(input);
+                analyzeInput(input);
                 //Execution execution = new Execution(input);
             } catch (Exception e) {
-                System.out.println("There was a problem reading the provided input.");
+                System.out.println("There was a problem reading the provided " +
+                 "input.");
                 e.printStackTrace();
             }
         }
@@ -83,7 +90,8 @@ public class Main {
     }
 
 
-    private static void analyzeinput (String input) throws IOException, SAXException, ParserConfigurationException {
+    private static void analyzeInput (String input) throws IOException,
+     SAXException, ParserConfigurationException {
 
         boolean isAFolder;
         String singleFilepath;
@@ -96,7 +104,8 @@ public class Main {
         //searchForPermutations();
 
         Document doc = tryToOpenAFile(input);
-        if (doc == null) { //Could not find a file to be opened in the input string
+        if (doc == null) { //Could not find a file to be opened in the input
+        // string
             isAFolder = true; // ^ this means it must be a folder.
             startingModels = initializeModels(folderPath);
         } else {
@@ -113,7 +122,8 @@ public class Main {
         recursive = executionType[1];
 
 //        private String removePathFromInput() {
-//            //I'm removing the path from the input, to have just the string with the parameters.a
+//            //I'm removing the path from the input, to have just the string
+// with the parameters.a
 //            String params;
 //
 //            if (isAFolder) {
@@ -129,9 +139,11 @@ public class Main {
         //initializeParams(paramString);
 
         try {
-            new Execution(input, isAFolder, startingModels, folderPath, permutations, recursive, parameters);
+            new Execution(input, isAFolder, startingModels, folderPath,
+             permutations, recursive, parameters);
         } catch (Exception e) {
-            System.err.println("Was not able to create an execution with the input provided");
+            System.err.println("Was not able to create an execution with the " +
+             "input provided");
             e.printStackTrace();
         }
     }
@@ -163,22 +175,28 @@ public class Main {
             //System.out.println("       " + str);
         }
 
-        if (str.contains("-") && str.indexOf("-") == str.indexOf("-")) { //let's add the last one:
+        if (str.contains("-") && str.indexOf("-") == str.indexOf("-")) {
+        //let's add the last one:
             String lastParam = str.substring(str.indexOf("-") + 1);
             paramStrings.add(lastParam);
         }
 
-        System.out.println("I've finished separating the parameters in different strings");
+        System.out.println("I've finished separating the parameters in " +
+         "different strings");
 
         for (String param : paramStrings) {
-            if (param.contains("*")) { // it means we have to use a different constructor because we have an aggregateBy param
-                int aggregateBy = Integer.parseInt(param.substring(param.indexOf("*") + 1));
+            if (param.contains("*")) { // it means we have to use a different
+            // constructor because we have an aggregateBy param
+                int aggregateBy =
+                 Integer.parseInt(param.substring(param.indexOf("*") + 1));
                 System.out.println("AggregateBY " + aggregateBy);
                 param = param.substring(0, param.indexOf("*"));
-                Parameter parameter = new Parameter(param, aggregateBy); //Finally transforming our string into a Parameter
+                Parameter parameter = new Parameter(param, aggregateBy);
+                //Finally transforming our string into a Parameter
                 parameters.add(parameter); //Adding it to the list of parameters
             } else {
-                Parameter parameter = new Parameter(param); //Finally transforming our string into a Parameter
+                Parameter parameter = new Parameter(param); //Finally
+                // transforming our string into a Parameter
                 parameters.add(parameter); //Adding it to the list of parameters
             }
         }
@@ -187,7 +205,9 @@ public class Main {
 
 
     /**
-     * This method just find the parameters part of the input string. The parameter part starts after the first round bracket and ends before the first one.
+     * This method just find the parameters part of the input string. The
+     * parameter part starts after the first round bracket and ends before
+     * the first one.
      *
      * @param input the input provided by the user
      * @return the part of the input that contains only the parameters
@@ -212,10 +232,12 @@ public class Main {
 
     /**
      * TODO test this
-     * TODO if this works delete "searchFormPermutations()" and "searchForRecursive()"
+     * TODO if this works delete "searchFormPermutations()" and
+     * "searchForRecursive()"
      * <p>
      * <p>
-     * This method tries to find which execution type it has to do among these possibilities:
+     * This method tries to find which execution type it has to do among
+     * these possibilities:
      * YPYR || YRYP (Yes Perm Yes Rec)
      * NPNR || NRNP (No Perm No Rec)
      * YPNR || NRYP (Yes Perm No Rec)
@@ -224,7 +246,8 @@ public class Main {
      * In practice, I'm trying to find one among those 4 string types.
      *
      * @param input the input provided by the user
-     * @return a boolean[] where position 0 refers to permutations and position 1 refers to recursivity
+     * @return a boolean[] where position 0 refers to permutations and
+     * position 1 refers to recursivity
      */
     private static boolean[] findExecutionType (String input) {
 
@@ -254,7 +277,8 @@ public class Main {
             recursive = true;
 //            System.out.println("HEY RECURSIVE TRUE");
         } else {
-            System.out.println("Your input line is missing the part that defines the execution type.");
+            System.out.println("Your input line is missing the part that " +
+             "defines the execution type.");
             System.out.println("Type 'help' to learn how to compose an input");
             askForInput();
         }
@@ -268,7 +292,8 @@ public class Main {
 //    private static ArrayList<Parameter> rulePool(String input) {
 //        ArrayList<Parameter> rulePool = new ArrayList<>();
 //        if (input.toLowerCase().indexOf('(') == -1) {
-//            System.out.println("The input provided doesn't comply with the instructions, type 'help' to see the instructions");
+//            System.out.println("The input provided doesn't comply with the
+// instructions, type 'help' to see the instructions");
 //            askForInput();
 //            return null;
 //        }
@@ -301,7 +326,7 @@ public class Main {
         System.out.println("Opening a file at: " + filepath);
         File file = new File(filepath);
 
-        if (file.getName().endsWith((".bpmn.xml")) || file.getName().endsWith((".bpmn"))) { //TODO decidi con Ana se questo è il modo giusto di trovare i file
+        if (file.getName().endsWith((".bpmn.xml")) || file.getName().endsWith((".bpmn"))) { //TODO decidi se questo è il modo giusto di trovare i file
             return new Model(file.getPath());
         }
         return null;
@@ -310,32 +335,42 @@ public class Main {
 
     /**
      * This method tries to find a file inside the user provided input string.
-     * To better distinguish between the path and the parameters it tries to open the first letter of the string.
-     * After it fails, it tries to read the first two letters and so on until it finds a path and successfully opens
+     * To better distinguish between the path and the parameters it tries to
+     * open the first letter of the string.
+     * After it fails, it tries to read the first two letters and so on until
+     *  it finds a path and successfully opens
      * a file. If it cannot open a file, it returns null;
-     * Thi is also useful because it can open both files with a bpmn.xml extension or just .xml extension or any extension.
+     * Thi is also useful because it can open both files with a bpmn.xml
+     * extension or just .xml extension or any extension.
      */
     private static Document tryToOpenAFile (String input) throws ParserConfigurationException {
 
         StringBuilder str = new StringBuilder();
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory docFactory =
+         DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc;
         for (int i = 0 ; i < input.length() ; i++) {
             str.append(input.charAt(i));
             try {
 
-                // System.out.println("Trying to open file at position: " + str);
+                // System.out.println("Trying to open file at position: " +
+                // str);
 
                 doc = docBuilder.parse(str.toString());
-                //System.out.println("I've found a single file: " + doc.getElementsByTagName("startEvent").item(0).getTextContent());
+                //System.out.println("I've found a single file: " + doc
+                // .getElementsByTagName("startEvent").item(0).getTextContent
+                // ());
                 //this.isAFolder = false;
                 //this.singleFilepath = str;
                 return doc; // it returns something successfully
-            } catch (Exception e) { //I expect a bunch FileNotFoundExceptions until I can open one.
+            } catch (Exception e) { //I expect a bunch FileNotFoundExceptions
+            // until I can open one.
                 // System.out.println("Failed to open file at position " + str);
-                if (str.length() == input.length()) { //this means I got to the end and I haven''
-                    System.out.println("I've reached the end of the string without finding a single file.");
+                if (str.length() == input.length()) { //this means I got to
+                // the end and I haven''
+                    System.out.println("I've reached the end of the string " +
+                     "without finding a single file.");
                     //this.isAFolder = true;
                     return null; //will be null
                 }
@@ -348,13 +383,17 @@ public class Main {
 
     /**
      * TODO this works but has false positives.
-     * This method wants to avoid having infinite loops of trying to apply a rule and
+     * This method wants to avoid having infinite loops of trying to apply a
+     * rule and
      * then immediately afterwards its opposite etc.
-     * TODO this check is only applied when recursive behavior is on. Otherwise it's not needed because infinite
+     * TODO this check is only applied when recursive behavior is on.
+     * Otherwise it's not needed because infinite
      * loops can only happen when recursive behavior is on.
-     * Moreover, it doesn't stop the program. It merely asks the user if he/she wishes to continue.
+     * Moreover, it doesn't stop the program. It merely asks the user if
+     * he/she wishes to continue.
      */
-    private boolean areRulesOpposite (Parameter parameter1, Parameter parameter2) {
+    private boolean areRulesOpposite (Parameter parameter1,
+     Parameter parameter2) {
 
         String p1 = parameter1.rule;
         String p2 = parameter2.rule;
@@ -363,7 +402,7 @@ public class Main {
     }
 
 
-    //
+    //@formatter:off
     private static void printHelp () {
 
         System.out.println("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
@@ -451,10 +490,14 @@ public class Main {
         System.out.println();
         System.out.println();
         System.out.println();
-
-        //TODO add more details on the behavior of the program, like in the slides. (EG mention recursivity, the behavior when having no parameters etc)
-        //TODO insert an URL with a detailed guide (could be the readme on github)
-        //In that guide the transformations done by the rules (with Ana's images) should be displayed
+//@formatter:on
+        //TODO add more details on the behavior of the program, like in the
+        // slides. (EG mention recursivity, the behavior when having no
+        // parameters etc)
+        //TODO insert an URL with a detailed guide (could be the readme on
+        // github)
+        //In that guide the transformations done by the rules (with Ana's
+        // images) should be displayed
     }
 
 

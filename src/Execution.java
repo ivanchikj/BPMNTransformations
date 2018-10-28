@@ -20,7 +20,7 @@ public class Execution {
     boolean recursive;
     boolean permutations;
     //public ArrayList<Transformation> activities;
-    private ArrayList<Model> resultingModels;
+    ArrayList<Model> resultingModels;
 
     //    private ArrayList<Combo> oldCombos; //This remembers the
     // combinations of rules that have already been tried.
@@ -38,7 +38,7 @@ public class Execution {
      * @param permutations   true when permutations are active
      * @param recursive      true when recursive behavior is active
      * @param parameters     the list of rules that can be applied. If
-     *                       permutatins are turned on, the order doesn't
+     *                       permutations are turned on, the order doesn't
      *                       matter.
      */
     public Execution (String originalInput, boolean isAFolder,
@@ -353,7 +353,7 @@ public class Execution {
 
 
     /**
-     * //            No recursion:
+     * //            Permutations but no recursion:
      * //
      * //            Per ogni modello del mio pool (input: Model, rulePool):
      * //
@@ -385,36 +385,6 @@ public class Execution {
             report.addOutcome(m.name, end.name, ruleString, t.successful);
         }
     }
-
-//    /**
-//     * This method creates a combination of rules to be applied and returns
-// it as a combo.
-//     * The class variable oldCombos remembers the combinations that have
-// already been tried.
-//     * TODO RICORDARSI E DECIDERE CHE DA QUALCHE PARTE BISOGNA AGGIUNGERE
-// LE COMBO USATE AD OLDCOMBO
-//     * @param availableRules
-//     * @return
-//     */
-//    public Combo newCombo (ArrayList < Parameter > availableRules,int len,
-// Model model) throws Exception {
-//
-//        Collections.shuffle(availableRules);
-//        Combo newCombo = new Combo(model, availableRules, this);
-//        while (haveTried(newCombo)) {
-//            Collections.shuffle(newCombo.sequenceOfRules);
-//        }
-//        return newCombo;
-//    }
-//
-//    private boolean haveTried(Combo combo) {
-//        for (Combo old : oldCombos) {
-//            if (old.isSameCombo(combo)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 //    private boolean continueAfterWarning(String warning) {
 //        System.out.println();

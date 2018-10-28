@@ -1,0 +1,10 @@
+Nel report, aggiungere un medoto "add transformation" che può inserire trasformazione per trasformazione.
+
+Così nel report avrò la sezione iniziale con i parametri dell execution,
+
+i modelli finali
+
+e le varie trasformazioni con i loro outcome e quale regola ho provato ad aggiungere a quale file.
+
+Dovrei riuscire facilmente a cambiare l'ordine con il quale vengono presentate queste informazioni
+

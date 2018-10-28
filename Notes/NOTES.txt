@@ -1,0 +1,175 @@
+
+Ho letto che è meglio avere tutti gli attributi private e usare dei metodi getters e setters.
+	una volta che hai i metodi setters, li puoi anche usare all'interno del costruttore
+
+
+ASKANA per quanto riguarda il report, invece di fare come facevo all'inizio,
+	 	ovvero per ogni regola inserire dei momenti in cui a seconda di quello che succedeva scrivevo qualcosa nel report oppure no
+	fare qualcosa così:
+		provare ad applicare ogni regola, poi comparare il modello com'era prima della regola e com'era dopo usando il mio metodo per comparare i grafici. Se sono diversi allora scrivere nel report che sei riuscito ad applicarla, altrimenti no.
+
+
+Ho guardato un po'gli algo DFS, ma il mio 'problema' è che non voglio semplicemente visitare tutti i nodi e basta, ma voglio anche salvare i possibili path in un array. Magari spiegare questa differenza nella tesi.
+
+
+
+IDEA: fare un "candidate system" dove per ogni regola hai un array di tutti i candidati e poi rimuovi quelli che non si applicano di volta in volta finché non rimani solo con gli array che ti servono, forse è un po'pi1u pulito come sistema? E poi si può riprendere di regola in regola
+
+IDEA:
+At this point I dont think it matters, but I could create a method
+that automatically removes empty nodes from the nodes list that I usually have to dea with
+https://stackoverflow.com/questions/20259742/why-am-i-getting-extra-text-nodes-as-child-nodes-of-root-node
+
+
+TODO: in rule1 and rule2 methods isApplicable, the condition that all successors/predecessors have to be of the same type is useless. 
+
+TODO: in rule1 and rule2, make it so that if a gat has 1 incoming and 1 outgoin, then it's boh a merge and a split. Explain in the thesis that this is illegal in BPMN but it should work regardless
+
+
+IDEA: fare in modo che se qualcosa fallisce in un modello, non interrompe gli altri ma vengono eseguiti correttamente. Sia che c'è un errore nel modello di input, che nell'esecuzione del programma, che del programma di output. Ma questi errori devono essere scritti nel report.
+
+NOTE:
+	explain in the thesis the difference between :
+ 		<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language=""></bpmn:conditionExpression>
+		<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">1==1</bpmn:conditionExpression>
+	Also explain that the direction of the arrows in the BPMNDI is depended on the order of the waypoint.
+	Do a graphical example for that one
+
+
+
+Ricordati di pensare bene a quali metodi devono essere pubblici (interfaccia) e quali privati all'interno di Model.java Quelli interfaccia devono essere più descrittivi
+
+
+
+NOTE:
+
+Idee per capitoli della tesi:
+ 		Inserire Xpath
+ 		Spiegare BPMN
+ 		Spiegare XML di un file BPMN
+
+
+
+
+
+
+NOTE:
+	Ogni metodo XPATH diventa un metodo a parte.
+	Il codice diventa più facile da leggere, e poi
+	più verboso. E forse anche più facile da testare.
+
+	Aggiungi qualche elemento di defensive programming. Ad esempio io in setsource posso anche avere come input lo string
+	di un elemento invece che di un seqFlow, e ovviamente non funzionerebbe. Abbi quindi dei check.
+	L'ideale, nel lungo periodo, sarebbe di avere classi diverse con metodi diversi e fare quindi un refactoring.
+
+
+
+NOTE: nella tesi potresti parlare di JOOX (https://github.com/jOOQ/jOOX) anche se non l'hai usato.
+
+NOTE: ricordati di scrivere nella tesi che hai usato i colori nella tesi per distinguere in cyano le cose che sono metodi XML semplici
+E in verde le cose che riguardano le regole. Magari usa anche le tab in modo diverso, ovvero scala di quattro spazi tutti i metodi XML semplici.
+
+TODO: ricordati di inserire un for loop per file che contengono più processi, se è possibile che vengano dati, e in quel caso il report deve trattare i diversi processi come se fossero file diversi.
+Capire anche come funzionano i diversi plane, quello forse sarà più complicato.
+
+TODO: fare test per  ogni regola
+		Poi mettere i path in un array e così puoi avere tutti i test i un posto solo ed eseguirli tutti.
+
+NOTE: I will use XPath after redaing about it multiple times on stackOverflow, this should simplify mi interactions with XML files allowing me also to have a simpler "program structure" (with XPath I can search into a whole document for a certain ID, without previouslt specifiying wich tag I use, this means that I also dont'need to )
+
+
+TODO: try to use this to validate models  https://github.com/camunda-consulting/code/tree/master/snippets/bpmn-validation 
+
+TODO: Vedere in che modo la regola 3 dev'essere modificata per adeguarsi a diversi grafici, guardando i paper che mi ha dato oggi ana (7 marzo)
+
+IDEA: usare metodi visti a SoftQuality per rappresentare algoritmo di ogni regola. Questa è roba che posso mettere nella tesi. Quale metodo però? È utile già farlo ora altrimenti mi perdo.
+
+IDEA: provare a scrivere qualche test per il programma
+
+TODO: Voglio fare in modo di aggiungere le regole che sono state applicate ai file di output nell'ordine in cui sono state applicate (ad esempio creando un file output_R3_R4.bpmn.xml).
+Però non basta aver chiamato un metodo per decidere di aggiungere la regola al nome del file, devo anche assicurarmi che quel metodo abbia effettivamente fatto qualcosa.
+
+TODO: Guardare le R3 e R4 dal paper di Ana
+Vedi che la R3 tu hai fatto solo le prime due. Fai la terza.
+
+TODO: Fai la rule 4, dovrebbe essere abbastanza facile fare tutte e tre le parti, forse però conviene dividerle in 3 parti diverse. L'ordine in cui vengono applicate non dovrebbe contare perché sono tutte indipendenti, ma chiedi ad Ana per sicurezza. Ricordati di scrivere nel paper se l'ordine è importante e di spiegare che le hai divise per semplicità.
+
+IDEA: fai anche un sommario per il report
+
+IDEA: molte volte nei miei algoritmi do per scontato che i bpmn in input siano 'corretti'. Se non è così, alcune assumption che faccio potrebbero non essere vere e i miei metodi avere dei problemi.
+Quindi potrei mettere un check anche al momento dell'importazione che dice all'utente che il suo bpmn non è valido e quindi il programma viene terminato (oppure che il programma viene eseguito ugualmente ma che i risultati potrebbero non essere validi, questo andrà scritto anche nel report)
+
+
+TODO: find a way to open all files in a folder. The program should automatically notice when the path do a folder is provided instead of a single file.
+
+//TODO do a folder with all of the TestGraphs
+
+TODO having a way to use all of the bpmn files that are found inside a single
+folder.
+
+TODO have a way to let the user provide some parameters when launching the
+program, for example choosing which rules to apply, in which order, where to
+output the files, if we want to have a single file as input or a whole
+folder... etc...
+
+
+IDEA: create a BPMNModel object, with all the informations: the inputModel, the XML, the PAth...
+
+
+// TODO in all those method where i use the path,
+    // it would be wiser not to work directly on my XML file,
+    // but to clone it at the launch of the program so as not to mess up the
+    // original file.
+
+
+
+
+
+
+------------------------ Cose da ricordare --------------
+
+La regola 3 andrebbe applicata prima della regola 4? Altrimenti come faccio a trovare i parallel se li ho tolti?
+
+
+TODO ricordarsi di scrivere nella tesi che cos'è il BPMNDI e anche che hai dovuto editarlo tu.
+
+Se usi Xpath, fai un capitoletto dove spieghi come funziona
+https://it.wikipedia.org/wiki/XPath
+
+Ricordati che 
+		the methods
+			get property
+			set property
+				are useless because they are already implemented in JAVA
+
+------------------------ Domande ------------------------
+
+When I use methods to write to file, Eclipse suggests me to write "throws IO exceptions" which it does automatically, but what does that means? Can you suggest a good tutorial on (common) exceptions?
+
+-
+
+I've seen in one of the (few) examples on camunda's website, that they use iterators instead of FOR
+
+-
+
+My current "solution" to the problem of recognizing the structures where the "third part" of rule 3 is applicable is:
+	"Search for all the instances where an exclusive gateway is followed by a single parallel gateway.
+	Then compare all of those isntances and find out wheter the parallel gateway is always the same for all those instances. If it is, then I can apply rule 3."
+
+
+- 
+
+ 	// ASKANA how to avoid having multiples exception after the method? Should I use
+	// more "try/ catch" instead?
+	// Then it's the code that gets uglier.
+
+-
+
+// TODO catch exception and allow the user to save the xml anyway? As it is
+	// right now, the program stops when a model fails verification.
+	// But if I'm working with multiple files, i want the rest of them to be saved
+	// anyway. So probably I should allow the user to run the program with a setting
+	// that allows the program to save the files without verification, but when this
+	// happens I should notify the user and write it in the report.
+	// ideally, it would be impossible for a bpmn generated by this program to fail
+	// verification (at least from a DOM point of view).

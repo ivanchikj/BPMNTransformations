@@ -1,0 +1,3 @@
+add a check at the very beginning of the program that if the temp folder doesn't exist it has to create it
+
+//and maybe an instruction to delete it at the end of the execution? But it might be interesting to see temporary files.
