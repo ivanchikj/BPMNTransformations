@@ -6,11 +6,15 @@ public class Report {
 
 
     public String time;
-    private String text;
+    private final String text;
     private String header;
     private String resultingModels;
     private String failedTransformations;
+    private String allTransformations;
     //TODO fai in modo che il report venga tutto ricomposto alla fine.
+
+
+
 
 
     Report (Execution execution) {
