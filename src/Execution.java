@@ -48,6 +48,7 @@ public class Execution {
         this.input = originalInput;
         this.isAFolder = isAFolder;
         this.parameters = parameters;
+        checkThatParamIsNotEmpty();
         this.startingModels = startingModels;
         this.resultingModels = new ArrayList<>();
         //this.singleFilepath
@@ -56,6 +57,12 @@ public class Execution {
         this.outputPath = folderPath + "output " + executionMoment + "/";
         //noinspection ResultOfMethodCallIgnored
         new File(this.outputPath).mkdirs();
+        //TODO:
+//        Quando fai due esecuzioni nello stesso minuto,  i file della seconda esecuzione vengono aggiunti nella cartella della prima.
+//
+//        Non voglio aggiungere i secondi al nome della cartella perché diventa brutto,
+//
+//> Aggiungere un controllo, se la cartella esiste già crearne una con (1) tra parentesi nel nome. Fare in modo che automaticamente se esiste già la cartella 1 viene creata la due e così via.
         this.recursive = recursive;
         this.permutations = permutations;
 
@@ -69,6 +76,21 @@ public class Execution {
 
         System.out.println("I've created " + resultingModels.size() + " new " + "Models and saved them in " + outputPath);
         System.exit(0); //the program is terminated
+    }
+
+
+    /**
+     * This method checks that the user selected at least one param, and if
+     * not then it uses the standard set {1, 2, 3, 4}
+     */
+    private void checkThatParamIsNotEmpty () {
+
+        if (this.parameters.isEmpty()) {
+            this.parameters.add(new Parameter("1"));
+            this.parameters.add(new Parameter("2"));
+            this.parameters.add(new Parameter("3"));
+            this.parameters.add(new Parameter("4"));
+        }
     }
 
 
@@ -155,7 +177,7 @@ public class Execution {
      * What will be done depends on the type of execution
      * (recursive or not, permutations or not).
      */
-    private void decideWhatToDo (){
+    private void decideWhatToDo () {
 
         if (! permutations && ! recursive) {
             //we have a simple order of rules to be applied to the various
@@ -366,7 +388,7 @@ public class Execution {
      * DAL POOL CHE DARÒ COME INPUT e così via.
      * //            se è uguale, lo salvo nel report e poi non faccio nulla.
      */
-    private void applyPermNoRec (Model m, ArrayList<Parameter> parameters)  {
+    private void applyPermNoRec (Model m, ArrayList<Parameter> parameters) {
 
         String ruleString = "";
         for (Parameter p : parameters) {

@@ -1,3 +1,4 @@
+import com.sun.xml.internal.rngom.ast.builder.Include;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+
 public class Main {
 
 
@@ -18,6 +20,7 @@ public class Main {
 
     public static void main (String[] args) throws Exception {
 
+        new File("temp").mkdirs();
         String input = "";
         // input = "testing"; //UNLOCKTHIS used only to go in the manual
         // testing method
@@ -42,10 +45,10 @@ public class Main {
      */
     private static String askForInput () {
 
-        System.out.println("Please enter the path of the file(s) you want to " +
-         "transform.");
-        System.out.println("Type 'help' to display the list of parameters or " +
-         "if this is your first time using the program.");
+        System.out.println("Please enter the path of the file(s) you want to "
+         + "transform.");
+        System.out.println("Type 'help' to display the list of parameters or "
+         + "if this is your first time using the program.");
         return reader.nextLine();
     }
 
@@ -58,14 +61,14 @@ public class Main {
      * Try to create an execution based on the provided input
      *
      * @param input user-provided String containing the path of the input
-     * model(s) and facultative parameters
+     *              model(s) and optional parameters
      */
     private static void readInput (String input) throws Exception {
 
         System.out.println("Analizyng user input: " + input);
 
         if (input.equals("")) { //This is always expected to be true except
-        // when testing something.
+            // when testing something.
             input = askForInput();
             readInput(input);
         } else if (input.equals("testing")) {
@@ -76,17 +79,24 @@ public class Main {
             printHelp();
             input = askForInput();
             readInput(input);
+        } else if (input.equalsIgnoreCase("clear")) {
+            deleteTemp();
         } else {
             try {
                 analyzeInput(input);
                 //Execution execution = new Execution(input);
             } catch (Exception e) {
-                System.out.println("There was a problem reading the provided " +
-                 "input.");
+                System.out.println("There was a problem reading the provided "
+                 + "input.");
                 e.printStackTrace();
             }
         }
         reader.close();
+    }
+
+
+    private static void deleteTemp () {
+        //TODO
     }
 
 
@@ -105,7 +115,7 @@ public class Main {
 
         Document doc = tryToOpenAFile(input);
         if (doc == null) { //Could not find a file to be opened in the input
-        // string
+            // string
             isAFolder = true; // ^ this means it must be a folder.
             startingModels = initializeModels(folderPath);
         } else {
@@ -139,11 +149,14 @@ public class Main {
         //initializeParams(paramString);
 
         try {
+        //TODO qui controlla che le regole non siano opposte:
+        //areRulesOpposite()
+        //Scrivi un syserr e poi lascia all'utente la possibilità di continuare.
             new Execution(input, isAFolder, startingModels, folderPath,
              permutations, recursive, parameters);
         } catch (Exception e) {
-            System.err.println("Was not able to create an execution with the " +
-             "input provided");
+            System.err.println("Was not able to create an execution with the "
+             + "input provided");
             e.printStackTrace();
         }
     }
@@ -176,17 +189,17 @@ public class Main {
         }
 
         if (str.contains("-") && str.indexOf("-") == str.indexOf("-")) {
-        //let's add the last one:
+            //let's add the last one:
             String lastParam = str.substring(str.indexOf("-") + 1);
             paramStrings.add(lastParam);
         }
 
         System.out.println("I've finished separating the parameters in " +
-         "different strings");
+        "different strings");
 
         for (String param : paramStrings) {
             if (param.contains("*")) { // it means we have to use a different
-            // constructor because we have an aggregateBy param
+                // constructor because we have an aggregateBy param
                 int aggregateBy =
                  Integer.parseInt(param.substring(param.indexOf("*") + 1));
                 System.out.println("AggregateBY " + aggregateBy);
@@ -278,7 +291,7 @@ public class Main {
 //            System.out.println("HEY RECURSIVE TRUE");
         } else {
             System.out.println("Your input line is missing the part that " +
-             "defines the execution type.");
+            "defines the execution type.");
             System.out.println("Type 'help' to learn how to compose an input");
             askForInput();
         }
@@ -338,7 +351,7 @@ public class Main {
      * To better distinguish between the path and the parameters it tries to
      * open the first letter of the string.
      * After it fails, it tries to read the first two letters and so on until
-     *  it finds a path and successfully opens
+     * it finds a path and successfully opens
      * a file. If it cannot open a file, it returns null;
      * Thi is also useful because it can open both files with a bpmn.xml
      * extension or just .xml extension or any extension.
@@ -365,12 +378,11 @@ public class Main {
                 //this.singleFilepath = str;
                 return doc; // it returns something successfully
             } catch (Exception e) { //I expect a bunch FileNotFoundExceptions
-            // until I can open one.
+                // until I can open one.
                 // System.out.println("Failed to open file at position " + str);
                 if (str.length() == input.length()) { //this means I got to
-                // the end and I haven''
-                    System.out.println("I've reached the end of the string " +
-                     "without finding a single file.");
+                    // the end and I haven''
+                    System.out.println("I've reached the end of the string " + "without finding a single file.");
                     //this.isAFolder = true;
                     return null; //will be null
                 }
@@ -401,6 +413,14 @@ public class Main {
         return p1.equals("r" + p2) || p2.equals("r" + p1);
     }
 
+    //TODO:
+//    Idea: since the help section is quite long, have a printhelp() method that just calls other methods.
+//
+//            this way you can allow the user to print just the parameter section, the example section, the behavior section etc...
+//
+//
+//    Include all instructions in the help section in the readme.
+
 
     //@formatter:off
     private static void printHelp () {
@@ -428,18 +448,19 @@ public class Main {
         System.out.println();
         System.out.println("SELECTING PERMUTATIONS/RECURSIVE BEHAVIOR: - - - - - - - - - - - -");
         System.out.println();
-        System.out.println("You have to chose wheter to apply ");
-        System.out.println("permutations of the choosen rules.");
+        System.out.println("You have to chose whether to apply ");
+        System.out.println("permutations of the chosen rules.");
         System.out.println("(i.e. apply those same rules in different orders and combinations)");
         System.out.println("or not.");
         System.out.println("You also have to decide whether to activate the recursive behavior or not.");
         System.out.println("(i.e. allow for one rule to be applied multiple times."); //TODO controllare che ci sia un check nel programma per impedire che una regola e il suo apposto siano nella pool.
         System.out.println("After the path of the file just add one of these 4 different options: ");
         System.out.println();
-        System.out.println("        'YPYR' or 'YRYP'   (Yes Perm. Yes Rec.)");
-        System.out.println("        'NPNR' or 'NRNP'   (No Perm. No Rec.");
-        System.out.println("        'YPNR' or 'NRYP'   (Yes Perm. No Rec.)");
-        System.out.println("        'NPYR' or 'YRNP'   (No Perm. Yes Rec.)");
+        System.out.println("        'YPYR' or 'YRYP'   (i.e. Yes Perm. Yes " +
+         "Rec.)");
+        System.out.println("        'NPNR' or 'NRNP'   (i.e. No Perm. No Rec.");
+        System.out.println("        'YPNR' or 'NRYP'   (i.e. Yes Perm. No Rec.)");
+        System.out.println("        'NPYR' or 'YRNP'   (i.e. No Perm. Yes Rec.)");
         System.out.println();
         System.out.println();
 //
@@ -474,6 +495,9 @@ public class Main {
         System.out.println("All parameters are to be preceded by a dash '-'");
         System.out.println("The parameters are to be placed inside a couple of curly braces and preceded by a dash, example: ");
         System.out.println("(-1 -r3*2)");
+        System.out.println("NOTE that if you leave the brackets empty the ");
+        System.out.println("default set of rules that will be applied is {1,2,3,4}");
+        System.out.println();
         System.out.println();
         System.out.println();
         System.out.println("- - - - - - - - - - - - - EXAMPLE INPUTS - - - - - - - - - - - - -");

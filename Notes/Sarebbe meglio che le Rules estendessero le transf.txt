@@ -1,1 +1,4 @@
 Sarebbe meglio che le Rules estendessero le transformation.
+
+Come attributo contengono il modello iniziale, il modello finale, sanno se sono successfull or not. In questo modo Rule contiene ad esempio successfull e modello iniziale e modello finale e il metodo getpath,
+mentre certe classi la estendono aggiungendo il parametro aggregateby, ad esempio, e i vari metodi. Ogni singola regola sarebbe una classe, 3a e 3c non sarebbero raggruppate.

@@ -18,6 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+
+//TODO:
+//Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
+// dentro le regole, sarebbe meglio usare la traduzione come prima riga nei
+// metodi di Model.java
 public class Model {
 
 

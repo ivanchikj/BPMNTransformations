@@ -9,12 +9,6 @@ ASKANA per quanto riguarda il report, invece di fare come facevo all'inizio,
 		provare ad applicare ogni regola, poi comparare il modello com'era prima della regola e com'era dopo usando il mio metodo per comparare i grafici. Se sono diversi allora scrivere nel report che sei riuscito ad applicarla, altrimenti no.
 
 
-Ho guardato un po'gli algo DFS, ma il mio 'problema' è che non voglio semplicemente visitare tutti i nodi e basta, ma voglio anche salvare i possibili path in un array. Magari spiegare questa differenza nella tesi.
-
-
-
-IDEA: fare un "candidate system" dove per ogni regola hai un array di tutti i candidati e poi rimuovi quelli che non si applicano di volta in volta finché non rimani solo con gli array che ti servono, forse è un po'pi1u pulito come sistema? E poi si può riprendere di regola in regola
-
 IDEA:
 At this point I dont think it matters, but I could create a method
 that automatically removes empty nodes from the nodes list that I usually have to dea with
