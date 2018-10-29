@@ -6,15 +6,12 @@ public class Report {
 
 
     public String time;
-    private final String text;
+    private String text;
     private String header;
     private String resultingModels;
     private String failedTransformations;
     private String allTransformations;
     //TODO fai in modo che il report venga tutto ricomposto alla fine.
-
-
-
 
 
     Report (Execution execution) {
@@ -94,9 +91,8 @@ public class Report {
             header += newline;
         } else {
             header += "the application of the rule " + ruleString + " on " +
-             "model " + startingModel + " was unsuccessful. The resulting " +
-              "model is " + "identical to the starting model and will not be " +
-               "saved";
+            "model " + startingModel + " was unsuccessful. The resulting " +
+            "model is " + "identical to the starting model and will not be " + "saved";
         }
 
         header += newline;
@@ -148,8 +144,8 @@ public class Report {
         // errori saranno gestiti lì dentro.
         String newline = System.getProperty("line.separator");
         header += newline;
-        header += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! " +
-         "! " + "! ! ! ! !";
+        header += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
+         + "! ! ! ! ! !";
         header += newline;
         header += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
         header += newline;
