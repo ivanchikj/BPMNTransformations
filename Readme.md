@@ -4,10 +4,10 @@ spiega come fare per creare una nuova regola. Non è complicato, si tratta di mo
 
 Per fare in modo che sia il più semplice possibile, scrivi bene la documentazione dei metodi in Model.
 -->
-![Usi](Images/logoUsi.png)(www.usi.ch)
+[![Usi](Images/logoUsi.png)](www.usi.ch)
 
 
-#Tool for semantics-preserving BPMN transformations
+# Tool for semantics-preserving BPMN transformations
 
 * This program will create semantically equivalent version of BPMN2.0 Models that are given as input
 * The user can select which rules to apply among 8 different semantically equivalent transformation
