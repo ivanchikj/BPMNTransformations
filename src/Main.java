@@ -1,4 +1,4 @@
-import com.sun.xml.internal.rngom.ast.builder.Include;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -53,6 +53,14 @@ public class Main {
     }
 
 
+    static void printInfo () {
+        String n = System.getProperty("line.separator");
+        String info = "";
+        
+        System.out.println(info);
+    }
+
+
     /**
      * Analyze input and decide
      * If we want to ask the user or not (maybe we are testing an hardcoded
@@ -81,6 +89,8 @@ public class Main {
             readInput(input);
         } else if (input.equalsIgnoreCase("clear")) {
             deleteTemp();
+        } else if (input.equalsIgnoreCase("usi")) {
+            printInfo();
         } else {
             try {
                 analyzeInput(input);
@@ -149,9 +159,10 @@ public class Main {
         //initializeParams(paramString);
 
         try {
-        //TODO qui controlla che le regole non siano opposte:
-        //areRulesOpposite()
-        //Scrivi un syserr e poi lascia all'utente la possibilità di continuare.
+            //TODO qui controlla che le regole non siano opposte:
+            //areRulesOpposite()
+            //Scrivi un syserr e poi lascia all'utente la possibilità di
+            // continuare.
             new Execution(input, isAFolder, startingModels, folderPath,
              permutations, recursive, parameters);
         } catch (Exception e) {
@@ -414,12 +425,17 @@ public class Main {
     }
 
     //TODO:
-//    Idea: since the help section is quite long, have a printhelp() method that just calls other methods.
+//    Idea: since the help section is quite long, have a printhelp() method
+// that just calls other methods.
 //
-//            this way you can allow the user to print just the parameter section, the example section, the behavior section etc...
+//            this way you can allow the user to print just the parameter
+// section, the example section, the behavior section etc...
 //
 //
 //    Include all instructions in the help section in the readme.
+
+    //TODO magari usare il metodo string e text separator per avere un codice
+    // più ordinato.
 
 
     //@formatter:off
