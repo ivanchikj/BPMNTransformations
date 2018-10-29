@@ -1,6 +1,0 @@
-Idea: since the help section is quite long, have a printhelp() method that just calls other methods.
-
-this way you can allow the user to print just the parameter section, the example section, the behavior section etc...
-
-
-Include all instructions in the help section in the readme.
