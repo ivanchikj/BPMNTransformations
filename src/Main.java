@@ -1,4 +1,3 @@
-import com.sun.xml.internal.bind.v2.TODO;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -20,6 +19,7 @@ public class Main {
 
     public static void main (String[] args) throws Exception {
 
+        //noinspection ResultOfMethodCallIgnored
         new File("temp").mkdirs();
         String input = "";
         // input = "testing"; //UNLOCKTHIS used only to go in the manual
@@ -53,10 +53,14 @@ public class Main {
     }
 
 
-    static void printInfo () {
+    private static void printInfo () {
+
         String n = System.getProperty("line.separator");
+        String mail = "realityhas@gmail.com";//TODO
+
         String info = "";
-        
+        info += n + "For questions and suggestions write to " + mail;
+
         System.out.println(info);
     }
 
@@ -73,7 +77,7 @@ public class Main {
      */
     private static void readInput (String input) throws Exception {
 
-        System.out.println("Analizyng user input: " + input);
+        System.out.println("Analyzing user input: " + input);
 
         if (input.equals("")) { //This is always expected to be true except
             // when testing something.
@@ -89,7 +93,7 @@ public class Main {
             readInput(input);
         } else if (input.equalsIgnoreCase("clear")) {
             deleteTemp();
-        } else if (input.equalsIgnoreCase("usi")) {
+        } else if (input.equalsIgnoreCase("info")) {
             printInfo();
         } else {
             try {
@@ -105,8 +109,22 @@ public class Main {
     }
 
 
+    /**
+     * This won't delete subfolders. This is the desired behavior however, as
+     * it should never happen that there is a subfolder in the folder temp,
+     * and if there is it means that the user put it there manually so we
+     * wouldn't want to delete it anyway.
+     */
     private static void deleteTemp () {
-        //TODO
+
+        File temp = new File("temp");
+        String[] entries = temp.list();
+        for (String s : entries) {
+            File currentFile = new File(temp.getPath(), s);
+            //noinspection ResultOfMethodCallIgnored
+            currentFile.delete();
+        }
+        System.out.println("The temp folder has been emptied.");
     }
 
 
@@ -425,7 +443,7 @@ public class Main {
     }
 
     //TODO:
-//    Idea: since the help section is quite long, have a printhelp() method
+//    Idea: since the help section is quite long, have a printHelp() method
 // that just calls other methods.
 //
 //            this way you can allow the user to print just the parameter
