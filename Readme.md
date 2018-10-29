@@ -1,9 +1,5 @@
 <!---I diagrammi su come funzionano YPNR NRNP eccetera, includili nel readme del programma.-->
-<!---
-spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.
-
-Per fare in modo che sia il più semplice possibile, scrivi bene la documentazione dei metodi in Model.
--->
+<!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
 [![Usi](Images/logoUsi.png)](https://www.usi.ch/)
 
 
@@ -16,7 +12,7 @@ Per fare in modo che sia il più semplice possibile, scrivi bene la documentazio
 ## Introduction
 
 This project was created in the scope of my master thesis at USI, in partial fullfillment of...
-Both the thesis and the project were supervised by 
+Both the thesis and the project were supervised by
 
 
 ## The thesis
@@ -38,7 +34,7 @@ TODO
 
 You can run them simply by :
 ```
-you can 
+you can
 ```
 
 ### Using the program
@@ -58,7 +54,11 @@ You can also write 'help' in the console to display a list of example inputs.
 <!---Includere immagini delle regole e brevi testi di accompagnamento-->
 
 
-## Built With Libraries: 
+## Extending the program
+<!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
+<!---includi un disegno dell'architettura.-->
+
+## Built With Libraries:
 
 * [Camunda](www.google.com) - The API that...
 * [Xpath](www.google.com) - The tool that..
