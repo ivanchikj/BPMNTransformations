@@ -4,7 +4,7 @@ spiega come fare per creare una nuova regola. Non è complicato, si tratta di mo
 
 Per fare in modo che sia il più semplice possibile, scrivi bene la documentazione dei metodi in Model.
 -->
-[![Usi](Images/logoUsi.png)](www.usi.ch)
+[![Usi](Images/logoUsi.png)](https://www.usi.ch/)
 
 
 # Tool for semantics-preserving BPMN transformations
