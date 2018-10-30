@@ -1,6 +1,7 @@
 <!---I diagrammi su come funzionano YPNR NRNP eccetera, includili nel readme del programma.-->
 <!---Ricordati di dire da qualche parte che i tuoi modelli sono compatiibli con Camunda e Signavio-->
 <!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
+
 [![Usi](Images/logoUsi.png)](https://www.usi.ch/)
 
 
@@ -57,12 +58,12 @@ TODO
 ## Using the program
 
 The software is managed through console commands that are composed of 3 parts:
-* In the first part you can select the input file(s)
-* In the middle part you can select the behavior of the program
-* In the final part you can select the transformation rule(s) to apply.
+* In the first part the user selects the input file(s)
+* In the middle part the user selects the behavior of the program
+* In the final part the user selects the transformation rule(s) to apply.
 
 #### Selecting the input models:
-In the first part simply enter the path of the folder containing the files that you want to transform: all '.bpmn' or '.bpmn.xml' files will be taken as input.
+In the first part simply enter the path of the folder containing the files that you want to transform: all '.bpmn' and '.bpmn.xml' files will be taken as input.
 
 ```
 \Example\bpmnModels\
@@ -73,16 +74,16 @@ It is also possible to enter the path of a single file:
 ```
 
 #### Selecting the program behavior:
-For the second part you have the choice among turning on/off two behaviors:
+For the second part the user has the choice of turning on/off two behaviors:
 * Repetition (i.e. the program will try to apply the same transformations multiple times on the same model until it yelds no results)
-* Permutations (i.e. the program will apply the rules you have chose in different orders, not just in the order you provided).
+* Permutations (i.e. the program will apply the rules you have chose in different orders, not just in the provided order).
 
 To turn on the desired behavior, you have the choice among 4 combinations:
 
-* **YPYR** || **YRYP** (Yes Perm Yes Rec)
-* **NPNR** || **NRNP** (No Perm No Rec)
-* **YPNR** || **NRYP** (Yes Perm No Rec)
-* **NPYR** || **YRNP** (No Perm Yes Rec)
+* **YPYR** || **YRYP** (i.e. Yes Perm Yes Rec)
+* **NPNR** || **NRNP** (i.e. No Perm No Rec)
+* **YPNR** || **NRYP** (i.e. Yes Perm No Rec)
+* **NPYR** || **YRNP** (i.e. No Perm Yes Rec)
 
 Now our input line looks something like this:
 
@@ -110,7 +111,7 @@ Rule | Reversed rule:
 -4b  | -r4b
 -4c  | -r4c
 
-*Some rules <!---insert appropriate rules--> accept an optional input parameter <!---explain what it does-->. It can be added to rules by adding an asterisk followed by the desired number.*
+**Some rules <!---insert appropriate rules--> accept an optional input parameter <!---explain what it does-->. It can be added to rules by adding an asterisk followed by the desired number. The default value is 2.**
 
 ### Example inputs:
 Some example inputs to get you started:
@@ -139,9 +140,9 @@ A new folder called 'output' will be created inside the input folder,
 <!---Far vedere sia i cambiamenti nei modelli, che il comportamento della console, che il report-->
 
 
-### Extending the program
+## Extending the program
 <!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
-<!---includi un disegno dell'architettura.-->
+<!---includi un disegno dell'architettura. e spiega velocemente come è organizzato il codice-->
 
 ## Built With Libraries:
 
