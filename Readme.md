@@ -1,4 +1,5 @@
 <!---I diagrammi su come funzionano YPNR NRNP eccetera, includili nel readme del programma.-->
+<!---Ricordati di dire da qualche parte che i tuoi modelli sono compatiibli con Camunda e Signavio-->
 <!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
 [![Usi](Images/logoUsi.png)](https://www.usi.ch/)
 
