@@ -6,7 +6,7 @@
 # Tool for semantics-preserving BPMN transformations
 
 * This program will create semantically equivalent version of BPMN2.0 Models that are given as input
-* The user can select which rules to apply among 8 different semantically equivalent transformation
+* The user can select which rules to apply among 8 different semantically equivalent transformations
 * Reverse versions of the transformation rules are also available.
 
 - - - -
@@ -15,13 +15,21 @@
 
 This project was created in the scope of my master thesis at USI, in partial fullfillment of...
 Both the thesis and the project were supervised by
-
-
-## The thesis
-
-You will find the pdf of the thesis in the folder..
+**You will find the pdf of the thesis in the folder..**
 
 ## The transformation rules
+```
+TODO
+```
+```
+TODO
+```
+```
+TODO
+```
+```
+TODO
+```
 <!---Mettere le immagini qua-->
 
 - - - -
@@ -45,7 +53,7 @@ TODO
 
 - - - -
 
-### Using the program
+## Using the program
 
 The software is managed through console commands that are composed of 3 parts:
 * In the first part you can select the input file(s)
@@ -101,9 +109,9 @@ Rule | Reversed rule:
 -4b  | -r4b
 -4c  | -r4c
 
-**Rules <!---insert appropriate rules--> accept an optional input parameter <!---explain what it does-->. It can be added to rules by adding an asterisk followed by the desired number.**
+*Some rules <!---insert appropriate rules--> accept an optional input parameter <!---explain what it does-->. It can be added to rules by adding an asterisk followed by the desired number.*
 
-#### Example inputs:
+### Example inputs:
 Some example inputs to get you started:
 
 ```
@@ -124,13 +132,13 @@ Some example inputs to get you started:
 
 **You can also write 'help' in the console to display a list of example inputs.**
 
-## Expected Outputs
+### Expected Outputs
 
 A new folder called 'output' will be created inside the input folder, 
 <!---Far vedere sia i cambiamenti nei modelli, che il comportamento della console, che il report-->
 
 
-## Extending the program
+### Extending the program
 <!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
 <!---includi un disegno dell'architettura.-->
 
