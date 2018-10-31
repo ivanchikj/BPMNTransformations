@@ -21,33 +21,49 @@ Both the thesis and the project were supervised by <!---do you want to have your
 
 ## The transformation rules
 
-###Rule1
+### Rule1
 
-[![Rule1](Images/Rule1.png)]
+![Rule1](Images/Rule1.png)
+
+*rule1*
 <!---Descrizione-->
 
-###Rule2
+### Rule2
 
-[![Rule2](Images/Rule2.png)]
+![Rule2](Images/Rule2.png)
+
+*rule2*
 <!---Descrizione-->
 
-###Rule3
+### Rule3
 
-[![Rule3a](Images/Rule3a.png)]
+![Rule3a](Images/Rule3a.png)
+
+*rule3a*
 <!---Descrizione-->
-[![Rule3b](Images/Rule3b.png)]
+![Rule3b](Images/Rule3b.png)
+
+*rule3b*
 <!---Descrizione-->
-[![Rule3c](Images/Rule3c.png)]
+![Rule3c](Images/Rule3c.png)
+
+*rule3c*
 <!---Descrizione-->
 
-###Rule4
+### Rule4
 
-[![Rule4a](Images/Rule4a.png)]
-<!---Descrizione-->
-[![Rule4b](Images/Rule4b.png)]
-<!---Descrizione-->
-[![Rule4c](Images/Rule4c.png)]
+![Rule4a](Images/Rule4a.png)
 
+*rule4a*
+<!---Descrizione-->
+![Rule4b](Images/Rule4b.png)
+
+*rule4b*
+<!---Descrizione-->
+![Rule4c](Images/Rule4c.png)
+
+*rule4c*
+<!---Descrizione-->
 - - - -
 
 ## Getting Started
