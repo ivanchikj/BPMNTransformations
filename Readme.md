@@ -23,7 +23,7 @@ Both the thesis and the project were supervised by <!---do you want to have your
 
 ### Rule1
 
-![Rule1](Images/Rule1.png | width=100px)
+![Rule1](Images/Rule1.png)
 
 *rule1*
 <!---Descrizione-->
