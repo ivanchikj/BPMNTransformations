@@ -21,17 +21,17 @@ Both the thesis and the project were supervised by <!---do you want to have your
 
 ## The transformation rules
 
-###Rule1
+### Rule1
 
 [![Rule1](Images/Rule1.png)]
 <!---Descrizione-->
 
-###Rule2
+### Rule2
 
 [![Rule2](Images/Rule2.png)]
 <!---Descrizione-->
 
-###Rule3
+### Rule3
 
 [![Rule3a](Images/Rule3a.png)]
 <!---Descrizione-->
@@ -40,7 +40,7 @@ Both the thesis and the project were supervised by <!---do you want to have your
 [![Rule3c](Images/Rule3c.png)]
 <!---Descrizione-->
 
-###Rule4
+### Rule4
 
 [![Rule4a](Images/Rule4a.png)]
 <!---Descrizione-->
