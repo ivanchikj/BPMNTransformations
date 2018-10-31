@@ -28,25 +28,25 @@ Both the thesis and the project were supervised by <!---do you want to have your
 
 ### Rule2
 
-[Rule2](Images/Rule2.png)
+![Rule2](Images/Rule2.png)
 <!---Descrizione-->
 
 ### Rule3
 
-[Rule3a](Images/Rule3a.png)
+![Rule3a](Images/Rule3a.png)
 <!---Descrizione-->
-[Rule3b](Images/Rule3b.png)
+![Rule3b](Images/Rule3b.png)
 <!---Descrizione-->
-[Rule3c](Images/Rule3c.png)
+![Rule3c](Images/Rule3c.png)
 <!---Descrizione-->
 
 ### Rule4
 
-[Rule4a](Images/Rule4a.png)
+![Rule4a](Images/Rule4a.png)
 <!---Descrizione-->
-[Rule4b](Images/Rule4b.png)
+![Rule4b](Images/Rule4b.png)
 <!---Descrizione-->
-[Rule4c](Images/Rule4c.png)
+![Rule4c](Images/Rule4c.png)
 
 - - - -
 
