@@ -15,24 +15,33 @@
 
 ## Introduction
 
-This project was created in the scope of my master thesis at [Università della Svizzera italiana](https://www.usi.ch/en), in partial fullfillment of...
-Both the thesis and the project were supervised by
+This project was created in the scope of my master thesis at [Università della Svizzera italiana](https://www.usi.ch/en), in partial fulfillment of the requirements for the degree of [MSc in Management & Informatics](https://www.usi.ch/en/mmi)
+Both the thesis and the project were supervised by <!---do you want to have your names in the readme or you prefer not to be mentioned?-->
 **You will find the pdf of the thesis in the folder..**
 
 ## The transformation rules
-```
-TODO
-```
-```
-TODO
-```
-```
-TODO
-```
-```
-TODO
-```
-<!---Mettere le immagini qua-->
+
+###Rule1
+[![Rule1](Images/Rule1.png)]
+<!---Descrizione-->
+###Rule2
+[![Rule2](Images/Rule2.png)]
+<!---Descrizione-->
+
+###Rule3
+[![Rule3a](Images/Rule3a.png)]
+<!---Descrizione-->
+[![Rule3b](Images/Rule3b.png)]
+<!---Descrizione-->
+[![Rule3c](Images/Rule3c.png)]
+<!---Descrizione-->
+
+###Rule4
+[![Rule4a](Images/Rule4a.png)]
+<!---Descrizione-->
+[![Rule4b](Images/Rule4b.png)]
+<!---Descrizione-->
+[![Rule4c](Images/Rule4c.png)]
 
 - - - -
 
@@ -141,6 +150,9 @@ A new folder called 'output' will be created inside the input folder,
 
 
 ## Extending the program
+```
+TODO
+```
 <!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
 <!---includi un disegno dell'architettura. e spiega velocemente come è organizzato il codice-->
 
