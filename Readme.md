@@ -15,7 +15,7 @@
 
 ## Introduction
 
-This project was created in the scope of my master thesis at USI, in partial fullfillment of...
+This project was created in the scope of my master thesis at [Università della Svizzera italiana](https://www.usi.ch/en), in partial fullfillment of...
 Both the thesis and the project were supervised by
 **You will find the pdf of the thesis in the folder..**
 
@@ -80,10 +80,10 @@ For the second part the user has the choice of turning on/off two behaviors:
 
 To turn on the desired behavior, you have the choice among 4 combinations:
 
-* **YPYR** || **YRYP** (i.e. Yes Perm Yes Rec)
-* **NPNR** || **NRNP** (i.e. No Perm No Rec)
-* **YPNR** || **NRYP** (i.e. Yes Perm No Rec)
-* **NPYR** || **YRNP** (i.e. No Perm Yes Rec)
+* **YPYR** or **YRYP** (i.e. Yes Perm Yes Rec)
+* **NPNR** or **NRNP** (i.e. No Perm No Rec)
+* **YPNR** or **NRYP** (i.e. Yes Perm No Rec)
+* **NPYR** or **YRNP** (i.e. No Perm Yes Rec)
 
 Now our input line looks something like this:
 
