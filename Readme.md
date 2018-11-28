@@ -75,9 +75,9 @@ TODO installing java 1.8 from terminal
 ### Running the program
 
 * Open the terminal.
-* Navigate to the /src folder
+* Navigate to the \src\ folder
 
-* Compile the program using the following command in the **\src\** folder:
+* Compile the program using the following command:
 ```
 javac *.java
 ```
