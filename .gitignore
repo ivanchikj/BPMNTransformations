@@ -9,3 +9,4 @@ BPMNTransformations.iml
 
 src/META-INF/
 *.iml
+*.class

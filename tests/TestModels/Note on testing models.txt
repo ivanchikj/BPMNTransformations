@@ -1,0 +1,9 @@
+Note: 
+
+Creating ad-hoc models for 
+    'reverse 4a'
+    'reverse 4b'
+    'reverse 4c'
+    'reverse 3a'
+    'reverse 3c'
+Is not needed because we can just use the models used to test the normal direction but switching the starting model with the resulting model.

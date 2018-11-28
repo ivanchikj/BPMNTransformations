@@ -1,0 +1,3 @@
+Note: provare un process executable.
+Note, provare una formal expression se il tuo programma funziona lo stesso?
+Nota: prova con un XML che ha più di un processo.
