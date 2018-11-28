@@ -69,7 +69,7 @@ Both the thesis and the project were supervised by <!---do you want to have your
 * Before running the program you need to install JAVA 1.8:
 
 ```
-TODO
+TODO installing java 1.8 from terminal
 ```
 
 ### Running the program
@@ -77,7 +77,7 @@ TODO
 * Open the terminal.
 * Navigate to the /src folder
 
-* Compile the program using the following command in the */src* folder:
+* Compile the program using the following command in the **\src\** folder:
 ```
 javac *.java
 ```
