@@ -17,6 +17,7 @@ public class TravelAgency {
     //private int pastID;
     //TODO decide if the starting point has to be a class variable
 
+    //TODO address the fact that a model can have more than one startEvent
 
     /**
      * Constructor with startingPoint

@@ -35,15 +35,15 @@
       <bpmn:incoming>SequenceFlow_11e0nua</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_11e0nua" sourceRef="Task_0q6vya6" targetRef="EndEvent_0rj4gmu" />
-    <bpmn:exclusiveGateway id="ExclusiveGateway_16si252">
-      <bpmn:incoming>SequenceFlow_1ez65gt</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0y5qifq</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0luoqce</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
     <bpmn:inclusiveGateway id="ExclusiveGateway_1f457i0">
       <bpmn:incoming>SequenceFlow_01zc30x</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0l7pmht</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_0q2cdf6</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:inclusiveGateway id="ExclusiveGateway_16si252">
+      <bpmn:incoming>SequenceFlow_1ez65gt</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0y5qifq</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0luoqce</bpmn:outgoing>
     </bpmn:inclusiveGateway>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -75,7 +75,7 @@
         <di:waypoint xsi:type="dc:Point" x="717" y="276" />
         <di:waypoint xsi:type="dc:Point" x="717" y="336" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="636" y="254.5" width="0" height="13" />
+          <dc:Bounds x="591" y="254.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0y5qifq_di" bpmnElement="SequenceFlow_0y5qifq">
@@ -83,7 +83,7 @@
         <di:waypoint xsi:type="dc:Point" x="717" y="450" />
         <di:waypoint xsi:type="dc:Point" x="717" y="386" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="636" y="428.5" width="0" height="13" />
+          <dc:Bounds x="591" y="428.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_0tyws73_di" bpmnElement="StartEvent_0tyws73">
@@ -118,7 +118,7 @@
         <di:waypoint xsi:type="dc:Point" x="742" y="361" />
         <di:waypoint xsi:type="dc:Point" x="847" y="361" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="794.5" y="339.5" width="0" height="13" />
+          <dc:Bounds x="749.5" y="339.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_0rj4gmu_di" bpmnElement="EndEvent_0rj4gmu">
@@ -134,16 +134,16 @@
           <dc:Bounds x="986" y="339" width="0" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ExclusiveGateway_1ff1yzl_di" bpmnElement="ExclusiveGateway_16si252" isMarkerVisible="true">
-        <dc:Bounds x="692" y="336" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="716.9210789210789" y="388.3306693306693" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="InclusiveGateway_0lg9vsu_di" bpmnElement="ExclusiveGateway_1f457i0">
         <dc:Bounds x="260" y="336" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="284.9210789210789" y="389" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="InclusiveGateway_1k9tyhu_di" bpmnElement="ExclusiveGateway_16si252">
+        <dc:Bounds x="692" y="336" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="672" y="388" width="0" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
