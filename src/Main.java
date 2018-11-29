@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+//TODO fare dei test per testare il parsing delle stringhe.
 
 public class Main {
 
