@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class Rule1Test {
 
 
+    /**
+     * The classic Rule1 example.
+     */
     @Test
-    void applyRule () throws Exception {
+    void classicCase () throws Exception {
 
         Model startingModel = new Model("./tests/TestModels/Rule1" +
         "/Rule1Classic.bpmn.xml");
