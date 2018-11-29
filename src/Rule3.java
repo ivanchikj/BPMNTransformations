@@ -211,14 +211,6 @@ public class Rule3 {
         System.out.println("I'm applying rule RULE3c to model " + model.name);
 
         ArrayList<Rule3cConstruct> constructs = new ArrayList<>();
-        //here we will store the list of construct where we can safely apply
-        // rule3c
-        //the problem with rule3c is that it can contain a version of the
-        // construct inside another
-        //so if we apply the rule on a construct immediately after we find
-        // it, we might be unable to find another one later
-        //on in the execution
-        //TODO scrivilo nella tesi
 
         System.out.println("Going through every parallel Element in the " +
         "gateway");

@@ -1,9 +1,8 @@
-import java.util.ArrayList;
-
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
 
 class Rule2 {
 
@@ -101,8 +100,15 @@ class Rule2 {
                         }
 
                         //Adding the newCondition
+
                         System.out.println(newCondition);
-                        model.returnConditionElement(flowToKeep).setTextContent(newCondition);
+                        //Normally, we wouldn't need this check, because it
+                        // is illegal to have exclusive that have no
+                        // conditions on both outgoing flows.
+                        //Still, sometimes it happens.
+                        if (model.hasCondition(flowToKeep)) {
+                            model.returnConditionElement(flowToKeep).setTextContent(newCondition);
+                        }
                     }
                     //finally deleting the gateways
                     model.delete(succ.getAttribute("id"));

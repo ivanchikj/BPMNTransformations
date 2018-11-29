@@ -30,4 +30,21 @@ class Rule2Test {
     }
 
 
+    @Test
+    void twoLayers () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayer.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayer2" + ".bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+        Rule2.applyRule(result);
+
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+
 }

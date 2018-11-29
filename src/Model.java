@@ -963,7 +963,7 @@ public class Model {
      * @param sequenceFlow the sequenceFlow I want to check
      * @return true if the sequenceFlow has a condition, false otherwise.
      */
-    boolean hasCondition (Element sequenceFlow) {
+    boolean  hasCondition (Element sequenceFlow) {
 
         NodeList children = sequenceFlow.getElementsByTagName(style(
         "conditionExpression")); //TODO
