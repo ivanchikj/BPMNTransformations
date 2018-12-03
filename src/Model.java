@@ -330,39 +330,37 @@ public class Model {
 
 
     /**
-     * ASKANA cosa sono gli altri attributi tipo "completionQuantity="1"
-     * isForCompensation="false" startQuantity="1", li devo aggiungere?
      * This method is actually not relevant for our transformations.
-     * todo delete this?
+     * It was one of my first tries with the BPMNDI, and it should still work.
      *
      * @return the id of the newTask
      */
-    public String newTask (String x, String y) {
-        // PROCESS VIEW
-        String id = newId();
-        Element newTask = doc.createElement(this.style("task"));
-        newTask.setAttribute("id", id);
-        newTask.setAttribute("name", "NEW");
-        process.appendChild(newTask);
-
-        // BPMNDI VIEW
-        Element newTaskDI = doc.createElement(this.style("bpmndi:BPMNShape"));
-        bpmndiDiagram.appendChild(newTaskDI);
-        newTaskDI.setAttribute("bpmnElement", id);
-        newTaskDI.setAttribute("id", id + "_di"); // I don't know if this is
-        // mandatory
-        //System.out.println("		I created a new Task with the id " + id);
-
-        Element size = doc.createElement(this.style("Bounds"));
-        bpmndiPlane.appendChild(newTaskDI); //TODO am I sure about this?
-
-        newTaskDI.appendChild(size);
-        size.setAttribute("height", "80");
-        size.setAttribute("width", "100");
-        size.setAttribute("x", x);
-        size.setAttribute("y", y); // TODO Decide on how to calculate this.
-        return id;
-    }
+//    public String newTask (String x, String y) {
+//        // PROCESS VIEW
+//        String id = newId();
+//        Element newTask = doc.createElement(this.style("task"));
+//        newTask.setAttribute("id", id);
+//        //newTask.setAttribute("name", "NEW");
+//        process.appendChild(newTask);
+//
+//        // BPMNDI VIEW
+//        Element newTaskDI = doc.createElement(this.style("bpmndi:BPMNShape"));
+//        bpmndiDiagram.appendChild(newTaskDI);
+//        newTaskDI.setAttribute("bpmnElement", id);
+//        newTaskDI.setAttribute("id", id + "_di"); // I don't know if this is
+//        // mandatory
+//        //System.out.println("		I created a new Task with the id " + id);
+//
+//        Element size = doc.createElement(this.style("Bounds"));
+//        bpmndiPlane.appendChild(newTaskDI);
+//
+//        newTaskDI.appendChild(size);
+//        size.setAttribute("height", "80");
+//        size.setAttribute("width", "100");
+//        size.setAttribute("x", x);
+//        size.setAttribute("y", y);
+//        return id;
+//    }
 
 
     String newInclusiveGateway (String x, String y) {
@@ -370,7 +368,7 @@ public class Model {
         String id = newId();
         Element newNode = doc.createElement(this.style("inclusiveGateway"));
         newNode.setAttribute("id", id);
-        newNode.setAttribute("name", "NEW");
+        //newNode.setAttribute("name", "NEW");
         this.process.appendChild(newNode);
 
         // BPMNDI VIEW
@@ -399,7 +397,7 @@ public class Model {
         String id = newId();
         Element newNode = doc.createElement(this.style("parallelGateway"));
         newNode.setAttribute("id", id);
-        newNode.setAttribute("name", "NEW");
+        //newNode.setAttribute("name", "NEW");
         process.appendChild(newNode);
 
         // BPMNDI VIEW
@@ -429,7 +427,7 @@ public class Model {
         String id = newId();
         Element newNode = doc.createElement(this.style("exclusiveGateway"));
         newNode.setAttribute("id", id);
-        newNode.setAttribute("name", "NEW");
+        //newNode.setAttribute("name", "NEW");
         process.appendChild(newNode);
 
         // BPMNDI VIEW

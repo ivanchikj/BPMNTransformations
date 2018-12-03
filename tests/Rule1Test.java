@@ -22,6 +22,8 @@ class Rule1Test {
 
         Rule1.applyRule(result);
 
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
 
     }
 

@@ -80,7 +80,7 @@ class Rule2 {
                          gateway.getAttribute("id"));
 
                         String newCondition = firstPartofCondition; // the
-                        // inizialization value should not matter.
+                        // initialization value should not matter.
 
                         secondPartofCondition =
                          model.returnConditionString(flowToKeep);

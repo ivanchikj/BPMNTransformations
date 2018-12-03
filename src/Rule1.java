@@ -4,11 +4,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 
-//TODO la tua logica è sbagliata, non c'è bisogno che TUTTI i predecessori
-// siano parallel gateway, perché tu non cancelli il gateway, ma solo i
-// predecessori. Quindi basta che un parallel merge abbia un parallel come
-// follower per poterlo cambiare. Devo vedere le cose dal punto di vista
-// dell'outermost, non dell'innermost.
+
 class Rule1 {
 
 

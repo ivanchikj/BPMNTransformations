@@ -42,22 +42,22 @@ class Rule3Test {
     }
 
 
-    @Test
-    void cClassicCase () throws Exception {
-
-        Model startingModel = new Model("./tests/TestModels/Rule3c" +
-        "/Rule3cClassic.bpmn.xml");
-
-        Model expected = new Model("./tests/TestModels/Rule3c/Rule3cClassic3c"
-         + ".bpmn.xml");
-
-        Model result = startingModel.cloneModel();
-
-        Rule3.c(result);
-
-        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
-        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
-    }
+//    @Test
+//    void cClassicCase () throws Exception {
+//
+//        Model startingModel = new Model("./tests/TestModels/Rule3c" +
+//        "/Rule3cClassic.bpmn.xml");
+//
+//        Model expected = new Model("./tests/TestModels/Rule3c/Rule3cClassic3c"
+//         + ".bpmn.xml");
+//
+//        Model result = startingModel.cloneModel();
+//
+//        Rule3.c(result);
+//
+//        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+//        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+//    }
 
 
     @Test

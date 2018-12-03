@@ -119,43 +119,43 @@ class Transformation {
             Rule4.c(resultingModel);
         }
 
-        if (parameter.rule.equals("R1")) {
+        if (parameter.rule.equals("r1")) {
             Reverse1.applyRule(resultingModel, parameter.aggregateBy);
         }
 
-        if (parameter.rule.equals("R2")) {
+        if (parameter.rule.equals("r2")) {
             Reverse2.applyRule(resultingModel, parameter.aggregateBy);
         }
 
-        if (parameter.rule.equals("R3")) {
+        if (parameter.rule.equals("r3")) {
             Reverse3.applyRule(resultingModel, parameter.aggregateBy);
         }
 
-        if (parameter.rule.equals("R3a")) {
+        if (parameter.rule.equals("r3a")) {
             Reverse3.a(resultingModel);
         }
 
-        if (parameter.rule.equals("R3b")) {
+        if (parameter.rule.equals("r3b")) {
             Reverse3.b(resultingModel);
         }
 
-        if (parameter.rule.equals("R3c")) {
+        if (parameter.rule.equals("r3c")) {
             Reverse3.c(resultingModel, parameter.aggregateBy);
         }
 
-        if (parameter.rule.equals("R4")) {
+        if (parameter.rule.equals("r4")) {
             Reverse4.all(resultingModel);
         }
 
-        if (parameter.rule.equals("R4a")) {
+        if (parameter.rule.equals("r4a")) {
             Reverse4.a(resultingModel);
         }
 
-        if (parameter.rule.equals("R4b")) {
+        if (parameter.rule.equals("r4b")) {
             Reverse4.b(resultingModel);
         }
 
-        if (parameter.rule.equals("R4c")) {
+        if (parameter.rule.equals("r4c")) {
             Reverse4.c(resultingModel);
         }
 

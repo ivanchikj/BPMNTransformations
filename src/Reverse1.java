@@ -6,27 +6,27 @@ import java.util.ArrayList;
 
 class Reverse1 {
 
-    //TODO decide how to generate that INT number and where.
-
 
     /**
      * @param model       the model that will be transformed
      * @param aggregateBy the number of incoming Flows to aggregate. For
-     *                    example, if levels == 1 then for
-     *                    every incomingFlow i create a gateway. If levels =
-     *                    2 then for every two incoming gateways I create a new
-     *                    gateway
+     *                    example, if aggregateBy == 2 then for
+     *                    every 2 incoming flows I create one new gateway. If
+     *                    aggregateBy == 3 then for every 3 incoming
+     *                    flows I create a new gateway.
      */
     static void applyRule (Model model, int aggregateBy) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE1 to model " + model.name);
+
         if (aggregateBy < 2) {
-            System.out.println("aggregate by must be bigger than 1");
+            System.err.println("aggregateBy by must be bigger than 1");
+            aggregateBy = 2;
         }
 
         //let's find the candidate gateways.
         //we can accept every gateway that is a merge,
-        //that means it has only one outgoingflow and that has more than one
+        //that means it has only one outgoing flow and that has more than one
         // incoming flow.
 
         //all the parallel gateways in the model:
@@ -47,7 +47,7 @@ class Reverse1 {
             //additionally, to avoid having a "one in, one out" type of
             // gateway (which is undesired) we have to check that the number of
             //incomingFlows of our candidate is bigger than the parameter
-            // aggregateby
+            // aggregateBy
             if (model.isAMerge(candidate) && model.getIncomingFlows(candidate).size() > aggregateBy) {
                 candidates.add(candidate);
             }
@@ -102,7 +102,7 @@ class Reverse1 {
                 // object
                 Element newParallel = model.findElemById(newParallelID);
 
-                newParallel.setAttribute("name", "NUOVO");//UNLOCKTHIS
+                // newParallel.setAttribute("name", "NEW");//UNLOCKTHIS
 
                 //now that I have created my parallel in a sensible position,
                 //I can connect it to the original parallel

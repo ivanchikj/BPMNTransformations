@@ -1,9 +1,8 @@
-import java.util.ArrayList;
-
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
 
 class Reverse2 {
 
@@ -22,7 +21,8 @@ class Reverse2 {
 
         System.out.println("I'm applying rule REVERSE2 to model " + model.name);
         if (aggregateBy < 2) {
-            System.out.println("aggregateBy must be bigger than 1");
+            System.err.println("aggregateBy by must be bigger than 1");
+            aggregateBy = 2;
         }
 
         //let's find the candidate gateways.
