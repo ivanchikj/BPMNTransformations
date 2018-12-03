@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 
+//TODO i metodi statici potrei metterli in un altro file, o in più di uno.
+// Magari un file chiamato translator che traduce da signavio a camunda e
+// viceversa e altre cose simili. Per una questione di ordine.
+
 //TODO:
 //Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
 // dentro le regole, sarebbe meglio usare la traduzione come prima riga nei

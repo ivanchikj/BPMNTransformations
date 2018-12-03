@@ -24,18 +24,12 @@ public class Rule3 {
         if (parallelGatewayInstances.getLength() == 0) {
             System.out.println("RULE3a: there are no parallel gateways in " + "this model");
         } else {
-
-            //TODO the first part of the firstPart of rule 3 can be
-            // generalized for bot parallel and exclusive gateways. Maybe
-            // adding a method to Model: ArrayList<Element>
-            // findElementsOfACertainType(String type)
-
             // going through all of the parallelGateways in the model:
             for (int i = 0 ; i <= parallelGatewayInstances.getLength() ; i++) {
 
                 Element oldParallel =
-                 (Element) parallelGatewayInstances.item(0); //this will be
-                // the element in case
+                 (Element) parallelGatewayInstances.item(0); //this will
+                // be the element in case
                 //NOTE Why this works?
                 // Reason: After the gateway gets deleted from the model, it
                 // also gets deleted from parallelGatewayInstances
@@ -44,13 +38,16 @@ public class Rule3 {
                 // That why we use the same index every time until the list
                 // is empty.
 
-                System.out.println("working on the " + (i + 1) + "nd " +
-                "parallelGateway");
-                System.out.println("The id of the element is " + oldParallel.getAttribute("id"));
+                //System.out.println("working on the " + (i + 1) + "nd " +
+                //"parallelGateway");
+
+                //System.out.println("The id of the element is " +
+                // oldParallel.getAttribute("id"));
 
                 String[] oldParallelCoordinates =
                  model.getPosition(oldParallel);
-                //TODO invece di creare un nuovo elemento e rimpiazzarlo, non
+
+                // TODO invece di creare un nuovo elemento e rimpiazzarlo, non
                 // posso semplicemente cambiare il tagname?
 
                 // creating the substitute element in the position of the old
@@ -68,41 +65,29 @@ public class Rule3 {
                 ArrayList<Element> incomingFlows =
                  model.getIncomingFlows(newInclusiveGateway);
 
-                //System.out.println("test " + outgoingFlows.size());
-                //System.out.println("test " + incomingFlows.size());
+                //TODO provare a usare isASplit
+                //splits are gateways that have more than one outgoing flow
+                //but only one incoming flows
+                if (incomingFlows.size() == 1 && outgoingFlows.size() > 1) {
 
-                //ASKANA ovviamente devo distinguere i gateway che sono anche
-                // merge dagli altri
-                //Un modo facile per distinguerli sarebbe dire "se hai solo
-                // un outgoingFlow allora sei un merge"
-                //Però in realtà, se io avessi un parallel che ha solo un
-                // input e solo un output
-                //allora probabilmente non lo considero un merge. E inoltre
-                // vorrei anche appicare la regola su di esso.
-                //Quindi sarebbe meglio se i merge fossero soltanto "i
-                // gateway che hanno un solo outgoingFlow ma che hanno più di
-                //un incomingFlow
-
-                //merges are gateways that have more than one incoming flow
-                //but only one outgoingFlow
-                if (! (incomingFlows.size() > 1 && outgoingFlows.size() == 1)) {
-                    //then it's not a merge
+                    //then it's a split
                     //we can thus change its outgoingFlows conditions:
                     System.out.println("This is a not a merge. Its " +
                     "outgoingFlows will be changed");
                     //TODO this has to become two separate methods
                     //one that changes the condition and takes a string as an
-                    // input
+                    //input
                     //inside model.java
                     //And one that creates a bpmn:conditionExpression
-                    // element, inside newNode
+                    //element, inside newNode
                     for (Element flow : outgoingFlows) {
                         //this Cast only works because there are no line
                         // breaks as nodes.
                         //I should redo this with a condition to assure that
                         // it's not the case
-                        flow.setAttribute("name", "1==1"); // TODO this is
-                        // just for the demo
+                        //flow.setAttribute("name", "1==1"); // UNLOCKTHIS
+                        // this is just for the demo
+
                         Element condition = model.doc.createElement("bpmn" +
                         ":conditionExpression");
                         condition.setAttribute("xsi:type", "bpmn" +
@@ -501,8 +486,7 @@ public class Rule3 {
 
     private static ArrayList<Element> outgoingFlowsPointingToExclusiveGateways (Element element, Model model, Element target) throws XPathExpressionException {
 
-        ArrayList<Element> outgoingFlowsPointingtoExclGats =
-         new ArrayList<>();
+        ArrayList<Element> outgoingFlowsPointingtoExclGats = new ArrayList<>();
 
         ArrayList<Element> outGoingFlows = model.getOutgoingFlows(element);
 

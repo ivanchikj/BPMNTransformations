@@ -1,8 +1,8 @@
-
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 
@@ -10,6 +10,12 @@ public class Reverse3 {
 
 
     /**
+     * TODO errore grave. Devo modificare solo se le condizioni sono true.
+     * Quindi prima devo trovare gli split, vedere se le loro condizioni sono
+     * entrambe true, e poi trovare il loro merge, magari con getPath.
+     * Magari fare un metodo che si chiama "findFirstMeetingPoint", se non
+     * l'ho già fatto in rule
+     *
      * @param model the Model that will be changed
      */
     public static void a (Model model) throws Exception {
@@ -20,16 +26,15 @@ public class Reverse3 {
         "inclusiveGateway");
 
         if (inclusiveGatewayInstances.getLength() == 0) {
-            System.out.println("Reverse3a: there are no inclusive gateways " + "in" + " this model");
+            System.out.println("Reverse3a: there are no inclusive gateways " + "in this model");
         }
 
         // going through all of the inclusiveGateways in the model:
         for (int i = 0 ; i <= inclusiveGatewayInstances.getLength() ; i++) {
-
-            Element oldInclusive =
-             (Element) inclusiveGatewayInstances.item(0); //this will be the
+            Element oldInclusive = (Element) inclusiveGatewayInstances.item(0);
+            //this will be the
             // element in case
-            //NOTE Why this works?
+            // NOTE Why this works?
             // Reason: After the gateway gets deleted from the model, it also
             // gets deleted from parallelGatewayInstances
             // For some reason. The problem is that now the element at index
@@ -56,28 +61,14 @@ public class Reverse3 {
             ArrayList<Element> incomingFlows =
              model.getIncomingFlows(newParallelGateway);
 
-            System.out.println("test " + outgoingFlows.size()); //UNLOCKTHIS
+            //System.out.println("test " + outgoingFlows.size()); //UNLOCKTHIS
             // for testing
-            System.out.println("test " + incomingFlows.size()); //UNLOCKTHIS
+            //System.out.println("test " + incomingFlows.size()); //UNLOCKTHIS
             // for testing
 
-            //TODO ovviamente devo distinguere i gateway che sono anche merge
-            // dagli altri
-            //Un modo facile per distinguerli sarebbe dire "se hai solo un
-            // outgoingFlow allora sei un merge"
-            //Però in realtà, se io avessi un parallel che ha solo un input e
-            // solo un output
-            //allora probabilmente non lo considero un merge. E inoltre
-            // vorrei anche appicare la regola su di esso.
-            //Quindi sarebbe meglio se i merge fossero soltanto "i gateway
-            // che hanno un solo outgoingFlow ma che hanno più di
-            //un incomingFlow
-
-            //TODO questa parte deve diventare un metodo "isNotASplit" oppure
-            // rispettivamente "isNotAMerge" nella classe model
             //merges are gateways that have more than one incoming flow
-            //but only one outgoingFlow
-            if (! (incomingFlows.size() > 1 && outgoingFlows.size() == 1)) {
+            //but only one outgoingFlow //TODO provare a usare isASplit
+            if (incomingFlows.size() == 1 && outgoingFlows.size() > 1) {
                 //then it's not a merge
                 //we can thus change its outgoingFlows conditions:
                 System.out.println("This is a not a merge. Its outgoingFlows "
@@ -110,11 +101,11 @@ public class Reverse3 {
         System.out.println("number of inclusive gateway instances: " + inclusiveGatewayInstances.getLength());
 
         if (inclusiveGatewayInstances.getLength() == 0) {
-            System.out.println("Reverse3b: there are no exclusive gateways " + "in" + " this model");
+            System.out.println("Reverse3b: there are no exclusive gateways " + "in this model");
         }
 
         //TODO the first part of the firstPart of r3a and r3b can be
-        // generalized for bot parallel and exclusive gateways
+        //generalized for bot parallel and exclusive gateways
 
         // going through all of the parallelGateways in the model:
         for (int i = 0 ; i <= inclusiveGatewayInstances.getLength() ; i++) {
@@ -122,7 +113,7 @@ public class Reverse3 {
             Element oldInclusive =
              (Element) inclusiveGatewayInstances.item(0); //this will be the
             // element in case
-            //NOTE Why this works?
+            // NOTE Why this works?
             // Reason: After the gateway gets deleted from the model, it also
             // gets deleted from inclusiveGatewayInstances
             // For some reason. The problem is that now the element at index
@@ -145,24 +136,25 @@ public class Reverse3 {
             //replacing the two elements
             model.replaceELement(oldInclusive, newExclusiveGateway);
 
-            //Here I dont need to distinguish between those that are merges
+            //Here I don't need to distinguish between those that are merges
             // and those that are not.
-            //I dont need to touch the incoming/outgoing flows either
+            //I don't need to touch the incoming/outgoing flows either
         }
     }
 
 
-    public static class Reverse3cConstruct {
+    //TODO usalo anche in 3a.
+    public static class Reverse3Construct {
 
 
         Element firstInclusive;
         Element firstInclusiveMeetingPoint;
 
 
-        Reverse3cConstruct (Element firstParallel,
+        Reverse3Construct (Element firstInclusive,
          Element firstInclusiveMeetingPoint) {
 
-            this.firstInclusive = firstParallel;
+            this.firstInclusive = firstInclusive;
             this.firstInclusiveMeetingPoint = firstInclusiveMeetingPoint;
         }
 
@@ -201,8 +193,7 @@ public class Reverse3 {
             System.out.println("aggregateBy must be bigger than 1");
         }
 
-        ArrayList<Reverse3cConstruct> constructs =
-         new ArrayList<>();
+        ArrayList<Reverse3Construct> constructs = new ArrayList<>();
 
         NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName(
         "inclusiveGateway");
@@ -231,8 +222,8 @@ public class Reverse3 {
                 //ok now I can create a construct.
                 System.out.println(ta.paths.size());//UNLOCKTHIS
                 System.out.println(candidate.getAttribute("name"));
-                Reverse3cConstruct construct =
-                 new Reverse3cConstruct(candidate, firstMeetingPoint);
+                Reverse3Construct construct = new Reverse3Construct(candidate
+                , firstMeetingPoint);
                 constructs.add(construct);
             } else {
                 System.out.println(ta.paths.size());//UNLOCKTHIS
@@ -244,7 +235,7 @@ public class Reverse3 {
         }
 
         //now let's go through all constructs and do the necessary changes.
-        for (Reverse3cConstruct construct : constructs) {
+        for (Reverse3Construct construct : constructs) {
 
             Element firstInclusive = construct.firstInclusive;
             Element firstMeetingPoint = construct.firstInclusiveMeetingPoint;
@@ -285,7 +276,8 @@ public class Reverse3 {
                         // original parallel anymore
                     }
                 }
-                System.out.println("My successors SIZEEEEEE " + mySuccessors.size());
+                //System.out.println("My successors size " + mySuccessors
+                // .size());
 
                 String[] position =
                  model.calculatePositionOfNewNode(mySuccessors, firstInclusive);
@@ -295,7 +287,7 @@ public class Reverse3 {
                 // object
                 Element newExclusive = model.findElemById(newExclusiveID);
 
-                newExclusive.setAttribute("name", "NUOVO");//UNLOCKTHIS
+                //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
 
                 //now that I have created my exclusive in a sensible position,
                 //I can connect it to the original inclusive
@@ -342,7 +334,7 @@ public class Reverse3 {
                         // the original parallel anymore
                     }
                 }
-                System.out.println("My predecessors SIZEEEEEE " + myPredecessors.size());
+                System.out.println("My predecessors size " + myPredecessors.size());
                 String[] position =
                  model.calculatePositionOfNewNode(myPredecessors,
                   firstMeetingPoint);
@@ -352,10 +344,10 @@ public class Reverse3 {
                 // object
                 Element newExclusive = model.findElemById(newExclusiveID);
 
-                newExclusive.setAttribute("name", "NUOVO");//UNLOCKTHIS
+                //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
 
                 //now that I have created my parallel in a sensible position,
-                //I can connect it to the original meetingpoint
+                //I can connect it to the original meeting point
 
                 model.newSequenceFlow(newExclusiveID,
                  firstMeetingPoint.getAttribute("id"));
@@ -380,7 +372,7 @@ public class Reverse3 {
             }
 
             //and finally let's change the type of the starting Inclusive and
-            // of the first meeting poin:
+            // of the first meeting point:
             model.changeType(firstInclusive, "bpmn:parallelGateway");
             model.changeType(firstMeetingPoint, "bpmn:parallelGateway");
         }
@@ -394,6 +386,56 @@ public class Reverse3 {
         c(model, aggregateBy);
         a(model);
         b(model);
+    }
+
+    //Code from:
+    //https://ideone.com/7MhSj3
+
+
+    /**
+     * This takes a BPMN condition in String form and checks if it is a
+     * tautology.
+     * "1 == 1" returns true
+     * "1 != 1" returns false
+     * "1 > 2" returns false
+     * WARNING! "a == a" returns false!
+     * NOTE that any random word, such as "word" returns false!
+     *
+     * @param condition the condition of a sequence flow in String form
+     * @return true if the condition is a tautology, and false if it's not.
+     */
+    static boolean isItATautology (String condition) {
+
+        try {
+            ScriptEngineManager manager = new ScriptEngineManager();
+            ScriptEngine engine = manager.getEngineByName("js");
+            Object result = engine.eval(condition);
+            return Boolean.TRUE.equals(result);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    static boolean allOutGoingFlowsAreTautolgies (Element oldInclusive,
+     Model model) throws XPathExpressionException {
+
+        ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusive);
+
+        for (Element flow : outgoingFlows) {
+            if (model.hasCondition(flow)) {
+                if (! isItATautology(model.returnConditionString(flow))) {
+                    return false; //there is at least one that is not a
+                    // tautology
+                }
+            } else {
+                return false; // we should in principle never end up here,
+                // because all outgoing flows should always have conditions
+                // but still, if it has no condition it cant be a tautology.
+            }
+        }
+        return true; // I haven't found a single outgoing flow that is not a
+        // tautology.
     }
 
 
