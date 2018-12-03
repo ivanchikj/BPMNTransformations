@@ -18,10 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
 //TODO i metodi statici potrei metterli in un altro file, o in più di uno.
 // Magari un file chiamato translator che traduce da signavio a camunda e
 // viceversa e altre cose simili. Per una questione di ordine.
+
+
+
 
 //TODO:
 //Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
@@ -295,9 +297,18 @@ public class Model {
     }
 
 
+    NodeList findElementsByType (String type) {
+
+        String t = style(type);
+        NodeList nl = doc.getElementsByTagName(t);
+        return nl;
+
+    }
+
+
     /**
-     * used when editing the model. This, togheter with rulesApplied should
-     * always be upgraded togheter
+     * used when editing the model. This, together with rulesApplied should
+     * always be upgraded together
      *
      * @param rule        the rule that will be added to the model
      * @param aggregateBy changed the behavior of the rule todo spiega meglio?
@@ -353,7 +364,8 @@ public class Model {
 //        newTaskDI.setAttribute("bpmnElement", id);
 //        newTaskDI.setAttribute("id", id + "_di"); // I don't know if this is
 //        // mandatory
-//        //System.out.println("		I created a new Task with the id " + id);
+//        //System.out.println("		I created a new Task with the id " +
+// id);
 //
 //        Element size = doc.createElement(this.style("Bounds"));
 //        bpmndiPlane.appendChild(newTaskDI);
@@ -365,7 +377,6 @@ public class Model {
 //        size.setAttribute("y", y);
 //        return id;
 //    }
-
 
     String newInclusiveGateway (String x, String y) {
         // PROCESS VIEW
@@ -965,7 +976,7 @@ public class Model {
      * @param sequenceFlow the sequenceFlow I want to check
      * @return true if the sequenceFlow has a condition, false otherwise.
      */
-    boolean  hasCondition (Element sequenceFlow) {
+    boolean hasCondition (Element sequenceFlow) {
 
         NodeList children = sequenceFlow.getElementsByTagName(style(
         "conditionExpression")); //TODO
@@ -985,13 +996,12 @@ public class Model {
             Element conditionElement = returnConditionElement(sequenceFlow);
             return conditionElement.getTextContent();
         } else {
-        //this should never happen in theory if I get a well formed bpmn file.
-            System.out.println("this should never happen in theory if I get a" +
-             " well formed bpmn file.");
-        return "";
+            //this should never happen in theory if I get a well formed bpmn
+            // file.
+            System.out.println("this should never happen in theory if I get " +
+             "a" + " well formed bpmn file.");
+            return "";
         }
-
-
     }
 
 
@@ -1176,7 +1186,7 @@ public class Model {
      * Replace the old element with the new.
      * Nothing else should be affected (i.e. the incoming / outgoing
      * sequenceFlows)
-     *
+     * TODO controlla che i sequenceFlows si comportino correttamente.
      * @param newElem the old Element (will be deleted)
      * @param oldElem the new Element
      */
@@ -1433,10 +1443,10 @@ public class Model {
     private NodeList xpathFindNodeWithCertainAttributeValue (String attribute
     , String value) throws XPathExpressionException {
 
-        return (NodeList) xpath.evaluate("//*[@" + attribute + "='" + value +
-        "']", doc, XPathConstants.NODESET);
+        return (NodeList) xpath.evaluate("//*[@" + attribute + "='" + value + "']", doc, XPathConstants.NODESET);
     }
     //TODO
+
 
     /**
      * this method takes a Bpmndi Element as input

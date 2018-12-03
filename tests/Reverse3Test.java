@@ -7,9 +7,21 @@ class Reverse3Test {
 
 
     @Test
-    void aclassic () {
-    //TODO fare in modo che in questo modello ci sia sia un caso applicabile,
-    // che uno dove le condizioni uscenti non sono tutte tautologie.
+    void aclassic () throws Exception {
+    //Note that in this model there is one applicable inclusive gateway and
+    // another one that is not applicable because not all his outgoing flows
+    // are tautologies.
+        Model startingModel = new Model("./tests/TestModels/Rule3a" +
+         "/Reverse3aClassic.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule3a" +
+         "/Reverse3aClassicr3a.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.a(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
     void abigger(){
@@ -54,7 +66,10 @@ class Reverse3Test {
         assertFalse(Reverse3.isItATautology("4"));
         assertFalse(Reverse3.isItATautology("4 > 5"));
         assertTrue(Reverse3.isItATautology("4 < 5"));
-
+        assertTrue(Reverse3.isItATautology("TRUE"));
+        assertTrue(Reverse3.isItATautology("true"));
+        assertFalse(Reverse3.isItATautology("FALSE"));
+        assertFalse(Reverse3.isItATautology("FaLse"));
     }
 
 

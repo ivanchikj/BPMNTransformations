@@ -14,6 +14,7 @@ public class TravelAgency {
     private Element startingPoint;
     //private ArrayList<Element> startingList;
     ArrayList<Element> mandatoryDeepSuccessors;
+    Element firstMandatoryDeepSuccessor;
     //private int pastID;
     //TODO decide if the starting point has to be a class variable
 
@@ -47,6 +48,10 @@ public class TravelAgency {
 
         mandatoryDeepSuccessors = new ArrayList<>();
         getMandatoryDeepSuccessors();
+
+        if (mandatoryDeepSuccessors.size() > 0){
+            this.firstMandatoryDeepSuccessor = mandatoryDeepSuccessors.get(0);
+        }
 
         //printPaths();//UNLOCKTHIS for testing
 

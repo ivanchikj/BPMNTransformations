@@ -10,6 +10,9 @@ public class Rule3 {
     // other specific methods referring to part 1, part 2 of rule 3 etc
     //this method will be renamed and be called by said method. 
 
+    //TODO fai un metodo che prende un elemento e ritorna il
+    // firstMandatoryMeeting point, mettilo in model anche se ovviamente usa
+    // i metodi di TravelAgency
 
     public static void a (Model model) throws Exception {
 
@@ -515,11 +518,11 @@ public class Rule3 {
          ta.getMandatoryDeepSuccessors();
         ArrayList<Element> appropriateExclusiveMeetingPoints =
          new ArrayList<>();
-        ArrayList<Element> firstParallelMettingPointPredecessors =
+        ArrayList<Element> firstParallelMeetingPointPredecessors =
          model.getPredecessors(firstParallelMeetingPoint);
 
         for (Element mandatoryDeepSuccessor : mandatoryDeepSuccessors) {
-            if (firstParallelMettingPointPredecessors.contains(mandatoryDeepSuccessor)) { //I dont know if this works, maybe I have to check the ID
+            if (firstParallelMeetingPointPredecessors.contains(mandatoryDeepSuccessor)) { //I don't know if this works, maybe I have to check the ID
                 System.out.println("Yes it's a predecessor");
                 appropriateExclusiveMeetingPoints.add(mandatoryDeepSuccessor);
             } else {

@@ -21,70 +21,79 @@ public class Reverse3 {
     public static void a (Model model) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3a to model " + model.path);
-
-        NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName(
+        NodeList inclusiveGateways = model.findElementsByType(
         "inclusiveGateway");
 
-        if (inclusiveGatewayInstances.getLength() == 0) {
+        if (inclusiveGateways.getLength() == 0) {
             System.out.println("Reverse3a: there are no inclusive gateways " + "in this model");
         }
+        for (int i = 0 ; i <= inclusiveGateways.getLength() ; i++) {
+            Element inclusiveSplit = (Element) inclusiveGateways.item(0);
+            System.out.println("   Ciao 1 ");
+            if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreTautolgies(inclusiveSplit, model)) {
+                TravelAgency ta = new TravelAgency(model, inclusiveSplit);
+                Element firstMandatoryDeepSuccessor =
+                 ta.firstMandatoryDeepSuccessor;
+                if (firstMandatoryDeepSuccessor.getTagName().contains(
+                "inclusiveGateway")) {
 
-        // going through all of the inclusiveGateways in the model:
-        for (int i = 0 ; i <= inclusiveGatewayInstances.getLength() ; i++) {
-            Element oldInclusive = (Element) inclusiveGatewayInstances.item(0);
-            //this will be the
-            // element in case
-            // NOTE Why this works?
-            // Reason: After the gateway gets deleted from the model, it also
-            // gets deleted from parallelGatewayInstances
-            // For some reason. The problem is that now the element at index
-            // 1 is now at index 0.
-            // That's why we use the same index every time until the list is
-            // empty.
+                    String[] oldInclusiveSplitCoordinates =
+                     model.getPosition(inclusiveSplit);
 
-            System.out.println("working on the " + (i + 1) + "nd " +
-            "inclusiveGateway");
-            System.out.println("The id of the element is " + oldInclusive.getAttribute("id"));
+                    // creating the substitute element in the position of
+                    // the
+                    // old one
+                    String newParallelSplitId =
+                     model.newParallelGateway(oldInclusiveSplitCoordinates[0]
+                     , oldInclusiveSplitCoordinates[1]);
+                    Element newParallelSplit =
+                     model.findElemById(newParallelSplitId);
+                    model.replaceELement(inclusiveSplit, newParallelSplit);
 
-            String[] oldInclusiveCoordinates = model.getPosition(oldInclusive);
+                    ArrayList<Element> outgoingFlows =
+                     model.getOutgoingFlows(newParallelSplit);
 
-            // creating the substitute element in the position of the old one
-            String newParallelGatewayId =
-             model.newParallelGateway(oldInclusiveCoordinates[0],
-              oldInclusiveCoordinates[1]);
-            Element newParallelGateway =
-             model.findElemById(newParallelGatewayId);
-            model.replaceELement(oldInclusive, newParallelGateway);
+                    for (Element flow : outgoingFlows) {
+                        if (model.hasCondition(flow)) {
+                            Element condition =
+                             model.returnConditionElement(flow);
+                            flow.removeChild(condition);
+                        }
+                    }
 
-            ArrayList<Element> outgoingFlows =
-             model.getOutgoingFlows(newParallelGateway);
-            ArrayList<Element> incomingFlows =
-             model.getIncomingFlows(newParallelGateway);
+                    //Now we can substitute also the old merge with a
+                    // parallel gateway.
+                    String[] oldInclusiveMergeCoordinates =
+                     model.getPosition(firstMandatoryDeepSuccessor);
 
-            //System.out.println("test " + outgoingFlows.size()); //UNLOCKTHIS
-            // for testing
-            //System.out.println("test " + incomingFlows.size()); //UNLOCKTHIS
-            // for testing
-
-            //merges are gateways that have more than one incoming flow
-            //but only one outgoingFlow //TODO provare a usare isASplit
-            if (incomingFlows.size() == 1 && outgoingFlows.size() > 1) {
-                //then it's not a merge
-                //we can thus change its outgoingFlows conditions:
-                System.out.println("This is a not a merge. Its outgoingFlows "
-                 + "will be changed");
-                //TODO this has to become two separate methods
-                //removing the condition from the outgoing flows of a split
-                for (Element flow : outgoingFlows) {
-                    Element condition = (Element) flow.getElementsByTagName(
-                    "conditionExpression").item(0); //TODO this should work
-                    // but test it.
-                    flow.removeChild(condition);
+                    String newParallelMergeId =
+                     model.newParallelGateway(oldInclusiveMergeCoordinates[0]
+                     , oldInclusiveMergeCoordinates[1]);
+                    Element newParallelMerge =
+                     model.findElemById(newParallelMergeId);
+                    model.replaceELement(firstMandatoryDeepSuccessor, newParallelMerge);
                 }
-            } else {
-                System.out.println("This is a merge. Its outgoingFlows will " + "not be changed");
             }
         }
+    }
+
+
+    //TODO usalo anche in 3a.
+    static class Reverse3Construct {
+
+
+        Element firstInclusive;
+        Element firstInclusiveMeetingPoint;
+
+
+        Reverse3Construct (Element firstInclusive,
+         Element firstInclusiveMeetingPoint) {
+
+            this.firstInclusive = firstInclusive;
+            this.firstInclusiveMeetingPoint = firstInclusiveMeetingPoint;
+        }
+
+
     }
 
 
@@ -140,44 +149,6 @@ public class Reverse3 {
             // and those that are not.
             //I don't need to touch the incoming/outgoing flows either
         }
-    }
-
-
-    //TODO usalo anche in 3a.
-    public static class Reverse3Construct {
-
-
-        Element firstInclusive;
-        Element firstInclusiveMeetingPoint;
-
-
-        Reverse3Construct (Element firstInclusive,
-         Element firstInclusiveMeetingPoint) {
-
-            this.firstInclusive = firstInclusive;
-            this.firstInclusiveMeetingPoint = firstInclusiveMeetingPoint;
-        }
-
-        //    public Reverse3cConstruct() {
-        //     }
-
-        //    public void setFirstInclusive(Element firstInclusive) {
-        // this.firstInclusive = firstInclusive;
-        //    }
-
-        //    public void setFirstInclusiveMeetingPoint(Element
-        // firstInclusiveMeetingPoint) {
-        // this.firstInclusiveMeetingPoint = firstInclusiveMeetingPoint;
-        //    }
-
-        //    public boolean isComplete() {
-        // if (firstInclusive.equals(null) || firstInclusiveMeetingPoint
-        // .equals(null)) {
-        //     return false;
-        // } else {
-        //     return true;
-        // }
-        //    }
     }
 
 
@@ -399,17 +370,19 @@ public class Reverse3 {
      * "1 != 1" returns false
      * "1 > 2" returns false
      * WARNING! "a == a" returns false!
-     * NOTE that any random word, such as "word" returns false!
+     * "True" returns true, as "TRUE" and "true"
+     * NOTE that any other random word, such as "word" returns false!
      *
      * @param condition the condition of a sequence flow in String form
      * @return true if the condition is a tautology, and false if it's not.
      */
     static boolean isItATautology (String condition) {
 
+        String c = condition.toLowerCase();
         try {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("js");
-            Object result = engine.eval(condition);
+            Object result = engine.eval(c);
             return Boolean.TRUE.equals(result);
         } catch (Exception e) {
             return false;
@@ -440,3 +413,6 @@ public class Reverse3 {
 
 
 }
+
+
+
