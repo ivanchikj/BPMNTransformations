@@ -22,7 +22,8 @@ class Rule2 {
         System.out.println("number of " + " gateway instances: " + gatewayInstances.getLength()); //TODO make it work with every gateway type.
 
         if (gatewayInstances.getLength() == 0) {
-            System.out.println("RULE4: there are no gateways in this model");
+            System.out.println("RULE1: there are no exclusive gateways in " +
+             "this model");
             //RETURN FALSE
         }
 
@@ -63,7 +64,7 @@ class Rule2 {
                     ArrayList<Element> flowsToKeep =
                      model.getOutgoingFlows(succ);
                     String firstPartofCondition = "";
-                    @SuppressWarnings ("UnusedAssignment") String secondPartofCondition = "";
+                    @SuppressWarnings ("UnusedAssignment") String secondPartOfCondition = "";
                     //deleting all the flows (it should be only one) from the
                     // item to be deleted to its successor:
                     for (Element aFlowsToDelete : flowsToDelete) {
@@ -82,21 +83,21 @@ class Rule2 {
                         String newCondition = firstPartofCondition; // the
                         // initialization value should not matter.
 
-                        secondPartofCondition =
+                        secondPartOfCondition =
                          model.returnConditionString(flowToKeep);
                         // if both flows have a condition, I merge them with
                         // an AND in the middle.
                         // if else, I only keep the non - empty one.
-                        if (! firstPartofCondition.equals("") && ! secondPartofCondition.equals("")) {
+                        if (! firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
                             //changing the condition of that outgoing flow:
                             newCondition =
                              generateCondition(firstPartofCondition,
-                              secondPartofCondition);
-                        } else if (! firstPartofCondition.equals("") && secondPartofCondition.equals("")) {
+                              secondPartOfCondition);
+                        } else if (! firstPartofCondition.equals("") && secondPartOfCondition.equals("")) {
                             //noinspection ConstantConditions
                             newCondition = firstPartofCondition;
-                        } else if (firstPartofCondition.equals("") && ! secondPartofCondition.equals("")) {
-                            newCondition = secondPartofCondition;
+                        } else if (firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
+                            newCondition = secondPartOfCondition;
                         }
 
                         //Adding the newCondition

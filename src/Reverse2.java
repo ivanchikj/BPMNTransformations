@@ -27,17 +27,17 @@ class Reverse2 {
 
         //let's find the candidate gateways.
         //we can accept every gateway that is a spit,
-        //that means it has only one incomingflow and that has more than one
+        //that means it has only one incoming flow and that has more than one
         // outgoing flows.
 
         //all the exclusive gateways in the model:
-        NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName(
-        "exclusiveGateway");
+        NodeList exclusiveGatewayInstances =
+         model.doc.getElementsByTagName(model.style("exclusiveGateway"));
 
         System.out.println("number of exclusive gateway instances: " + exclusiveGatewayInstances.getLength());
 
         if (exclusiveGatewayInstances.getLength() == 0) {
-            System.out.println("RULE1: there are no exclusive gateways in " + "this model");
+            System.out.println("Reverse 2: there are no exclusive gateways " + "in" + " " + "this model");
         }
 
         ArrayList<Element> candidates = new ArrayList<>();
@@ -89,11 +89,12 @@ class Reverse2 {
                         System.out.println("no more successors to get");
                     } else //noinspection ConstantConditions
                         if (successors.size() > 0) {
-                        mySuccessors.add(successors.get(0)); //the successor
-                        // is now a successor of the new parallel
-                        successors.remove(0); //it's not a successor of the
-                        // original parallel anymore
-                    }
+                            mySuccessors.add(successors.get(0)); //the successor
+                            // is now a successor of the new parallel
+                            successors.remove(0);
+                            //it's not a successor of the
+                            // original parallel anymore
+                        }
                 }
                 System.out.println("My successors SIZE " + mySuccessors.size());
                 String[] position =
@@ -104,7 +105,7 @@ class Reverse2 {
                 // object
                 Element newExclusive = model.findElemById(newExclusiveID);
 
-                newExclusive.setAttribute("name", "NUOVO");//UNLOCKTHIS
+                //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
 
                 //now that I have created my parallel in a sensible position,
                 //I can connect it to the original parallel
