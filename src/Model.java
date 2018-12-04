@@ -296,13 +296,16 @@ public class Model {
         return "";
     }
 
-
-    NodeList findElementsByType (String type) {
+    //TODO usare sempre questo invece del metodo che ritorna la nodeList.
+    ArrayList<Element> findElementsByType (String type) {
 
         String t = style(type);
         NodeList nl = doc.getElementsByTagName(t);
-        return nl;
-
+        ArrayList<Element> ae = new ArrayList<>();
+        for (int i = 0; i < nl.getLength(); i++){
+            ae.add((Element) nl.item(i));
+        }
+        return ae;
     }
 
 

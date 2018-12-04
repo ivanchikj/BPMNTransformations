@@ -10,26 +10,27 @@ public class Reverse3 {
 
 
     /**
-     * TODO errore grave. Devo modificare solo se le condizioni sono true.
-     * Quindi prima devo trovare gli split, vedere se le loro condizioni sono
-     * entrambe true, e poi trovare il loro merge, magari con getPath.
-     * Magari fare un metodo che si chiama "findFirstMeetingPoint", se non
-     * l'ho già fatto in rule
-     *
      * @param model the Model that will be changed
      */
     public static void a (Model model) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3a to model " + model.path);
-        NodeList inclusiveGateways = model.findElementsByType(
+        ArrayList<Element> inclusiveGateways = model.findElementsByType(
         "inclusiveGateway");
 
-        if (inclusiveGateways.getLength() == 0) {
+        if (inclusiveGateways.size() == 0) {
             System.out.println("Reverse3a: there are no inclusive gateways " + "in this model");
         }
-        for (int i = 0 ; i <= inclusiveGateways.getLength() ; i++) {
-            Element inclusiveSplit = (Element) inclusiveGateways.item(0);
-            System.out.println("   Ciao 1 ");
+
+        for (Element inclusiveSplit : inclusiveGateways) {
+            //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
+
+            System.out.println("I'm analyzing inclusive gateway " + inclusiveSplit.getAttribute("id"));
+
+            System.out.println("Is it a split? : " + model.isASplit(inclusiveSplit));
+
+            System.out.println("Is all outGF tautol? : " + allOutGoingFlowsAreTautolgies(inclusiveSplit, model));
+
             if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreTautolgies(inclusiveSplit, model)) {
                 TravelAgency ta = new TravelAgency(model, inclusiveSplit);
                 Element firstMandatoryDeepSuccessor =
@@ -71,7 +72,8 @@ public class Reverse3 {
                      , oldInclusiveMergeCoordinates[1]);
                     Element newParallelMerge =
                      model.findElemById(newParallelMergeId);
-                    model.replaceELement(firstMandatoryDeepSuccessor, newParallelMerge);
+                    model.replaceELement(firstMandatoryDeepSuccessor,
+                     newParallelMerge);
                 }
             }
         }
@@ -398,10 +400,13 @@ public class Reverse3 {
         for (Element flow : outgoingFlows) {
             if (model.hasCondition(flow)) {
                 if (! isItATautology(model.returnConditionString(flow))) {
+                    System.out.println(flow.getAttribute("id") + " is not a " +
+                     "tautology");
                     return false; //there is at least one that is not a
                     // tautology
                 }
             } else {
+                System.out.println("there's at least one outgoing flow of " + oldInclusive.getAttribute("id") + " that has no condition");
                 return false; // we should in principle never end up here,
                 // because all outgoing flows should always have conditions
                 // but still, if it has no condition it cant be a tautology.

@@ -6,16 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class Reverse3Test {
 
 
+    /**
+     * Note that in this model there is one applicable inclusive gateway and
+     * another one that is not applicable because not all his
+     * outgoing flows are tautologies.
+     *
+     * @throws Exception
+     */
     @Test
     void aclassic () throws Exception {
-    //Note that in this model there is one applicable inclusive gateway and
-    // another one that is not applicable because not all his outgoing flows
-    // are tautologies.
+
         Model startingModel = new Model("./tests/TestModels/Rule3a" +
-         "/Reverse3aClassic.bpmn.xml");
+        "/Reverse3aClassic.bpmn.xml");
 
         Model expected = new Model("./tests/TestModels/Rule3a" +
-         "/Reverse3aClassicr3a.bpmn.xml");
+        "/Reverse3aClassicr3a.bpmn.xml");
 
         Model result = startingModel.cloneModel();
 
@@ -24,17 +29,58 @@ class Reverse3Test {
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
-    void abigger(){
-    //TODO fare un modello dove c'è roba dentro il construct
-    //usalo anche come esempio nella tesi, quando spieghi cos'è il first
-    // meeting point
+
+    /**
+     * TODO usalo anche come esempio nella tesi, quando spieghi cos'è il
+     * first
+     * // meeting point
+     * <p>
+     * In this model there are more than 3 outgoing flows from the
+     * inclusive
+     * gateway, and also in the middle of the construct there is a
+     * parallel
+     * split in one instance and an exclusive split in another.
+     *
+     * @throws Exception
+     */
+    @Test
+    void aThingsInTheMiddle () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule3a" +
+        "/ThingsInTheMiddle.bpmn.xml");
+
+        Model expected =
+         new Model("/Users/rubenfolini/BPMNTransformations" + "/tests" +
+         "/TestModels/Rule3a/ThingsInTheMiddler3a.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.a(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
-    void aOneInsideTheOther(){
-    //TODO fare un modello dove c'è un construct dentro il construct.
-    //Usalo anche questo nella tesi.
-    }
 
+    /**
+     * This model has a reverse3c construct inside another.
+     */
+    @Test
+    void aOneInsideTheOther () throws Exception {
+
+        //TODO Usalo anche questo nella tesi.
+
+        Model startingModel = new Model("./tests/TestModels/Rule3a" +
+        "/InclusiveInTheMiddle.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule3a" +
+        "/InclusiveInTheMiddler3a.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.a(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
 
 
     @Test

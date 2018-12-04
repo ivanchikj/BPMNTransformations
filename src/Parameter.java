@@ -47,8 +47,9 @@ public class Parameter {
         if (Arrays.asList(validParameters).contains(parameter)) {
             return true;
         } else {
-            System.out.println(parameter + " is not a valid parameter.");
-            return false;
+            System.err.println(parameter + " is not a valid parameter.");
+            System.exit(0);
+            return false; // never reached but mandatory
         }
     }
 
