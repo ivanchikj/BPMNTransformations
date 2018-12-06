@@ -10,3 +10,4 @@ BPMNTransformations.iml
 src/META-INF/
 *.iml
 *.class
+WAappid.txt

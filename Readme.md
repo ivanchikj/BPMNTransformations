@@ -72,6 +72,13 @@ Both the thesis and the project were supervised by <!---do you want to have your
 TODO installing java 1.8 from terminal
 ```
 
+* Obtain a valid app id from Wolfram Alpha *
+
+Wolfram alpha app IDs can be obtained by registering [here](https://account.wolfram.com/auth/sign-in). When you have an account go [here](http://developer.wolframalpha.com/portal/myapps/) and click on the upper right corner on "get an AppID", choose a name and a description for your app and click on "get an AppID"; then copy the ID that is generated.
+Create a file called "WAappid.txt" in the BPMNTransformations folder.
+Now paste your newly obtained wolfram alpha appID inside WAappid.txt.
+*If you skip this step reversing Rule3b will not be possible, but the rest of the software should work normally*
+
 ### Running the program
 
 * Open the terminal.

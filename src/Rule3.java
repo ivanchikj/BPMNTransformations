@@ -224,7 +224,7 @@ public class Rule3 {
             TravelAgency parallelTA = new TravelAgency(model, parallelGat);
             //parallelTA.printPaths();
             Element firstParallelMeetingPoint =
-             parallelTA.mandatoryDeepSuccessors.get(0); //This always works
+             parallelTA.mandatorySuccessors.get(0); //This always works
             // because we meet at the end anyway
             // TODO what happens when I have more than one end... it should
             // return false but it should not break.
@@ -515,7 +515,7 @@ public class Rule3 {
 
         TravelAgency ta = new TravelAgency(model, startingPoint);
         ArrayList<Element> mandatoryDeepSuccessors =
-         ta.getMandatoryDeepSuccessors();
+         ta.getMandatorySuccessors();
         ArrayList<Element> appropriateExclusiveMeetingPoints =
          new ArrayList<>();
         ArrayList<Element> firstParallelMeetingPointPredecessors =

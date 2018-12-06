@@ -13,7 +13,7 @@ public class TravelAgency {
     //private ArrayList<String> toVisit;
     private Element startingPoint;
     //private ArrayList<Element> startingList;
-    ArrayList<Element> mandatoryDeepSuccessors;
+    ArrayList<Element> mandatorySuccessors;
     Element firstMandatoryDeepSuccessor;
     //private int pastID;
     //TODO decide if the starting point has to be a class variable
@@ -46,11 +46,11 @@ public class TravelAgency {
         //getPathsFrom(startingList);
         getPaths(startingPoint);
 
-        mandatoryDeepSuccessors = new ArrayList<>();
-        getMandatoryDeepSuccessors();
+        mandatorySuccessors = new ArrayList<>();
+        getMandatorySuccessors();
 
-        if (mandatoryDeepSuccessors.size() > 0){
-            this.firstMandatoryDeepSuccessor = mandatoryDeepSuccessors.get(0);
+        if (mandatorySuccessors.size() > 0){
+            this.firstMandatoryDeepSuccessor = mandatorySuccessors.get(0);
         }
 
         //printPaths();//UNLOCKTHIS for testing
@@ -89,8 +89,8 @@ public class TravelAgency {
 
         //getPaths(); TODO deletethis
 
-        mandatoryDeepSuccessors = new ArrayList<>();
-        getMandatoryDeepSuccessors();
+        mandatorySuccessors = new ArrayList<>();
+        getMandatorySuccessors();
 
         //printPaths();//UNLOCKTHIS for testing
 
@@ -166,7 +166,7 @@ public class TravelAgency {
      * the impression that two paths have a deepSuccessor in common while it
      * is not the same exact element.
      */
-    ArrayList<Element> getMandatoryDeepSuccessors () throws XPathExpressionException {
+    ArrayList<Element> getMandatorySuccessors () throws XPathExpressionException {
 
         ArrayList<String> firstPathIDs;
 
@@ -182,15 +182,15 @@ public class TravelAgency {
             firstPathIDs.retainAll(idForm);
         }
 
-        mandatoryDeepSuccessors = fromIDsToElements(firstPathIDs);
+        mandatorySuccessors = fromIDsToElements(firstPathIDs);
 
         //of course we remove the starting point because we know that will
         // always be in common:
-        mandatoryDeepSuccessors.remove(0);
+        mandatorySuccessors.remove(0);
 
-        //printMandatoryDeepSuccessors(); //UNLOCKTHIS for testing
+        //printMandatorySuccessors(); //UNLOCKTHIS for testing
 
-        return mandatoryDeepSuccessors;
+        return mandatorySuccessors;
     }
 
 
@@ -221,10 +221,10 @@ public class TravelAgency {
      * Used for testing
      */
     @SuppressWarnings ("unused")
-    public void printMandatoryDeepSuccessors () {
+    public void printMandatorySuccessors () {
 
         System.out.println("PRINTING THE MANDATORY DEEP SUCCESSORS: ");
-        for (Element element : mandatoryDeepSuccessors) {
+        for (Element element : mandatorySuccessors) {
             System.out.println("                       " + element.getAttribute("id"));
         }
     }

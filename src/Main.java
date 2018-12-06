@@ -4,21 +4,26 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
+
 
 //TODO fare dei test per testare il parsing delle stringhe.
 
 public class Main {
 
 
+    //private static String appIDPath = "prova";
+    private static String appIDPath = "WAappid.txt";
     private static Scanner reader = new Scanner(System.in);
-
+    static String appID;
 
     public static void main (String[] args) throws Exception {
+
+        checkIfConnected();
+        appID = checkWAAppID();
 
         //noinspection ResultOfMethodCallIgnored
         new File("temp").mkdirs();
@@ -26,6 +31,74 @@ public class Main {
         // input = "testing"; //UNLOCKTHIS used only to go in the manual
         // testing method
         readInput(input);
+    }
+
+
+    static String checkWAAppID () {
+        //You need a wolframAlpha id to access its API.
+        //For more information on how to obtain a Wolfram Alpha app id,
+        //see https://account.wolfram.com/auth/sign-in
+        String appid = "";
+        File appIDFile = new File(appIDPath);
+
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(appIDFile));
+
+            StringBuilder st = new StringBuilder();
+            String s;
+
+            while ((s = br.readLine()) != null) {
+            st.append(s);
+            }
+            br.close();
+
+
+            appid = st.toString();
+            if (appid.length() < 2){ //The ID is supposed to be way longer
+                printHowToGetAppID();
+            }
+            System.out.println("AppID " + appid);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            printHowToGetAppID();
+        }
+        return appid;
+    }
+
+
+    private static void printHowToGetAppID () {
+
+        System.out.println("I couldn't find an appID in " + appIDPath);
+        System.out.println("The program will not be able to apply");
+        System.out.println("Reverse3b without a valid Wolfram Alpha AppID");
+        System.out.println("Wolfram alpha app IDs can be obtained by " +
+        "registering at: ");
+        System.out.println();
+        System.out.println("https://account.wolfram.com/auth/sign-in");
+        System.out.println();
+        System.out.println("When you have an account go to: ");
+        System.out.println();
+        System.out.println("http://developer.wolframalpha.com/portal/myapps/");
+        System.out.println();
+        System.out.println("and click on the upper right corner on \"get an " + "AppID\",");
+        System.out.println("choose a name and a description for your app and "
+         + "click on \"get an AppID\";");
+        System.out.println("then copy the ID that is generated.");
+        System.out.println();
+        System.out.println("Create a file called \"WAappid.txt\" in the " +
+        "BPMNTransformations folder.");
+        System.out.println("Now paste your newly obtained wolfram alpha appID" +
+         " inside WAappid.txt.");
+        System.out.println();
+        System.out.println();
+        System.out.println("YOU CAN STILL RUN THE PROGRAM BUT REVERSE3b WILL " +
+         "NOT WORK");
+    }
+
+
+    private static void checkIfConnected () {
+        //TODO
     }
 
 

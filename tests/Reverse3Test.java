@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -102,20 +104,42 @@ class Reverse3Test {
 
 
     @Test
-    void isItATautology () {
+    void areAlwaysTrue () {
 
-        assertTrue(Reverse3.isItATautology("1 == 1"));
-        assertFalse(Reverse3.isItATautology("1 == 2"));
-        //assertTrue(Reverse3.isItATautology("a == a"));
-        //this doesn't work with the engine that I use now.
-        assertFalse(Reverse3.isItATautology("anyWord"));
-        assertFalse(Reverse3.isItATautology("4"));
-        assertFalse(Reverse3.isItATautology("4 > 5"));
-        assertTrue(Reverse3.isItATautology("4 < 5"));
-        assertTrue(Reverse3.isItATautology("TRUE"));
-        assertTrue(Reverse3.isItATautology("true"));
-        assertFalse(Reverse3.isItATautology("FALSE"));
-        assertFalse(Reverse3.isItATautology("FaLse"));
+        assertTrue(Reverse3.areAlwaysTrue("1 == 1"));
+        assertFalse(Reverse3.areAlwaysTrue("1 == 2"));
+        assertTrue(Reverse3.areAlwaysTrue("'a' == 'a'"));
+        assertFalse(Reverse3.areAlwaysTrue("'a' == 'b'"));
+        //this works if words are surrounded by 'quotation marks'
+        assertFalse(Reverse3.areAlwaysTrue("anyWord"));
+        assertFalse(Reverse3.areAlwaysTrue("4"));
+        assertFalse(Reverse3.areAlwaysTrue("4 > 5"));
+        assertTrue(Reverse3.areAlwaysTrue("4 < 5"));
+        assertTrue(Reverse3.areAlwaysTrue("TRUE"));
+        assertTrue(Reverse3.areAlwaysTrue("true"));
+        assertFalse(Reverse3.areAlwaysTrue("FALSE"));
+        assertFalse(Reverse3.areAlwaysTrue("FaLse"));
+    }
+
+
+    /**
+     * The WAappid.txt needs to be present inside the BPMNTransformation
+     * folder for this test to pass, and the PC needs to be connected to the
+     * internet.
+     */
+    @Test
+    void areMutuallyExclusive() throws IOException {
+
+        assertTrue(Reverse3.areMutuallyExclusive("a > 0","a < 0"));
+        assertTrue(Reverse3.areMutuallyExclusive("A >= 100", "A < 50"));
+        assertFalse(Reverse3.areMutuallyExclusive("1 == 2","2 == 3"));
+        assertFalse(Reverse3.areMutuallyExclusive("1 == 2","4 > 0"));
+        assertFalse(Reverse3.areMutuallyExclusive("",""));
+        assertFalse(Reverse3.areMutuallyExclusive("a > 0",""));
+        assertFalse(Reverse3.areMutuallyExclusive("a > 0","b < 0"));
+        assertFalse(Reverse3.areMutuallyExclusive("a == 1",""));
+
+
     }
 
 

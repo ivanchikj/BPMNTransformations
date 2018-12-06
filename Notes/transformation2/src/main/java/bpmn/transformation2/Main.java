@@ -64,8 +64,8 @@ public class Main{
 //	TravelAgency ta2 = new TravelAgency(sameModel);
 //	ta2.printNumberOfPaths();
 //	
-//	ta1.printMandatoryDeepSuccessors();
-//	ta2.printMandatoryDeepSuccessors();
+//	ta1.printMandatorySuccessors();
+//	ta2.printMandatorySuccessors();
 //	
 //	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, sameModel));
 //	System.out.println("SONO DIVERSI: " + Execution.modelsAreDifferent(origina, origina));
@@ -127,7 +127,7 @@ public class Main{
 //	Model testPath = new Model(patSplitTest);
 //	TravelAgency tAgency = new TravelAgency(testPath);
 //	tAgency.printPaths();
-//	tAgency.printMandatoryDeepSuccessors();
+//	tAgency.printMandatorySuccessors();
 	
 //	String m3cR = "./TestGraphs/Rule3cR.bpmn.xml";
 //	Model test3cR = new Model(m3cR);
@@ -139,7 +139,7 @@ public class Main{
 //	Model testgPath = new Model(gPath);
 //	TravelAgency tAgency = new TravelAgency(testgPath);
 //	tAgency.printPaths();
-//	tAgency.printMandatoryDeepSuccessors();
+//	tAgency.printMandatorySuccessors();
 	
 	 
 	

@@ -338,7 +338,7 @@ public class TravelAgency {
 	//of course we remove the starting point because we know that will always be in common:
 	mandatoryDeepSuccessors.remove(0);
 
-	//printMandatoryDeepSuccessors(); //UNLOCKTHIS for testing
+	//printMandatorySuccessors(); //UNLOCKTHIS for testing
 
 	return mandatoryDeepSuccessors;
 

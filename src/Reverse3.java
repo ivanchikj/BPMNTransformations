@@ -1,9 +1,18 @@
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class Reverse3 {
@@ -25,13 +34,17 @@ public class Reverse3 {
         for (Element inclusiveSplit : inclusiveGateways) {
             //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
 
-            System.out.println("I'm analyzing inclusive gateway " + inclusiveSplit.getAttribute("id"));
+//            System.out.println("I'm analyzing inclusive gateway " +
+//            inclusiveSplit.getAttribute("id"));
 
-            System.out.println("Is it a split? : " + model.isASplit(inclusiveSplit));
+//            System.out.println("Is it a split? : " + model.isASplit
+// (inclusiveSplit));
 
-            System.out.println("Is all outGF tautol? : " + allOutGoingFlowsAreTautolgies(inclusiveSplit, model));
+//            System.out.println("Are all outgoing flows of " +
+// inclusiveSplit.getAttribute("id") + " ? : " +
+// allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model));
 
-            if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreTautolgies(inclusiveSplit, model)) {
+            if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model)) {
                 TravelAgency ta = new TravelAgency(model, inclusiveSplit);
                 Element firstMandatoryDeepSuccessor =
                  ta.firstMandatoryDeepSuccessor;
@@ -80,7 +93,6 @@ public class Reverse3 {
     }
 
 
-    //TODO usalo anche in 3a.
     static class Reverse3Construct {
 
 
@@ -100,9 +112,74 @@ public class Reverse3 {
 
 
     /**
+     * @param model the Model that will be changed
+     */
+    public static void b (Model model) throws Exception {
+
+        System.out.println("I'm applying rule REVERSE3a to model " + model.path);
+        ArrayList<Element> inclusiveGateways = model.findElementsByType(
+        "inclusiveGateway");
+
+        if (inclusiveGateways.size() == 0) {
+            System.out.println("Reverse3a: there are no inclusive gateways " + "in this model");
+        }
+
+        for (Element inclusiveSplit : inclusiveGateways) {
+            //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
+
+//            System.out.println("I'm analyzing inclusive gateway " +
+//            inclusiveSplit.getAttribute("id"));
+
+//            System.out.println("Is it a split? : " + model.isASplit
+// (inclusiveSplit));
+
+//            System.out.println("Are all outgoing flows of " +
+// inclusiveSplit.getAttribute("id") + " ? : " +
+// allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model));
+
+            if (model.isASplit(inclusiveSplit) && allOutgoingFlowsAreMutuallyExclusive(inclusiveSplit, model)) {
+                TravelAgency ta = new TravelAgency(model, inclusiveSplit);
+                Element firstMandatoryDeepSuccessor =
+                 ta.firstMandatoryDeepSuccessor;
+                if (firstMandatoryDeepSuccessor.getTagName().contains(
+                "inclusiveGateway")) {
+
+                    String[] oldInclusiveSplitCoordinates =
+                     model.getPosition(inclusiveSplit);
+
+                    // creating the substitute element in the position of
+                    // the
+                    // old one
+                    String newExclusiveSplitId =
+                     model.newExclusiveGateway(oldInclusiveSplitCoordinates[0], oldInclusiveSplitCoordinates[1]);
+                    Element newExclusiveSplit =
+                     model.findElemById(newExclusiveSplitId);
+                    model.replaceELement(inclusiveSplit, newExclusiveSplit);
+
+                    //Unlike in reverse3a we don't need to delete the split's
+                    // outgoing flows.
+
+                    //Now we can substitute also the old merge with an
+                    // inclusive gateway.
+                    String[] oldInclusiveMergeCoordinates =
+                     model.getPosition(firstMandatoryDeepSuccessor);
+
+                    String newExclusiveMergeId =
+                     model.newExclusiveGateway(oldInclusiveMergeCoordinates[0], oldInclusiveMergeCoordinates[1]);
+                    Element newExclusiveMerge =
+                     model.findElemById(newExclusiveMergeId);
+                    model.replaceELement(firstMandatoryDeepSuccessor,
+                     newExclusiveMerge);
+                }
+            }
+        }
+    }
+
+
+    /**
      * Changing inclusive to exclusive.
      */
-    static void b (Model model) throws Exception {
+    static void backup (Model model) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3b to model " + model.name);
         // Here I'm creating a list of all the inclusive gateways in the
@@ -190,7 +267,7 @@ public class Reverse3 {
 
         for (Element candidate : candidates) {
             TravelAgency ta = new TravelAgency(model, candidate);
-            Element firstMeetingPoint = ta.mandatoryDeepSuccessors.get(0);
+            Element firstMeetingPoint = ta.mandatorySuccessors.get(0);
             if (firstMeetingPoint.getTagName().equals("bpmn:inclusiveGateway")) {
                 //ok now I can create a construct.
                 System.out.println(ta.paths.size());//UNLOCKTHIS
@@ -378,7 +455,7 @@ public class Reverse3 {
      * @param condition the condition of a sequence flow in String form
      * @return true if the condition is a tautology, and false if it's not.
      */
-    static boolean isItATautology (String condition) {
+    static boolean areAlwaysTrue (String condition) {
 
         String c = condition.toLowerCase();
         try {
@@ -392,28 +469,145 @@ public class Reverse3 {
     }
 
 
-    static boolean allOutGoingFlowsAreTautolgies (Element oldInclusive,
-     Model model) throws XPathExpressionException {
+    private static boolean allOutGoingFlowsAreAlwaysTrue (Element oldInclusive, Model model) throws XPathExpressionException {
 
         ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusive);
 
         for (Element flow : outgoingFlows) {
             if (model.hasCondition(flow)) {
-                if (! isItATautology(model.returnConditionString(flow))) {
-                    System.out.println(flow.getAttribute("id") + " is not a " +
-                     "tautology");
-                    return false; //there is at least one that is not a
-                    // tautology
+                if (! areAlwaysTrue(model.returnConditionString(flow))) {
+                    System.out.println(flow.getAttribute("id") + " is not a " + "tautology");
+                    return false; //there is at least one that is not always
+                    // true
                 }
             } else {
                 System.out.println("there's at least one outgoing flow of " + oldInclusive.getAttribute("id") + " that has no condition");
                 return false; // we should in principle never end up here,
                 // because all outgoing flows should always have conditions
-                // but still, if it has no condition it cant be a tautology.
+                // but still, if it has no condition it cant be always true.
             }
         }
-        return true; // I haven't found a single outgoing flow that is not a
-        // tautology.
+        return true; // I haven't found a single outgoing flow that is not
+        // always true.
+    }
+
+    /**
+     * This method accepts an array of Strings as an input, containing
+     * different conditions.
+     * It checks that they are all mutually exclusive.
+     * It uses wolfram Alpha's API to do so.
+     * For this reason the method checks that it is connected to the internet,
+     * if it is not //TODO
+     * then it returns false and the transformation doesn't happen.
+     *
+     * @return false if they are not mutually exclusive, true if they are.
+     */
+    static boolean areMutuallyExclusive (String condition1,
+                                         String condition2) throws IOException {
+
+        String c1 = condition1.toLowerCase().replaceAll("\"", "");
+        String c2 = condition2.toLowerCase().replaceAll("\"", "");
+        String answer = "";
+        String question = c1 + " && " + c2;
+
+
+        String appid = "";
+        if (appid.length() < 2){
+            appid = Main.checkWAAppID();
+        }
+
+
+        System.out.println("QUESTION: " +question);
+        String url =
+                "http://api.wolframalpha.com/v2/query?appid=" + appid + "&input"
+                        + "=" + URLEncoder.encode(question, "UTF-8");
+        //System.out.println(url);
+        URL wolframAlpha = new URL(url);
+        URLConnection q = wolframAlpha.openConnection();
+        BufferedReader in =
+                new BufferedReader(new InputStreamReader(q.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String inputLine;
+
+        while ((inputLine = in.readLine()) != null) {
+            sb.append(inputLine);
+        }
+        in.close();
+
+        //System.out.println(sb.toString());
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document document =
+                    builder.parse(new InputSource(new StringReader(sb.toString())));
+            NodeList pods = document.getElementsByTagName("pod");
+            for (int i = 0 ; i < pods.getLength() ; i++) {
+                Element pod = (Element) pods.item(i);
+                if (pod.getAttribute("title").equals("Solutions")) {
+                    Node plaintext =
+                            pod.getElementsByTagName("plaintext").item(0);
+                    System.out.println(plaintext.getTextContent());
+                    answer = plaintext.getTextContent();
+                } else if (pod.getAttribute("title").equals("Result")) {
+                    Node plaintext =
+                            pod.getElementsByTagName("plaintext").item(0);
+                    System.out.println(plaintext.getTextContent());
+                    answer = plaintext.getTextContent();
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        answer = answer.toLowerCase();
+        if (answer.contains("exist")){
+            //If I asked an impossible equation (e.g. "a>0 && a <0")
+            //then WA would answer me "No solutions exist"
+
+            //Note that the previous version of this IF included also
+            //|| answer.contains("false")
+            //But ultimately it din't make sense, because I risked including
+            //occasions where one condition was always false and one was
+            // always true.
+            // I don't consider those to be mutually exclusive.
+            return true;
+        }
+        return false;
+    }
+
+
+
+
+    private static boolean allOutgoingFlowsAreMutuallyExclusive (Element oldInclusive, Model model) throws XPathExpressionException {
+
+        ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusive);
+
+        for (Element flow : outgoingFlows) {
+            for (Element flow2 : outgoingFlows) {
+                if (model.hasCondition(flow) && model.hasCondition(flow2)) {
+                    try {
+                        if (! areMutuallyExclusive(model.returnConditionString(flow), model.returnConditionString(flow2))) {
+                            return false; //if there's at least a couple that
+                            // is not
+                            // mutually exclusive, I can't apply Reverse3a on
+                            // this
+                            // inclusive split.
+                        }
+                    } catch (IOException e) {
+                        return false;
+                    }
+                } else {
+                    return false; //at least one flow has no condition.
+                    //this means they can't be all mutually exclusive.
+                }
+            }
+        }
+        return true;
+        //I wasn't able to find a couple of outgoing flows that wasn't
+        // mutually exclusive.
     }
 
 
