@@ -16,7 +16,7 @@ class Reverse3Test {
      * @throws Exception
      */
     @Test
-    void aclassic () throws Exception {
+    void aClassic () throws Exception {
 
         Model startingModel = new Model("./tests/TestModels/Rule3a" +
         "/Reverse3aClassic.bpmn.xml");
@@ -86,10 +86,56 @@ class Reverse3Test {
 
 
     @Test
-    void b () {
+    void bClassic () throws Exception {
+        Model startingModel = new Model("./tests/TestModels/Rule3b" +
+                "/Reverse3bClassic.bpmn.xml");
 
+        Model expected = new Model("./tests/TestModels/Rule3b" +
+                "/Reverse3bClassicr3b.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.b(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
+    @Test
+    void bThingsInTheMiddle() throws Exception {
+        Model startingModel = new Model("./tests/TestModels/Rule3b" +
+                "/ThingsInTheMiddle.bpmn.xml");
+
+        Model expected =
+                new Model("/Users/rubenfolini/BPMNTransformations" + "/tests" +
+                        "/TestModels/Rule3b/ThingsInTheMiddler3b.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.b(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+    /**
+     * This model has a reverse3b construct inside another.
+     */
+    @Test
+    void bOneInsideTheOther () throws Exception {
+
+        //TODO Usalo anche questo nella tesi.
+
+        Model startingModel = new Model("./tests/TestModels/Rule3b" +
+                "/InclusiveInTheMiddle.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule3b" +
+                "/InclusiveInTheMiddler3b.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.b(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
 
     @Test
     void c () {
@@ -132,12 +178,14 @@ class Reverse3Test {
 
         assertTrue(Reverse3.areMutuallyExclusive("a > 0","a < 0"));
         assertTrue(Reverse3.areMutuallyExclusive("A >= 100", "A < 50"));
+        assertTrue(Reverse3.areMutuallyExclusive("a == 2", "a == 3"));
         assertFalse(Reverse3.areMutuallyExclusive("1 == 2","2 == 3"));
         assertFalse(Reverse3.areMutuallyExclusive("1 == 2","4 > 0"));
         assertFalse(Reverse3.areMutuallyExclusive("",""));
         assertFalse(Reverse3.areMutuallyExclusive("a > 0",""));
         assertFalse(Reverse3.areMutuallyExclusive("a > 0","b < 0"));
         assertFalse(Reverse3.areMutuallyExclusive("a == 1",""));
+
 
 
     }

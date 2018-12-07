@@ -116,7 +116,7 @@ public class Reverse3 {
      */
     public static void b (Model model) throws Exception {
 
-        System.out.println("I'm applying rule REVERSE3a to model " + model.path);
+        System.out.println("I'm applying rule REVERSE3b to model " + model.path);
         ArrayList<Element> inclusiveGateways = model.findElementsByType(
         "inclusiveGateway");
 
@@ -127,15 +127,11 @@ public class Reverse3 {
         for (Element inclusiveSplit : inclusiveGateways) {
             //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
 
-//            System.out.println("I'm analyzing inclusive gateway " +
-//            inclusiveSplit.getAttribute("id"));
+            System.out.println("I'm analyzing inclusive gateway " + inclusiveSplit.getAttribute("id"));
 
-//            System.out.println("Is it a split? : " + model.isASplit
-// (inclusiveSplit));
+            System.out.println("Is it a split? : " + model.isASplit(inclusiveSplit));
 
-//            System.out.println("Are all outgoing flows of " +
-// inclusiveSplit.getAttribute("id") + " ? : " +
-// allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model));
+            System.out.println("Are all outgoing flows of " + inclusiveSplit.getAttribute("id") + " mutually exclusive ? : " + allOutgoingFlowsAreMutuallyExclusive(inclusiveSplit, model));
 
             if (model.isASplit(inclusiveSplit) && allOutgoingFlowsAreMutuallyExclusive(inclusiveSplit, model)) {
                 TravelAgency ta = new TravelAgency(model, inclusiveSplit);
@@ -491,6 +487,7 @@ public class Reverse3 {
         // always true.
     }
 
+
     /**
      * This method accepts an array of Strings as an input, containing
      * different conditions.
@@ -503,29 +500,26 @@ public class Reverse3 {
      * @return false if they are not mutually exclusive, true if they are.
      */
     static boolean areMutuallyExclusive (String condition1,
-                                         String condition2) throws IOException {
+     String condition2) throws IOException {
 
         String c1 = condition1.toLowerCase().replaceAll("\"", "");
         String c2 = condition2.toLowerCase().replaceAll("\"", "");
         String answer = "";
         String question = c1 + " && " + c2;
 
-
-        String appid = "";
-        if (appid.length() < 2){
+        String appid = ""; //OPTIONAL insert your appID here.
+        if (appid.length() < 3) {
             appid = Main.checkWAAppID();
         }
 
-
-        System.out.println("QUESTION: " +question);
-        String url =
-                "http://api.wolframalpha.com/v2/query?appid=" + appid + "&input"
-                        + "=" + URLEncoder.encode(question, "UTF-8");
+        System.out.println("QUESTION: " + question);
+        String url = "http://api.wolframalpha.com/v2/query?appid=" + appid +
+        "&input" + "=" + URLEncoder.encode(question, "UTF-8");
         //System.out.println(url);
         URL wolframAlpha = new URL(url);
         URLConnection q = wolframAlpha.openConnection();
         BufferedReader in =
-                new BufferedReader(new InputStreamReader(q.getInputStream()));
+         new BufferedReader(new InputStreamReader(q.getInputStream()));
         StringBuilder sb = new StringBuilder();
         String inputLine;
 
@@ -541,21 +535,20 @@ public class Reverse3 {
         try {
             builder = factory.newDocumentBuilder();
             Document document =
-                    builder.parse(new InputSource(new StringReader(sb.toString())));
+             builder.parse(new InputSource(new StringReader(sb.toString())));
             NodeList pods = document.getElementsByTagName("pod");
             for (int i = 0 ; i < pods.getLength() ; i++) {
                 Element pod = (Element) pods.item(i);
                 if (pod.getAttribute("title").equals("Solutions")) {
                     Node plaintext =
-                            pod.getElementsByTagName("plaintext").item(0);
+                     pod.getElementsByTagName("plaintext").item(0);
                     System.out.println(plaintext.getTextContent());
                     answer = plaintext.getTextContent();
                 } else if (pod.getAttribute("title").equals("Result")) {
                     Node plaintext =
-                            pod.getElementsByTagName("plaintext").item(0);
+                     pod.getElementsByTagName("plaintext").item(0);
                     System.out.println(plaintext.getTextContent());
                     answer = plaintext.getTextContent();
-
                 }
             }
         } catch (Exception e) {
@@ -563,7 +556,7 @@ public class Reverse3 {
             return false;
         }
         answer = answer.toLowerCase();
-        if (answer.contains("exist")){
+        if (answer.contains("exist")) {
             //If I asked an impossible equation (e.g. "a>0 && a <0")
             //then WA would answer me "No solutions exist"
 
@@ -579,32 +572,48 @@ public class Reverse3 {
     }
 
 
-
-
     private static boolean allOutgoingFlowsAreMutuallyExclusive (Element oldInclusive, Model model) throws XPathExpressionException {
+
+        System.out.println("I'm analyzing gateway " + oldInclusive.getAttribute("id"));
+        System.out.println("To see if all its outgoing flows are");
+        System.out.println("mutually exclusive");
 
         ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusive);
 
         for (Element flow : outgoingFlows) {
             for (Element flow2 : outgoingFlows) {
-                if (model.hasCondition(flow) && model.hasCondition(flow2)) {
-                    try {
-                        if (! areMutuallyExclusive(model.returnConditionString(flow), model.returnConditionString(flow2))) {
-                            return false; //if there's at least a couple that
-                            // is not
-                            // mutually exclusive, I can't apply Reverse3a on
-                            // this
-                            // inclusive split.
+                if (!(flow.getAttribute("id").equals(flow2.getAttribute("id")))) {
+                //Obviously I don't want to compare a flow with itself
+//                because that will never be mutually exclusive with itself.
+
+                    System.out.println("I'm comparing the conditions of flow:");
+                    System.out.println(flow.getAttribute("id") + " and flow " + flow2.getAttribute("id"));
+                    if (model.hasCondition(flow) && model.hasCondition(flow2)) {
+                        try {
+                            if (! areMutuallyExclusive(model.returnConditionString(flow), model.returnConditionString(flow2))) {
+                                System.out.println("WA said they are not MEx");
+                                return false; //if there's at least a couple
+                                // that
+                                // is not
+                                // mutually exclusive, I can't apply
+                                // Reverse3a on
+                                // this
+                                // inclusive split.
+                            }
+                        } catch (IOException e) {
+                            System.out.println("WA had a problem");
+                            return false;
                         }
-                    } catch (IOException e) {
-                        return false;
+                    } else {
+                        System.out.println("at least one of the two OF has " +
+                         "no" + " " + "condition");
+                        return false; //at least one flow has no condition.
+                        //this means they can't be all mutually exclusive.
                     }
-                } else {
-                    return false; //at least one flow has no condition.
-                    //this means they can't be all mutually exclusive.
                 }
             }
         }
+        System.out.println("All OFs are MutuallyExclusive");
         return true;
         //I wasn't able to find a couple of outgoing flows that wasn't
         // mutually exclusive.
