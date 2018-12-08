@@ -1033,19 +1033,24 @@ public class Model {
 
         if (hasCondition(sequenceFlow)) {
             // getting all the conditions of a sequenceFlow
-            ArrayList<Element> children =
-             (ArrayList<Element>) sequenceFlow.getElementsByTagName(style(
-             "conditionExpression")); //TODO
+            NodeList children = sequenceFlow.getElementsByTagName(style(
+            "conditionExpression"));
             //removing all the previous conditions:
-            for (Element aChildren : children) {
-                sequenceFlow.removeChild(aChildren);
+            for (int i = 0 ; i < children.getLength() ; i++) {
+                Node child = children.item(i);
+                sequenceFlow.removeChild(child);
+                System.out.println("I've removed: ");
+                System.out.println(child.getTextContent());
+
             }
         }
-        Element conditionElement = doc.createElement("bpmn" +
-        ":conditionExpression");
-        conditionElement.setAttribute("xsi:type", "bpmn:tFormalExpression");
+        Element conditionElement = doc.createElement(style(
+        "conditionExpression"));
+        conditionElement.setAttribute("xsi:type", style("tFormalExpression"));
         conditionElement.appendChild(doc.createTextNode(condition));
         sequenceFlow.appendChild(conditionElement);
+        System.out.println("I've added:");
+        System.out.println(conditionElement.getTextContent());
     }
 
 

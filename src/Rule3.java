@@ -375,49 +375,11 @@ public class Rule3 {
 
             model.replaceElement(firstMeetingPoint, newMP);
 
-//            for (Element successor : construct.exclusiveSuccessors) {
-//                //successor.setAttribute("name", "valid successor");UNLOCKTHIS
-//                ArrayList<Element> outgoingFlows =
-//                 model.getOutgoingFlows(successor);
-//
-//                for (Element flow : outgoingFlows) {
-//                    model.setSource(flow.getAttribute("id"), oldParallelID);
-//                }
-//                //before deleting the exclusive gateway, we have to delete
-//                // all it's incoming flows
-//                model.deleteIncomingFlows(successor);
-//                model.delete(successor.getAttribute("id"));
-//            }
-//
-//            for (Element predecessor : construct.exclusivePredecessors) {
-//                //predecessor.setAttribute("name", "valid predecessor");
-//                // UNLOCKTHIS
-//
-//                ArrayList<Element> incomingFlows =
-//                 model.getIncomingFlows(predecessor);
-//                for (Element flow : incomingFlows) {
-//                    model.setTarget(flow.getAttribute("id"),
-//                            oldMPID);
-//                }
-//                //before deleting the exclusive gateway, we have to delete
-//                // all it's outgoing flows
-//                model.deleteOutgoingFlows(predecessor);
-//                model.delete(predecessor.getAttribute("id"));
-//
-//            }
-
-//            Element newInclusiveStartingPoint = model.findElemById
-// (firstMeetingPointID);
-//            Element newInclusiveMeetingPoint = model.findElemById
-// (firstParallelID);
-
             //let's clear the resulting multiple empty paths among the two
             // inclusive but one
 
-            //keepOnlyOneEmptyPathAmong(newInclusiveStartingPoint,
-            // newInclusiveMeetingPoint, model);
-            //TODO this method doesn't work right now.
-            //the program is not incorrect without it, but it could look better.
+            keepOnlyOneEmptyPathAmong(newInclusive,
+            newMP, model);
         }
     }
 
@@ -425,35 +387,58 @@ public class Rule3 {
     //the program is not incorrect without it, but it could look better.
 
 
-    //TODO another thing that we have to consider is that
     //if we merge the empty paths and different conditions are present, we
-    // have to merge them.
-    //this time instead of adding an && we should add an ||
+    // have to merge their conditions as well.
+    // We should add an || between them when we merge them.
     private static void keepOnlyOneEmptyPathAmong (Element startingPoint,
      Element firstMeetingPoint, Model model) throws XPathExpressionException {
-
+        String resultingCondition = "";
         ArrayList<Element> outgoingFlows =
          model.getOutgoingFlows(startingPoint);
         ArrayList<Element> emptyFlowsAmong = new ArrayList<>();
-        System.out.println("PROVA " + outgoingFlows.size()); //TODO This
-        // prints the wrong number of paths, that's why it doesn't work
 
         for (Element flow : outgoingFlows) {
-            System.out.println("Is this path empty?");
+//            System.out.println("Is this path empty?");
             String idOfTarget = model.getTarget(flow).getAttribute("id");
             String idOfMeetingPoint = firstMeetingPoint.getAttribute("id");
             if (idOfTarget.equals(idOfMeetingPoint)) {
                 System.out.println("I've found an empty path"); //UNLOCKTHIS
                 emptyFlowsAmong.add(flow);
+
+                //if it has a condition, let's add it to the
+                //condition string that the remaining empty path has.
+                if (model.hasCondition(flow)){
+
+                    //if that's the first condition i don't have to put || in
+                    // front.
+                    if (resultingCondition.length() == 0){
+                        resultingCondition =
+                         resultingCondition + model.returnConditionString(flow);
+                    } else {
+                    //it it's not the first condition I have to put || in
+                    // between the two.
+                    resultingCondition =
+                     resultingCondition + " || " +  model.returnConditionString(flow);
+                    }
+                }
+
             }
         }
 
         for (int i = 1 ; i < emptyFlowsAmong.size() ; i++) { // 'i' starts
-            // from 1 because I will keep one of the flows. //TODO scrivi nella
-            // tesi che fai sta cosa
+            // from 1 because I will keep one of the flows.
             model.delete(emptyFlowsAmong.get(i).getAttribute("id"));
         }
+
+        System.out.println("CIAOOOOOOO");
+        System.out.println(resultingCondition.toString());
+        String condition = resultingCondition.toString();
+        //I will now have only one remaining flow
+        //let's add the resultingCondition to it.
+        model.applyCondition(emptyFlowsAmong.get(0), condition);
     }
+
+
 
 
     private static ArrayList<Element> exclusiveGatSuccessors (Element parallelGat, Model model) throws XPathExpressionException {
