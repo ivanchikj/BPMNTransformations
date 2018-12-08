@@ -97,12 +97,10 @@ class Reverse2 {
                         }
                 }
                 System.out.println("My successors SIZE " + mySuccessors.size());
-                String[] position =
+                Coordinates position =
                  model.calculatePositionOfNewNode(mySuccessors, exclusive);
 
-                String newExclusiveID = model.newExclusiveGateway(position[0]
-                , position[1]); //TODO make this method accept a 'position'
-                // object
+                String newExclusiveID = model.newExclusiveGateway(position);
                 Element newExclusive = model.findElemById(newExclusiveID);
 
                 //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS

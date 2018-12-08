@@ -178,6 +178,8 @@ class Reverse3Test {
 
         assertTrue(Reverse3.areMutuallyExclusive("a > 0","a < 0"));
         assertTrue(Reverse3.areMutuallyExclusive("A >= 100", "A < 50"));
+//        assertTrue(Reverse3.areMutuallyExclusive("Value >= 100", "Value < 50"));
+//Unfortunately words don't work as well as variables.
         assertTrue(Reverse3.areMutuallyExclusive("a == 2", "a == 3"));
         assertFalse(Reverse3.areMutuallyExclusive("1 == 2","2 == 3"));
         assertFalse(Reverse3.areMutuallyExclusive("1 == 2","4 > 0"));

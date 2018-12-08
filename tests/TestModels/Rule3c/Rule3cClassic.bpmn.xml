@@ -59,8 +59,12 @@
     <bpmn:sequenceFlow id="SequenceFlow_1kcastn" sourceRef="Task_0kgdb28" targetRef="ExclusiveGateway_14zsv4z" />
     <bpmn:sequenceFlow id="SequenceFlow_0dp1kl0" sourceRef="ExclusiveGateway_14zsv4z" targetRef="ExclusiveGateway_16si252" />
     <bpmn:sequenceFlow id="SequenceFlow_07cb7w4" sourceRef="ExclusiveGateway_09h23j5" targetRef="ExclusiveGateway_16si252" />
-    <bpmn:sequenceFlow id="SequenceFlow_1k4urmr" sourceRef="ExclusiveGateway_1flr1ba" targetRef="ExclusiveGateway_09h23j5" />
-    <bpmn:sequenceFlow id="SequenceFlow_0vljj8v" sourceRef="ExclusiveGateway_0pghfhb" targetRef="ExclusiveGateway_14zsv4z" />
+    <bpmn:sequenceFlow id="SequenceFlow_1k4urmr" name="a == 3" sourceRef="ExclusiveGateway_1flr1ba" targetRef="ExclusiveGateway_09h23j5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a == 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0vljj8v" name="a == 1" sourceRef="ExclusiveGateway_0pghfhb" targetRef="ExclusiveGateway_14zsv4z">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a == 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -200,7 +204,7 @@
         <di:waypoint xsi:type="dc:Point" x="641" y="189" />
         <di:waypoint xsi:type="dc:Point" x="641" y="251" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="496.5" y="167.5" width="0" height="13" />
+          <dc:Bounds x="482" y="168" width="32" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0vljj8v_di" bpmnElement="SequenceFlow_0vljj8v">
@@ -209,7 +213,7 @@
         <di:waypoint xsi:type="dc:Point" x="641" y="541" />
         <di:waypoint xsi:type="dc:Point" x="641" y="475" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="496.5" y="519.5" width="0" height="13" />
+          <dc:Bounds x="481" y="520" width="32" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

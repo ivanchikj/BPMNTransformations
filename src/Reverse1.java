@@ -94,11 +94,11 @@ class Reverse1 {
                 }
                 //System.out.println("My predecessors SIZE " + myPredecessors
                 // .size()); UNLOCKTHIS
-                String[] position =
+                Coordinates position =
                  model.calculatePositionOfNewNode(myPredecessors, parallel);
 
-                String newParallelID = model.newParallelGateway(position[0],
-                 position[1]); //TODO make this method accept a 'position'
+                String newParallelID = model.newParallelGateway(position); //TODO
+                // make this method accept a 'position'
                 // object
                 Element newParallel = model.findElemById(newParallelID);
 

@@ -381,7 +381,10 @@ public class Model {
 //        return id;
 //    }
 
-    String newInclusiveGateway (String x, String y) {
+    String newInclusiveGateway (Coordinates c) {
+        String x = c.x;
+        String y = c.y;
+
         // PROCESS VIEW
         String id = newId();
         Element newNode = doc.createElement(this.style("inclusiveGateway"));
@@ -409,8 +412,9 @@ public class Model {
     }
 
 
-    String newParallelGateway (String x, String y) {
-
+    String newParallelGateway (Coordinates c) {
+        String x = c.x;
+        String y = c.y;
         // PROCESS VIEW
         String id = newId();
         Element newNode = doc.createElement(this.style("parallelGateway"));
@@ -439,7 +443,10 @@ public class Model {
     }
 
 
-    String newExclusiveGateway (String x, String y) {
+    String newExclusiveGateway (Coordinates c) {
+
+        String x = c.x;
+        String y = c.y;
 
         // PROCESS VIEW
         String id = newId();
@@ -530,6 +537,9 @@ public class Model {
      */
     void setSource (String id, String source) throws XPathExpressionException {
 
+        System.out.println("SETSOURCE");
+        System.out.println("ID of the flow: " + id);
+        System.out.println("new SRC " + source);
         String previousSourceId = findElemById(id).getAttribute("sourceRef");
         Element previousSource = findElemById(previousSourceId);
         Element sequenceFlow = findElemById(id);
@@ -544,9 +554,8 @@ public class Model {
 //	System.out.println("		Content of 2child: " + xpath.evaluate("./text
 // ()", previousSource));
 
-        //TODO both the two lines above do the same thing.
 
-        deleteFlowFromOldSourceorTarget(sequenceFlow, previousSource);
+        deleteFlowFromOldSourceOrTarget(sequenceFlow, previousSource);
         //	System.out.println("		The id of the sequenceFlow that I have
         // found is " + sequenceFlow.getAttribute("id"));
         sequenceFlow.setAttribute("sourceRef", source);
@@ -554,8 +563,8 @@ public class Model {
         // outgoing
         // flow as a child
         Element sourceElement = findElemById(source);
-        //	System.out.println("		The new source is: " + source);
-        Element outgoing = doc.createElement("bpmn:outgoing");
+        System.out.println("		The new source is: " + source);
+        Element outgoing = doc.createElement(style("outgoing"));
         outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a
         // text inside the tags
         sourceElement.appendChild(outgoing);
@@ -627,17 +636,16 @@ public class Model {
      * TODO change the methods setSource and setTarget to use this method
      * X is in the first position, Y in the second
      */
-    String[] getPosition (Element element) throws XPathExpressionException {
+    Coordinates getPosition (Element element) throws XPathExpressionException {
 
         Element elementBPMNDI = findBPMNDI(element.getAttribute("id"));
         Element dcBounds = findDcBounds(elementBPMNDI); //The dcBounds
         // contains the coordinates
         //System.out.println("Get Position  X : "+ dcBounds.getAttribute("x")
         // + "Y: " + dcBounds.getAttribute("y"));
-        String[] coordinates = {dcBounds.getAttribute("x"),
-         dcBounds.getAttribute("y")}; //TODO fai una innerClass per le
-        // coordinates
-        return coordinates;
+        return new Coordinates(dcBounds.getAttribute("x"),
+         dcBounds.getAttribute("y"));
+
     }
 
 
@@ -662,13 +670,14 @@ public class Model {
      * @return positions, the coordinates of the X axis are in the [0]
      * position while the y information is stored on the [1] position
      */
-    private String[] calculatePositionOfNewNode (ArrayList<Element> predecessors, ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException {
+    private Coordinates calculatePositionOfNewNode (ArrayList<Element> predecessors,
+     ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException {
 
         //let's calculate the average positions of the predecessors on the X
         // axis
         int avgPredX = 0;
         for (Element predecessor : predecessors) {
-            avgPredX += Double.parseDouble(getPosition(predecessor)[0]);
+            avgPredX += Double.parseDouble(getPosition(predecessor).x);
         }
         avgPredX = avgPredX / predecessors.size();
 
@@ -676,30 +685,30 @@ public class Model {
         // axis
         int avgPredY = 0;
         for (Element predecessor : predecessors) {
-            avgPredY += Double.parseDouble(getPosition(predecessor)[1]);
+            avgPredY += Double.parseDouble(getPosition(predecessor).y);
         }
         avgPredY = avgPredY / predecessors.size();
 
         //let's calculate the average positions of the successors on the X axis
         int avgSuccX = 0;
         for (Element successor : successors) {
-            avgSuccX += Double.parseDouble(getPosition(successor)[0]);
+            avgSuccX += Double.parseDouble(getPosition(successor).x);
         }
         avgSuccX = avgSuccX / successors.size();
 
         //let's calculate the average positions of the successors on the Y axis
         int avgSuccY = 0;
         for (Element successor : successors) {
-            avgSuccY += Double.parseDouble(getPosition(successor)[1]);
+            avgSuccY += Double.parseDouble(getPosition(successor).y);
         }
         avgSuccY = avgSuccY / successors.size();
 
-        String[] positions = new String[2];
-        positions[0] = "" + (avgPredX + avgSuccX) / 2; //not super precise
+        String x = "" + (avgPredX + avgSuccX) / 2; //not super
+        // precise
         // but enough for our scope
-        positions[1] = "" + (avgPredY + avgSuccY) / 2;
+        String y = "" + (avgPredY + avgSuccY) / 2;
 
-        return positions;
+        return new Coordinates(x, y);
     }
 
 
@@ -712,12 +721,13 @@ public class Model {
      * @param successor    the successors of the new node
      * @return the coordinates of the new node
      */
-    String[] calculatePositionOfNewNode (ArrayList<Element> predecessors,
+    Coordinates calculatePositionOfNewNode (ArrayList<Element> predecessors,
      Element successor) throws NumberFormatException, XPathExpressionException {
 
         ArrayList<Element> successors = new ArrayList<>();
         successors.add(successor);
-        return calculatePositionOfNewNode(predecessors, successors);
+        return calculatePositionOfNewNode(predecessors,
+         successors);
     }
 
 
@@ -732,7 +742,7 @@ public class Model {
      * @throws NumberFormatException
      * @throws XPathExpressionException
      */
-    String[] calculatePositionOfNewNode (Element predecessor,
+    Coordinates calculatePositionOfNewNode (Element predecessor,
      ArrayList<Element> successors) throws NumberFormatException,
       XPathExpressionException {
 
@@ -765,7 +775,7 @@ public class Model {
 
         Element sequenceFlow = findElemById(id);
 
-        deleteFlowFromOldSourceorTarget(sequenceFlow, previousTarget);
+        deleteFlowFromOldSourceOrTarget(sequenceFlow, previousTarget);
 
 //	System.out.println("		The id of the sequenceFlow that I have found
 // is " + sequenceFlow.getAttribute("id"));
@@ -776,7 +786,7 @@ public class Model {
         Element targetElement = findElemById(target);
 //	System.out.println("		The new target is: " + targetElement
 // .getAttribute("id"));
-        Element incoming = doc.createElement("bpmn:incoming");
+        Element incoming = doc.createElement(style("incoming"));
         incoming.appendChild(doc.createTextNode(id)); //This adds the id as a
         // text inside the tags
         targetElement.appendChild(incoming);
@@ -856,12 +866,6 @@ public class Model {
 
 
     /**
-     * TODO if a sequenceFlow comes out of
-     * a parallel gateway it might be that two sequence flows from outgoingFlows
-     * have the same source. It should not happen, but if it does I should
-     * remove
-     * duplicates
-     * TODO test this
      *
      * @param element the id of said Element
      * @return a NodeList of the successors of a certain Element
@@ -1063,14 +1067,18 @@ public class Model {
      * TODO use this instead of "replaceElement" when possible. This way you
      * won't risk losing attributes or child nodes
      *
-     * @param e    the element that will be changed
-     * @param type the nwe type that the element will be. Has to be a valid
+     * TODO questo non funziona sempre. Vedi se riesci a risolvere
+     * altrimenti continua a tenere il vecchio metodo.
+     *
+     * @param //e    the element that will be changed
+     * @param //type the nwe type that the element will be. Has to be a valid
      *             BPMN Type
      */
     void changeType (Element e, String type) {
 
         String styledType = this.style(type);
-        this.doc.renameNode(e, null, styledType);
+        System.out.println("CIAO " +  styledType);
+        this.doc.renameNode(e,this.doc.getNamespaceURI(), styledType);
     }
 
 
@@ -1111,7 +1119,6 @@ public class Model {
 
 
     /**
-     * TODO make this method use the element as input
      *
      * @param id the ID of the element to delete
      */
@@ -1127,8 +1134,8 @@ public class Model {
             Element oldSource = getSource(elementToDelete);
             Element oldTarget = getTarget(elementToDelete);
             //removingTheElement
-            deleteFlowFromOldSourceorTarget(elementToDelete, oldSource);
-            deleteFlowFromOldSourceorTarget(elementToDelete, oldTarget);
+            deleteFlowFromOldSourceOrTarget(elementToDelete, oldSource);
+            deleteFlowFromOldSourceOrTarget(elementToDelete, oldTarget);
         }
 
         //from the PROCESS
@@ -1150,13 +1157,13 @@ public class Model {
 
 
     //TODO use this inside the SetSource and SetTarget methods.
-    private void deleteFlowFromOldSourceorTarget (Element sequenceFlow,
-     Element oldSourceOrTarget) {
+    private void deleteFlowFromOldSourceOrTarget (Element sequenceFlow,
+                                                  Element oldSourceOrTarget) {
 
         //noinspection StatementWithEmptyBody
-        if (! sequenceFlow.getTagName().equals("bpmn:sequenceFlow")) {
+        if (! sequenceFlow.getTagName().equals(style("sequenceFlow"))) {
             //System.out.println("This method is only for sequenceFlows");
-        } else if (sequenceFlow.getTagName().equals("bpmn:sequenceFlow")) {
+        } else if (sequenceFlow.getTagName().equals(style("sequenceFlow"))) {
             String id = sequenceFlow.getAttribute("id");
             if (oldSourceOrTarget.hasChildNodes()) { //This is expected to be
                 // always true anyway
@@ -1189,18 +1196,19 @@ public class Model {
      * Replace the old element with the new.
      * Nothing else should be affected (i.e. the incoming / outgoing
      * sequenceFlows)
-     * TODO controlla che i sequenceFlows si comportino correttamente.
      * @param newElem the old Element (will be deleted)
      * @param oldElem the new Element
      */
-    void replaceELement (Element oldElem, Element newElem) throws XPathExpressionException {
+    void replaceElement (Element oldElem, Element newElem) throws XPathExpressionException {
 
         //It's also useful to have the bpmndi ready to edit:
         Element newElementBPMNDI = findBPMNDI(newElem.getAttribute("id"));
 
         //Let's save the ID of the old element
         String oldId = oldElem.getAttribute("id");
-
+        System.out.println("CIAO");
+        System.out.println("New el ID " + newElem.getAttribute("id"));
+        System.out.println("Old El ID " + oldId);
         //let's save the child elements of the oldElement
         //those child elements will contain the oldElement's incoming and
         // outgoing sequenceFlows
@@ -1684,32 +1692,6 @@ public class Model {
 
         return positions;
     }
-
-
-    /**
-     * TODO scrivi descrizione e usalo in Model al posto di quel brutto array
-     * di int
-     */
-    class Coordinates {
-
-
-        public int x; //TODO explains how the position is calculated; the
-        // more the number rises the more it goes left? Or is it the
-        // opposite? Quando scrivi questo scrivilo anche nella tesi
-        public int y; //TODO explains how the position is calculated; the
-        // more the number rises the more it goes down? Zero is the highest
-        // point? Quando scrivi questo scrivilo anche nella tesi
-
-
-        Coordinates (int x, int y) {
-
-            this.x = x;
-            this.y = y;
-        }
-
-
-    }
-
 
     /**
      * this method changes a tag to conform to the correct style of the document

@@ -51,11 +51,11 @@ public class Reverse4 {
 
                     ArrayList<Element> successors = model.getSuccessors(task);
 
-                    String[] position = model.calculatePositionOfNewNode(task
+                    Coordinates position = model.calculatePositionOfNewNode(task
                     , successors);
 
                     String newParallelID =
-                     model.newParallelGateway(position[0], position[1]);
+                     model.newParallelGateway(position);
 
                     //finally here's the newly created parallel gateway
                     //Element newParall = model.findElemById(newParallelID);
@@ -105,11 +105,10 @@ public class Reverse4 {
 
                 ArrayList<Element> predecessors = model.getPredecessors(task);
 
-                String[] position =
+                Coordinates position =
                  model.calculatePositionOfNewNode(predecessors, task);
 
-                String newExclusiveID = model.newExclusiveGateway(position[0]
-                , position[1]);
+                String newExclusiveID = model.newExclusiveGateway(position);
 
                 //finally here's the newly created exclusive gateway
                 //Element newExclus = model.findElemById(newExclusiveID);
@@ -154,11 +153,10 @@ public class Reverse4 {
 
                 ArrayList<Element> successors = model.getSuccessors(task);
 
-                String[] position = model.calculatePositionOfNewNode(task,
+                Coordinates position = model.calculatePositionOfNewNode(task,
                  successors);
 
-                String newParallelID = model.newInclusiveGateway(position[0],
-                 position[1]);
+                String newParallelID = model.newInclusiveGateway(position);
 
                 //finally here's the newly created parallel gateway
                 model.findElemById(newParallelID);

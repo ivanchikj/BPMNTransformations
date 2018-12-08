@@ -51,18 +51,17 @@ public class Reverse3 {
                 if (firstMandatoryDeepSuccessor.getTagName().contains(
                 "inclusiveGateway")) {
 
-                    String[] oldInclusiveSplitCoordinates =
+                    Coordinates oldInclusiveSplitCoordinates =
                      model.getPosition(inclusiveSplit);
 
                     // creating the substitute element in the position of
                     // the
                     // old one
                     String newParallelSplitId =
-                     model.newParallelGateway(oldInclusiveSplitCoordinates[0]
-                     , oldInclusiveSplitCoordinates[1]);
+                     model.newParallelGateway(oldInclusiveSplitCoordinates);
                     Element newParallelSplit =
                      model.findElemById(newParallelSplitId);
-                    model.replaceELement(inclusiveSplit, newParallelSplit);
+                    model.replaceElement(inclusiveSplit, newParallelSplit);
 
                     ArrayList<Element> outgoingFlows =
                      model.getOutgoingFlows(newParallelSplit);
@@ -77,15 +76,14 @@ public class Reverse3 {
 
                     //Now we can substitute also the old merge with a
                     // parallel gateway.
-                    String[] oldInclusiveMergeCoordinates =
+                    Coordinates oldInclusiveMergeCoordinates =
                      model.getPosition(firstMandatoryDeepSuccessor);
 
                     String newParallelMergeId =
-                     model.newParallelGateway(oldInclusiveMergeCoordinates[0]
-                     , oldInclusiveMergeCoordinates[1]);
+                     model.newParallelGateway(oldInclusiveMergeCoordinates);
                     Element newParallelMerge =
                      model.findElemById(newParallelMergeId);
-                    model.replaceELement(firstMandatoryDeepSuccessor,
+                    model.replaceElement(firstMandatoryDeepSuccessor,
                      newParallelMerge);
                 }
             }
@@ -140,31 +138,31 @@ public class Reverse3 {
                 if (firstMandatoryDeepSuccessor.getTagName().contains(
                 "inclusiveGateway")) {
 
-                    String[] oldInclusiveSplitCoordinates =
+                    Coordinates oldInclusiveSplitCoordinates =
                      model.getPosition(inclusiveSplit);
 
                     // creating the substitute element in the position of
                     // the
                     // old one
                     String newExclusiveSplitId =
-                     model.newExclusiveGateway(oldInclusiveSplitCoordinates[0], oldInclusiveSplitCoordinates[1]);
+                     model.newExclusiveGateway(oldInclusiveSplitCoordinates);
                     Element newExclusiveSplit =
                      model.findElemById(newExclusiveSplitId);
-                    model.replaceELement(inclusiveSplit, newExclusiveSplit);
+                    model.replaceElement(inclusiveSplit, newExclusiveSplit);
 
                     //Unlike in reverse3a we don't need to delete the split's
                     // outgoing flows.
 
                     //Now we can substitute also the old merge with an
                     // inclusive gateway.
-                    String[] oldInclusiveMergeCoordinates =
+                    Coordinates oldInclusiveMergeCoordinates =
                      model.getPosition(firstMandatoryDeepSuccessor);
 
                     String newExclusiveMergeId =
-                     model.newExclusiveGateway(oldInclusiveMergeCoordinates[0], oldInclusiveMergeCoordinates[1]);
+                     model.newExclusiveGateway(oldInclusiveMergeCoordinates);
                     Element newExclusiveMerge =
                      model.findElemById(newExclusiveMergeId);
-                    model.replaceELement(firstMandatoryDeepSuccessor,
+                    model.replaceElement(firstMandatoryDeepSuccessor,
                      newExclusiveMerge);
                 }
             }
@@ -209,16 +207,15 @@ public class Reverse3 {
             "inclusiveGateway");
             System.out.println("The id of the element is " + oldInclusive.getAttribute("id"));
 
-            String[] oldInclusiveCoordinates = model.getPosition(oldInclusive);
+            Coordinates oldInclusiveCoordinates = model.getPosition(oldInclusive);
 
             //creating the substitute element in the position of the old one
             String newExclusiveGatewayId =
-             model.newInclusiveGateway(oldInclusiveCoordinates[0],
-              oldInclusiveCoordinates[1]);
+             model.newInclusiveGateway(oldInclusiveCoordinates);
             Element newExclusiveGateway =
              model.findElemById(newExclusiveGatewayId);
             //replacing the two elements
-            model.replaceELement(oldInclusive, newExclusiveGateway);
+            model.replaceElement(oldInclusive, newExclusiveGateway);
 
             //Here I don't need to distinguish between those that are merges
             // and those that are not.
@@ -228,7 +225,7 @@ public class Reverse3 {
 
 
     /**
-     * todo
+     * TODO do tests
      */
     static void c (Model model, int aggregateBy) throws XPathExpressionException {
 
@@ -325,11 +322,11 @@ public class Reverse3 {
                 //System.out.println("My successors size " + mySuccessors
                 // .size());
 
-                String[] position =
+                Coordinates position =
                  model.calculatePositionOfNewNode(mySuccessors, firstInclusive);
 
-                String newExclusiveID = model.newExclusiveGateway(position[0]
-                , position[1]); //TODO make this method accept a 'position'
+                String newExclusiveID = model.newExclusiveGateway(position); //TODO
+                // make this method accept a 'position'
                 // object
                 Element newExclusive = model.findElemById(newExclusiveID);
 
@@ -381,12 +378,12 @@ public class Reverse3 {
                     }
                 }
                 System.out.println("My predecessors size " + myPredecessors.size());
-                String[] position =
+                Coordinates position =
                  model.calculatePositionOfNewNode(myPredecessors,
                   firstMeetingPoint);
 
-                String newExclusiveID = model.newExclusiveGateway(position[0]
-                , position[1]); //TODO make this method accept a 'position'
+                String newExclusiveID = model.newExclusiveGateway(position); //TODO
+                // make this method accept a 'position'
                 // object
                 Element newExclusive = model.findElemById(newExclusiveID);
 
@@ -495,6 +492,8 @@ public class Reverse3 {
      * It uses wolfram Alpha's API to do so.
      * For this reason the method checks that it is connected to the internet,
      * if it is not //TODO
+     * //TODO Testa bene questa cosa però, sia che manchi internet sia che
+     * //TODO manchi appID.
      * then it returns false and the transformation doesn't happen.
      *
      * @return false if they are not mutually exclusive, true if they are.
