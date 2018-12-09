@@ -35,18 +35,20 @@
     
     
     <bpmn:sequenceFlow id="SequenceFlow_1k4urmr" name="a == 3" sourceRef="ExclusiveGateway_1f457i0" targetRef="ExclusiveGateway_16si252">
-      
-    <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a == 3 || a == 1</bpmn:conditionExpression></bpmn:sequenceFlow>
-    
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a == 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0vljj8v" name="a == 1" sourceRef="ExclusiveGateway_1f457i0" targetRef="ExclusiveGateway_16si252">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">a == 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   <bpmn:inclusiveGateway id="ExclusiveGateway_1f457i0">
       <bpmn:incoming>SequenceFlow_06lwxkq</bpmn:incoming>
       
       
-    <bpmn:outgoing>SequenceFlow_0hnxbi3</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1k4urmr</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0j6829v</bpmn:outgoing></bpmn:inclusiveGateway><bpmn:inclusiveGateway id="ExclusiveGateway_16si252">
+    <bpmn:outgoing>SequenceFlow_0hnxbi3</bpmn:outgoing><bpmn:outgoing>SequenceFlow_1k4urmr</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0j6829v</bpmn:outgoing><bpmn:outgoing>SequenceFlow_0vljj8v</bpmn:outgoing></bpmn:inclusiveGateway><bpmn:inclusiveGateway id="ExclusiveGateway_16si252">
       
       
       <bpmn:outgoing>SequenceFlow_0tpwoci</bpmn:outgoing>
-    <bpmn:incoming>SequenceFlow_1kcastn</bpmn:incoming><bpmn:incoming>SequenceFlow_1jrhx3v</bpmn:incoming><bpmn:incoming>SequenceFlow_1k4urmr</bpmn:incoming></bpmn:inclusiveGateway></bpmn:process>
+    <bpmn:incoming>SequenceFlow_1kcastn</bpmn:incoming><bpmn:incoming>SequenceFlow_0vljj8v</bpmn:incoming><bpmn:incoming>SequenceFlow_1jrhx3v</bpmn:incoming><bpmn:incoming>SequenceFlow_1k4urmr</bpmn:incoming></bpmn:inclusiveGateway></bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane bpmnElement="Process_1" id="BPMNPlane_1">
       <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
@@ -106,7 +108,7 @@
       
       
       <bpmndi:BPMNEdge bpmnElement="SequenceFlow_1k4urmr" id="SequenceFlow_1k4urmr_di"><di:waypoint x="310.0" xsi:type="dc:Point" y="361.0"/><di:waypoint x="692.0" xsi:type="dc:Point" y="361.0"/></bpmndi:BPMNEdge>
-      
+      <bpmndi:BPMNEdge bpmnElement="SequenceFlow_0vljj8v" id="SequenceFlow_0vljj8v_di"><di:waypoint x="310.0" xsi:type="dc:Point" y="361.0"/><di:waypoint x="692.0" xsi:type="dc:Point" y="361.0"/></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

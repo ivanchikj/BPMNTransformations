@@ -263,8 +263,9 @@ public class Rule3 {
                     }
                 }
             }
-            applyRule3c(constructs, model);
+
         }
+        applyRule3c(constructs, model);
     }
 
 
@@ -378,13 +379,13 @@ public class Rule3 {
             //let's clear the resulting multiple empty paths among the two
             // inclusive but one
 
-            keepOnlyOneEmptyPathAmong(newInclusive,
-            newMP, model);
+            //keepOnlyOneEmptyPathAmong(newInclusive, newMP, model);
+            //TODO keepOnlyOneEmptyPathAmong works, but
+            //the program is correct even without it.
+            //Actually without it it might even be slightly better from
+            //an execution point of view.
         }
     }
-
-    //TODO this method doesn't work right now.
-    //the program is not incorrect without it, but it could look better.
 
 
     //if we merge the empty paths and different conditions are present, we
@@ -392,6 +393,7 @@ public class Rule3 {
     // We should add an || between them when we merge them.
     private static void keepOnlyOneEmptyPathAmong (Element startingPoint,
      Element firstMeetingPoint, Model model) throws XPathExpressionException {
+
         String resultingCondition = "";
         ArrayList<Element> outgoingFlows =
          model.getOutgoingFlows(startingPoint);
@@ -407,21 +409,20 @@ public class Rule3 {
 
                 //if it has a condition, let's add it to the
                 //condition string that the remaining empty path has.
-                if (model.hasCondition(flow)){
+                if (model.hasCondition(flow)) {
 
                     //if that's the first condition i don't have to put || in
                     // front.
-                    if (resultingCondition.length() == 0){
+                    if (resultingCondition.length() == 0) {
                         resultingCondition =
                          resultingCondition + model.returnConditionString(flow);
                     } else {
-                    //it it's not the first condition I have to put || in
-                    // between the two.
-                    resultingCondition =
-                     resultingCondition + " || " +  model.returnConditionString(flow);
+                        //it it's not the first condition I have to put || in
+                        // between the two.
+                        resultingCondition =
+                         resultingCondition + " || " + model.returnConditionString(flow);
                     }
                 }
-
             }
         }
 
@@ -437,8 +438,6 @@ public class Rule3 {
         //let's add the resultingCondition to it.
         model.applyCondition(emptyFlowsAmong.get(0), condition);
     }
-
-
 
 
     private static ArrayList<Element> exclusiveGatSuccessors (Element parallelGat, Model model) throws XPathExpressionException {
