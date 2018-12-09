@@ -60,6 +60,30 @@ class Rule3Test {
     }
 
 
+    /**
+     * This model contains a rule3c construct with 3 ways, one which contains
+     * further splits and one which contains another rule3c inside.
+     *
+     * @throws Exception
+     */
+    @Test
+    void c3WayOneInsideAnother () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule3c" +
+        "/Rule3c3WayOneInsideAnother.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule3c" +
+        "/Rule3c3WayOneInsideAnother3c.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Rule3.c(result);
+
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+
     @Test
     void all () {
 
