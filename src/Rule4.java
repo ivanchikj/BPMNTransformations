@@ -1,7 +1,6 @@
 
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -13,18 +12,16 @@ public class Rule4 {
 
         System.out.println("I'm applying rule RULE4a to model " + model.name);
 
-        NodeList parallelGatewayInstances = model.doc.getElementsByTagName(
-        "bpmn:parallelGateway");
-        System.out.println("Number of parallelGateways in the model: " + parallelGatewayInstances.getLength());
-        int parallelGatewayCounter = 0;
+        ArrayList<Element> parallelGatewayInstances =
+         model.findElementsByType("parallelGateway");
+        System.out.println("Number of parallelGateways in the model: " + parallelGatewayInstances.size());
 
-        for (int i = 0 ; i < parallelGatewayInstances.getLength() ; i++) {
-            Element oldParallelGateway =
-             (Element) parallelGatewayInstances.item(i);
-            parallelGatewayCounter++;
+        if (parallelGatewayInstances.size() == 0){
+            System.out.println("There are no parallel gateways in the model");
+        }
 
-            System.out.println("working on the " + parallelGatewayCounter +
-            "nd parallelGateway");
+        for (Element oldParallelGateway : parallelGatewayInstances) {
+
             System.out.println("working on " + oldParallelGateway.getAttribute("id"));
             System.out.println("The id of the element is " + oldParallelGateway.getAttribute("id"));
 
@@ -58,8 +55,9 @@ public class Rule4 {
                 //TODO
                 // make the method "delete" take an Element as an input
             } else {
-                System.out.println(oldParallelGateway.getAttribute("id") + " "
-                 + "has more than one incoming flow thus rule4a cannot be " + "applied!");
+                System.out.println(oldParallelGateway.getAttribute("id") +
+                "has more than one incoming flow thus rule4a cannot be " +
+                 "applied!");
             }
         }
     }
@@ -71,23 +69,17 @@ public class Rule4 {
         //We use the same way that we used in rule3a to distinguish
         //merges. The difference is that now we WANT merges.
 
-        NodeList exclusiveGatewayInstances = model.doc.getElementsByTagName(
-        "bpmn:exclusiveGateway");
-        System.out.println("Number of exclusiveGateways in the model: " + exclusiveGatewayInstances.getLength());
-        int exclusiveGatewayCounter = 0;
-        if (exclusiveGatewayInstances.getLength() == 0) {
+        ArrayList<Element> exclusiveGatewayInstances =
+         model.findElementsByType("exclusiveGateway");
+
+        System.out.println("Number of exclusiveGateways in the model: " + exclusiveGatewayInstances.size());
+
+        if (exclusiveGatewayInstances.size() == 0) {
             System.out.println("RULE4b: there are no exclusive gateways in " + "this model");
         }
 
-        for (int i = 0 ; i < exclusiveGatewayInstances.getLength() ; i++) {
-            //this will be the element in case
-            Element oldExclusiveGateway =
-             (Element) exclusiveGatewayInstances.item(i);
+        for (Element oldExclusiveGateway : exclusiveGatewayInstances ) {
 
-            exclusiveGatewayCounter++;
-
-            System.out.println("working on the " + exclusiveGatewayCounter +
-            "nd exclusiveGateway");
             System.out.println("working on " + oldExclusiveGateway.getAttribute("id"));
             System.out.println("The id of the element is " + oldExclusiveGateway.getAttribute("id"));
 
@@ -147,18 +139,15 @@ public class Rule4 {
 
         System.out.println("I'm applying rule RULE4c to model " + model.name);
 
-        NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName(
-        "bpmn:inclusiveGateway");
-        System.out.println("Number of inclusiveGateways in the model: " + inclusiveGatewayInstances.getLength());
-        int inclusiveGatewayCounter = 0;
+        ArrayList<Element> inclusiveGatewayInstances =
+         model.findElementsByType("inclusiveGateway");
 
-        for (int i = 0 ; i < inclusiveGatewayInstances.getLength() ; i++) {
-            Element oldInclusiveGateway =
-             (Element) inclusiveGatewayInstances.item(i);
-            inclusiveGatewayCounter++;
+        System.out.println("Number of inclusiveGateways in the model: " + inclusiveGatewayInstances.size());
 
-            System.out.println("working on the " + inclusiveGatewayCounter +
-            "nd inclusiveGateway");
+
+        for (Element oldInclusiveGateway : inclusiveGatewayInstances) {
+
+
             System.out.println("working on " + oldInclusiveGateway.getAttribute("id"));
             System.out.println("The id of the element is " + oldInclusiveGateway.getAttribute("id"));
 
