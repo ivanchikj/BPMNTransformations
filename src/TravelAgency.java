@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class TravelAgency {
 
+    //TODO add a check for loops, because when there's one the program crashes.
 
     public Model model;
     ArrayList<ArrayList<Element>> paths;
@@ -14,7 +15,7 @@ public class TravelAgency {
     private Element startingPoint;
     //private ArrayList<Element> startingList;
     ArrayList<Element> mandatorySuccessors;
-    Element firstMandatoryDeepSuccessor;
+    Element firstMandatorySuccessor;
     //private int pastID;
     //TODO decide if the starting point has to be a class variable
 
@@ -50,7 +51,7 @@ public class TravelAgency {
         getMandatorySuccessors();
 
         if (mandatorySuccessors.size() > 0){
-            this.firstMandatoryDeepSuccessor = mandatorySuccessors.get(0);
+            this.firstMandatorySuccessor = mandatorySuccessors.get(0);
         }
 
         //printPaths();//UNLOCKTHIS for testing

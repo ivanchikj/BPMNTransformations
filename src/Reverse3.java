@@ -9,7 +9,10 @@ import javax.script.ScriptEngineManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -47,7 +50,7 @@ public class Reverse3 {
             if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model)) {
                 TravelAgency ta = new TravelAgency(model, inclusiveSplit);
                 Element firstMandatoryDeepSuccessor =
-                 ta.firstMandatoryDeepSuccessor;
+                 ta.firstMandatorySuccessor;
                 if (firstMandatoryDeepSuccessor.getTagName().contains(
                 "inclusiveGateway")) {
 
@@ -95,14 +98,20 @@ public class Reverse3 {
 
 
         Element firstInclusive;
-        Element firstInclusiveMeetingPoint;
+        Element firstMeetingPoint;
 
 
-        Reverse3Construct (Element firstInclusive,
-         Element firstInclusiveMeetingPoint) {
+        Reverse3Construct (Element firstInclusive, Element firstMeetingPoint) {
 
             this.firstInclusive = firstInclusive;
-            this.firstInclusiveMeetingPoint = firstInclusiveMeetingPoint;
+            this.firstMeetingPoint = firstMeetingPoint;
+        }
+
+
+        void printConstruct () {
+
+            System.out.println("The first Inclusive" + firstInclusive.getAttribute("id"));
+            System.out.println("The first incl meet Point " + firstMeetingPoint.getAttribute("id"));
         }
 
 
@@ -134,7 +143,7 @@ public class Reverse3 {
             if (model.isASplit(inclusiveSplit) && allOutgoingFlowsAreMutuallyExclusive(inclusiveSplit, model)) {
                 TravelAgency ta = new TravelAgency(model, inclusiveSplit);
                 Element firstMandatoryDeepSuccessor =
-                 ta.firstMandatoryDeepSuccessor;
+                 ta.firstMandatorySuccessor;
                 if (firstMandatoryDeepSuccessor.getTagName().contains(
                 "inclusiveGateway")) {
 
@@ -172,6 +181,7 @@ public class Reverse3 {
 
     /**
      * Changing inclusive to exclusive.
+     * TODO delete this method
      */
     static void backup (Model model) throws Exception {
 
@@ -207,7 +217,8 @@ public class Reverse3 {
             "inclusiveGateway");
             System.out.println("The id of the element is " + oldInclusive.getAttribute("id"));
 
-            Coordinates oldInclusiveCoordinates = model.getPosition(oldInclusive);
+            Coordinates oldInclusiveCoordinates =
+             model.getPosition(oldInclusive);
 
             //creating the substitute element in the position of the old one
             String newExclusiveGatewayId =
@@ -238,187 +249,168 @@ public class Reverse3 {
 
         ArrayList<Reverse3Construct> constructs = new ArrayList<>();
 
-        NodeList inclusiveGatewayInstances = model.doc.getElementsByTagName(
-        "inclusiveGateway");
+        ArrayList<Element> inclusiveGatewayInstances =
+         model.findElementsByType("inclusiveGateway");
 
-        if (inclusiveGatewayInstances.getLength() == 0) {
+        if (inclusiveGatewayInstances.size() == 0) {
             System.out.println("Reverse3c: there are no inclusive gateways " + "in" + " this model");
         }
 
         ArrayList<Element> candidates = new ArrayList<>();
         //for now we only care about those inclusive Gateways that are splits
 
-        for (int i = 0 ; i < inclusiveGatewayInstances.getLength() ; i++) {
-            Element candidate = (Element) inclusiveGatewayInstances.item(i);
+        for (Element candidate : inclusiveGatewayInstances) {
+
             if (model.isASplit(candidate) && model.getOutgoingFlows(candidate).size() > aggregateBy) {
                 candidates.add(candidate);
+            } else {
+
+                // TODO c'è un'altro modo invece che non trasformarlo del
+                // tutto in questo caso? Magari posso avere un valore
+                // provvisorio di aggregateBy che diventa uguale al numero di
+                // outgoingFLows.
+
             }
         }
 
-        //ok now we have to find out if the firstMeetingPoint of that
+        // Now we have to find out if the firstMeetingPoint of that
         // candidate is also an inclusiveGateway.
+        // It should always be.
 
         for (Element candidate : candidates) {
             TravelAgency ta = new TravelAgency(model, candidate);
-            Element firstMeetingPoint = ta.mandatorySuccessors.get(0);
-            if (firstMeetingPoint.getTagName().equals("bpmn:inclusiveGateway")) {
+            Element firstMeetingPoint = ta.firstMandatorySuccessor;
+            if (firstMeetingPoint.getTagName().equals(model.style(
+            "inclusiveGateway"))) {
                 //ok now I can create a construct.
-                System.out.println(ta.paths.size());//UNLOCKTHIS
-                System.out.println(candidate.getAttribute("name"));
+                //System.out.println(ta.paths.size());//UNLOCKTHIS
+                //System.out.println(candidate.getAttribute("name"));
                 Reverse3Construct construct = new Reverse3Construct(candidate
                 , firstMeetingPoint);
                 constructs.add(construct);
             } else {
-                System.out.println(ta.paths.size());//UNLOCKTHIS
-                System.out.println(candidate.getAttribute("id"));
-                System.out.println(candidate.getAttribute("name"));
-                System.out.println(firstMeetingPoint.getAttribute("id"));
                 //UNLOCKTHIS
+//                System.out.println(ta.paths.size());//UNLOCKTHIS
+//                System.out.println(candidate.getAttribute("id"));
+//                System.out.println(candidate.getAttribute("name"));
+//                System.out.println(firstMeetingPoint.getAttribute("id"));
+
             }
+        }
+
+        System.out.println("I've found : " + constructs);
+        for (Reverse3Construct rc : constructs) {
+            rc.printConstruct();
         }
 
         //now let's go through all constructs and do the necessary changes.
         for (Reverse3Construct construct : constructs) {
-
-            Element firstInclusive = construct.firstInclusive;
-            Element firstMeetingPoint = construct.firstInclusiveMeetingPoint;
-
-            ArrayList<Element> outgoingFlows =
-             model.getOutgoingFlows(firstInclusive);
-            ArrayList<Element> successors = model.getSuccessors(firstInclusive);
-
-            ArrayList<Element> incomingFlows =
-             model.getIncomingFlows(firstMeetingPoint);
-            ArrayList<Element> predecessors =
-             model.getPredecessors(firstMeetingPoint);
-
-            int numberOfExclusives = outgoingFlows.size() / aggregateBy;
-            //Also, since we're dealing with ints, we should add one more
-            // prallel in the case there's a remainder
-            if (outgoingFlows.size() % aggregateBy != 0) {
-                numberOfExclusives++;
-            }
-
-            //ok now let's create the first series of exclusiveGateways:
-            for (int n = 0 ; n < numberOfExclusives ; n++) {
-                ArrayList<Element> mySuccessors = new ArrayList<>();
-
-                //we have to find the successors for the new gateway, among
-                // the ones that used to be
-                //the successors of the original gateway
-                //obviously, the last parallel might not have enough
-                // successors to comply with the
-                //parameter 'aggregateBy' but might have less
-                for (int a = 1 ; a <= aggregateBy ; a++) {
-                    if (successors.size() == 0) {
-                        //System.out.println("no more successors to get");
-                    } else if (outgoingFlows.size() > 0) {
-                        mySuccessors.add(successors.get(0)); //the successor
-                        // is now a successor of the new parallel
-                        successors.remove(0); //it's not a successor of the
-                        // original parallel anymore
-                    }
-                }
-                //System.out.println("My successors size " + mySuccessors
-                // .size());
-
-                Coordinates position =
-                 model.calculatePositionOfNewNode(mySuccessors, firstInclusive);
-
-                String newExclusiveID = model.newExclusiveGateway(position); //TODO
-                // make this method accept a 'position'
-                // object
-                Element newExclusive = model.findElemById(newExclusiveID);
-
-                //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
-
-                //now that I have created my exclusive in a sensible position,
-                //I can connect it to the original inclusive
-
-                model.newSequenceFlow(firstInclusive.getAttribute("id"),
-                 newExclusiveID);
-
-                //now I can connect the elements in mySuccessors to the new
-                // exclusive
-                for (Element successor : mySuccessors) {
-
-                    Element incomingFlow =
-                     model.getIncomingFlows(successor).get(0); //we expect
-                    // the successor to have only one incomingFlow of course.
-                    model.setSource(incomingFlow.getAttribute("id"),
-                     newExclusiveID);
-                }
-
-                //one last thing. We want to avoid having "one in, one out"
-                // types of gateways, so to avoid this situation we want to
-                //do one last check:
-                if (model.isUselessGateway(newExclusive)) {
-                    model.deleteUselesGateway(newExclusive);
-                }
-            }
-
-            //now let's create the second series of exclusiveGateways
-            for (int m = 0 ; m < numberOfExclusives ; m++) {
-                ArrayList<Element> myPredecessors = new ArrayList<>();
-
-                //we have to find the predecessors for the new gateway, among
-                // the ones that used to be
-                //the predecessors of the original gateway
-                //obviously, the last inclusive might not have enough
-                // predecessors to comply with the
-                //parameter 'aggregateBy' but might have less
-                for (int a = 1 ; a <= aggregateBy ; a++) {
-                    if (predecessors.size() == 0) {
-                        //System.out.println("no more predecessors to get");
-                    } else if (incomingFlows.size() > 0) {
-                        myPredecessors.add(predecessors.get(0)); //the
-                        // predecessor is now a predecessor of the new parallel
-                        predecessors.remove(0); //it's not a predecessor of
-                        // the original parallel anymore
-                    }
-                }
-                System.out.println("My predecessors size " + myPredecessors.size());
-                Coordinates position =
-                 model.calculatePositionOfNewNode(myPredecessors,
-                  firstMeetingPoint);
-
-                String newExclusiveID = model.newExclusiveGateway(position); //TODO
-                // make this method accept a 'position'
-                // object
-                Element newExclusive = model.findElemById(newExclusiveID);
-
-                //newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
-
-                //now that I have created my parallel in a sensible position,
-                //I can connect it to the original meeting point
-
-                model.newSequenceFlow(newExclusiveID,
-                 firstMeetingPoint.getAttribute("id"));
-
-                //now I can connect the element in myPredecessors to the new
-                // Parallel
-
-                for (Element predecessor : myPredecessors) {
-                    Element incomingFlow =
-                     model.getOutgoingFlows(predecessor).get(0); //we expect
-                    // the successor to have only one incomingFlow of course.
-                    model.setTarget(incomingFlow.getAttribute("id"),
-                     newExclusiveID);
-                }
-
-                //one last thing. We want to avoid having "one in, one out"
-                // types of gateways, so to avoid this situation we want to
-                //do one last check:
-                if (model.isUselessGateway(newExclusive)) {
-                    model.deleteUselesGateway(newExclusive);
-                }
-            }
-
-            //and finally let's change the type of the starting Inclusive and
-            // of the first meeting point:
-            model.changeType(firstInclusive, "bpmn:parallelGateway");
-            model.changeType(firstMeetingPoint, "bpmn:parallelGateway");
+            doReverse3c(construct, model, aggregateBy);
         }
+    }
+
+
+    private static void doReverse3c (Reverse3Construct construct, Model model
+    , int aggregateBy) throws XPathExpressionException {
+
+        Element inclusive = construct.firstInclusive;
+        Element mp = construct.firstMeetingPoint;
+
+        ArrayList<Element> outFlows = model.getOutgoingFlows(inclusive);
+        ArrayList<Element> inFlows = model.getIncomingFlows(mp);
+
+        //Let's calculate of many exclusive gateway we have to create on the
+        // 'left side'.
+
+        int numberOfExclSuccs = outFlows.size() / aggregateBy;
+        //Also, since we're dealing with ints, we should add one more
+        // parallel in the case there's a remainder
+        if (inFlows.size() % aggregateBy != 0) {
+            numberOfExclSuccs++;
+        }
+
+        System.out.println("Number of exclusive successors " + numberOfExclSuccs);
+
+        //Let's calculate of many exclusive gateway we have to create on the
+        // 'right side'
+        int numberOfExclPreds = inFlows.size() / aggregateBy;
+        //Also, since we're dealing with ints, we should add one more
+        // parallel in the case there's a remainder
+        if (inFlows.size() % aggregateBy != 0) {
+            numberOfExclPreds++;
+        }
+        System.out.println("Number of exclusive predecessors " + numberOfExclPreds);
+
+        for (int i = 0 ; i < numberOfExclSuccs ; i++) {
+
+            ArrayList<Element> myOutGoingFlows = new ArrayList<>();
+            //The outFlows that now belong to the new gateway
+            while (outFlows.size() > 0 && myOutGoingFlows.size() < aggregateBy) {
+                Element flow = outFlows.get(0);
+                outFlows.remove(flow);
+                myOutGoingFlows.add(flow);
+            }
+
+            //now that I have a list of my new outgoingFlows, i want a list
+            // of my successors.
+            ArrayList<Element> mySuccessors = new ArrayList<>();
+            for (Element flow : myOutGoingFlows) {
+                mySuccessors.add(model.getTarget(flow));
+            }
+            //Now that I have a list of my successors, i can calculate my
+            // position
+
+            Coordinates position = model.calculatePositionOfNewNode(inclusive
+            , mySuccessors);
+
+            String id = model.newExclusiveGateway(position);
+            //now let's change my outgoingflows to have me as a source.
+            for (Element flow : myOutGoingFlows) {
+                model.setSource(flow.getAttribute("id"), id);
+            }
+
+            //now let's create a new flow to connect me to the startingInclusive
+            //(which will later become a parallel split
+
+            String flowId =
+             model.newSequenceFlow(inclusive.getAttribute("id"), id);
+        }
+
+        for (int i = 0 ; i < numberOfExclPreds ; i++) {
+            ArrayList<Element> myIncomingFlows = new ArrayList<>();
+            //The outFlows that now belong to the new gateway
+            while (inFlows.size() > 0 && myIncomingFlows.size() < aggregateBy) {
+                Element flow = inFlows.get(0);
+                inFlows.remove(flow);
+                myIncomingFlows.add(flow);
+            }
+
+            //now that I have a list of my new outgoingFlows, i want a list
+            // of my successors.
+            ArrayList<Element> myPredecessors = new ArrayList<>();
+            for (Element flow : myIncomingFlows) {
+                myPredecessors.add(model.getTarget(flow));
+            }
+            //Now that I have a list of my successors, i can calculate my
+            // position
+            Coordinates position = model.calculatePositionOfNewNode(inclusive
+            , myPredecessors);
+
+            String id = model.newExclusiveGateway(position);
+            //now let's change my outgoingFlows to have me as a source.
+            for (Element flow : myIncomingFlows) {
+                model.setTarget(flow.getAttribute("id"), id);
+            }
+
+            //now let's create a new flow to connect me to the startingInclusive
+            //(which will later become a parallel split
+
+            String flowId = model.newSequenceFlow(id, mp.getAttribute(
+            "id"));
+        }
+
+        model.changeType(inclusive, "parallelGateway");
+        model.changeType(mp, "parallelGateway");
     }
 
 
@@ -430,9 +422,6 @@ public class Reverse3 {
         a(model);
         b(model);
     }
-
-    //Code from:
-    //https://ideone.com/7MhSj3
 
 
     /**
@@ -581,8 +570,8 @@ public class Reverse3 {
 
         for (Element flow : outgoingFlows) {
             for (Element flow2 : outgoingFlows) {
-                if (!(flow.getAttribute("id").equals(flow2.getAttribute("id")))) {
-                //Obviously I don't want to compare a flow with itself
+                if (! (flow.getAttribute("id").equals(flow2.getAttribute("id")))) {
+                    //Obviously I don't want to compare a flow with itself
 //                because that will never be mutually exclusive with itself.
 
                     System.out.println("I'm comparing the conditions of flow:");
@@ -604,8 +593,7 @@ public class Reverse3 {
                             return false;
                         }
                     } else {
-                        System.out.println("at least one of the two OF has " +
-                         "no" + " " + "condition");
+                        System.out.println("at least one of the two OF has " + "no" + " " + "condition");
                         return false; //at least one flow has no condition.
                         //this means they can't be all mutually exclusive.
                     }

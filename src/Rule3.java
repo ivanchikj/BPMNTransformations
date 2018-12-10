@@ -133,20 +133,20 @@ public class Rule3 {
 
 
         Element firstParallel;
-        Element firstParallelMeetingPoint;
+        Element firstMeetingPoint;
         ArrayList<Element> exclusiveSuccessors; //the exclusive-gateway
         // successors of the firstParallel
         ArrayList<Element> exclusivePredecessors; // the exclusive-gateway
-        // successors of the firstParallelMeetingPoint
+        // successors of the firstMeetingPoint
 
 
         Rule3cConstruct (Element firstParallel,
-         Element firstParallelMeetingPoint,
+         Element firstMeetingPoint,
           ArrayList<Element> exclusiveSuccessors,
            ArrayList<Element> exclusivePredecessors) {
 
             this.firstParallel = firstParallel;
-            this.firstParallelMeetingPoint = firstParallelMeetingPoint;
+            this.firstMeetingPoint = firstMeetingPoint;
             this.exclusiveSuccessors = exclusiveSuccessors;
             this.exclusivePredecessors = exclusivePredecessors;
         }
@@ -156,7 +156,7 @@ public class Rule3 {
 
             System.out.println("Rule 3c Construct composed of:");
             System.out.println("First parallel: " + firstParallel.getAttribute("id"));
-            System.out.println("First meeting point" + firstParallelMeetingPoint.getAttribute("id"));
+            System.out.println("First meeting point" + firstMeetingPoint.getAttribute("id"));
             System.out.println("Exclusive successors : ");
             printArray(exclusiveSuccessors);
             System.out.println("Exclusive predecessors: ");
@@ -219,10 +219,10 @@ public class Rule3 {
             TravelAgency parallelTA = new TravelAgency(model, parallelGat);
             //parallelTA.printPaths();
 
-            if (parallelTA.firstMandatoryDeepSuccessor != null) {
+            if (parallelTA.firstMandatorySuccessor != null) {
 
                 Element firstParallelMP =
-                 parallelTA.firstMandatoryDeepSuccessor;
+                 parallelTA.firstMandatorySuccessor;
 
                 // This always works
                 // because we meet at the merge anyway. If there's no merge,
@@ -327,7 +327,7 @@ public class Rule3 {
         for (Rule3cConstruct construct : constructs) {
             construct.printInfo(); //UNLOCKTHIS
             Element firstParallel = construct.firstParallel;
-            Element firstMeetingPoint = construct.firstParallelMeetingPoint;
+            Element firstMeetingPoint = construct.firstMeetingPoint;
 
             Coordinates c1 = model.getPosition(firstParallel);
             Coordinates c2 = model.getPosition(firstMeetingPoint);

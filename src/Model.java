@@ -22,6 +22,8 @@ import java.util.UUID;
 // Magari un file chiamato translator che traduce da signavio a camunda e
 // viceversa e altre cose simili. Per una questione di ordine.
 
+//TODO aggiungere i line breaks negli XML che generi per renderli più leggibili.
+
 
 
 
@@ -296,13 +298,14 @@ public class Model {
         return "";
     }
 
+
     //TODO usare sempre questo invece del metodo che ritorna la nodeList.
     ArrayList<Element> findElementsByType (String type) {
 
         String t = style(type);
         NodeList nl = doc.getElementsByTagName(t);
         ArrayList<Element> ae = new ArrayList<>();
-        for (int i = 0; i < nl.getLength(); i++){
+        for (int i = 0 ; i < nl.getLength() ; i++) {
             ae.add((Element) nl.item(i));
         }
         return ae;
@@ -382,6 +385,7 @@ public class Model {
 //    }
 
     String newInclusiveGateway (Coordinates c) {
+
         String x = c.x;
         String y = c.y;
 
@@ -399,8 +403,7 @@ public class Model {
         newNodeDI.setAttribute("bpmnElement", id);
         newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is
         // mandatory
-        //System.out.println("		I created a new Inclusive Gateway with the
-        // id " + id);
+        System.out.println("I created a new Inclusive Gateway with the id " + id);
 
         Element size = doc.createElement(this.style("Bounds"));
         newNodeDI.appendChild(size);
@@ -413,6 +416,7 @@ public class Model {
 
 
     String newParallelGateway (Coordinates c) {
+
         String x = c.x;
         String y = c.y;
         // PROCESS VIEW
@@ -428,8 +432,7 @@ public class Model {
         newNodeDI.setAttribute("bpmnElement", id);
         newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is
         // mandatory
-        //System.out.println("		I created a new Parallel Gateway with the
-        // id " + id);
+        System.out.println(" I created a new Parallel Gateway with the id " + id);
 
         Element size = doc.createElement(this.style("Bounds"));
         bpmndiPlane.appendChild(newNodeDI);
@@ -461,8 +464,7 @@ public class Model {
         newNodeDI.setAttribute("bpmnElement", id);
         newNodeDI.setAttribute("id", id + "_di"); //It seems like adding "di"
         // after the id is common practice for BPMNDI elements.
-        //System.out.println("		I created a new Parallel Gateway with the
-        // id " + id);
+        System.out.println("I created a new Parallel Gateway with the id " + id);
 
         Element size = doc.createElement(this.style("Bounds"));
         bpmndiPlane.appendChild(newNodeDI);
@@ -500,16 +502,10 @@ public class Model {
         bpmndiPlane.appendChild(newFlowDI);
         newFlowDI.setAttribute("bpmnElement", id);
         newFlowDI.setAttribute("id", id + "_di");
-        //System.out.println("		I created a new SequenceFlow with the id "
-        // + id + " and the source " + sourceID
-        //	+ " and the target " + targetID);
+        System.out.println("I created a new SequenceFlow with the id " + id + " and the source " + sourceID + " and the target " + targetID);
 
         //Element source = findElemById(sourceID);
         //Element target = findElemById(targetID);
-
-        //TODO fare un metodo per avere altezza, larghezza, e posizione di un
-        // elemento a partire da un ELEMENT e in una hashmap.
-        //Perché così è brutto.
 
         Element sourceWP = doc.createElement("waypoint");
 
@@ -537,9 +533,11 @@ public class Model {
      */
     void setSource (String id, String source) throws XPathExpressionException {
 
-        System.out.println("SETSOURCE");
-        System.out.println("ID of the flow: " + id);
-        System.out.println("new SRC " + source);
+        //UNLOCKTHIS
+        //System.out.println("SETSOURCE");
+        //System.out.println("ID of the flow: " + id);
+        //System.out.println("new SRC " + source);
+
         String previousSourceId = findElemById(id).getAttribute("sourceRef");
         Element previousSource = findElemById(previousSourceId);
         Element sequenceFlow = findElemById(id);
@@ -554,7 +552,6 @@ public class Model {
 //	System.out.println("		Content of 2child: " + xpath.evaluate("./text
 // ()", previousSource));
 
-
         deleteFlowFromOldSourceOrTarget(sequenceFlow, previousSource);
         //	System.out.println("		The id of the sequenceFlow that I have
         // found is " + sequenceFlow.getAttribute("id"));
@@ -563,7 +560,7 @@ public class Model {
         // outgoing
         // flow as a child
         Element sourceElement = findElemById(source);
-        System.out.println("		The new source is: " + source);
+        System.out.println("		The new source of flow " + id + "is: " + source);
         Element outgoing = doc.createElement(style("outgoing"));
         outgoing.appendChild(doc.createTextNode(id)); //This adds the id as a
         // text inside the tags
@@ -645,7 +642,6 @@ public class Model {
         // + "Y: " + dcBounds.getAttribute("y"));
         return new Coordinates(dcBounds.getAttribute("x"),
          dcBounds.getAttribute("y"));
-
     }
 
 
@@ -670,8 +666,7 @@ public class Model {
      * @return positions, the coordinates of the X axis are in the [0]
      * position while the y information is stored on the [1] position
      */
-    private Coordinates calculatePositionOfNewNode (ArrayList<Element> predecessors,
-     ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException {
+    private Coordinates calculatePositionOfNewNode (ArrayList<Element> predecessors, ArrayList<Element> successors) throws NumberFormatException, XPathExpressionException {
 
         //let's calculate the average positions of the predecessors on the X
         // axis
@@ -726,8 +721,7 @@ public class Model {
 
         ArrayList<Element> successors = new ArrayList<>();
         successors.add(successor);
-        return calculatePositionOfNewNode(predecessors,
-         successors);
+        return calculatePositionOfNewNode(predecessors, successors);
     }
 
 
@@ -866,7 +860,6 @@ public class Model {
 
 
     /**
-     *
      * @param element the id of said Element
      * @return a NodeList of the successors of a certain Element
      */
@@ -1005,8 +998,7 @@ public class Model {
         } else {
             //this should never happen in theory if I get a well formed bpmn
             // file.
-            System.out.println("this should never happen in theory if I get " +
-             "a" + " well formed bpmn file.");
+            System.out.println("this should never happen in theory if I get " + "a" + " well formed bpmn file.");
             return "";
         }
     }
@@ -1041,7 +1033,6 @@ public class Model {
                 sequenceFlow.removeChild(child);
                 System.out.println("I've removed: ");
                 System.out.println(child.getTextContent());
-
             }
         }
         Element conditionElement = doc.createElement(style(
@@ -1071,19 +1062,19 @@ public class Model {
     /**
      * TODO use this instead of "replaceElement" when possible. This way you
      * won't risk losing attributes or child nodes
-     *
+     * <p>
      * TODO questo non funziona sempre. Vedi se riesci a risolvere
      * altrimenti continua a tenere il vecchio metodo.
      *
      * @param //e    the element that will be changed
      * @param //type the nwe type that the element will be. Has to be a valid
-     *             BPMN Type
+     *               BPMN Type
      */
     void changeType (Element e, String type) {
 
         String styledType = this.style(type);
-        System.out.println("CIAO " +  styledType);
-        this.doc.renameNode(e,this.doc.getNamespaceURI(), styledType);
+        System.out.println("CIAO " + styledType);
+        this.doc.renameNode(e, "", styledType);
     }
 
 
@@ -1124,7 +1115,6 @@ public class Model {
 
 
     /**
-     *
      * @param id the ID of the element to delete
      */
     void delete (String id) throws XPathExpressionException {
@@ -1163,7 +1153,7 @@ public class Model {
 
     //TODO use this inside the SetSource and SetTarget methods.
     private void deleteFlowFromOldSourceOrTarget (Element sequenceFlow,
-                                                  Element oldSourceOrTarget) {
+     Element oldSourceOrTarget) {
 
         //noinspection StatementWithEmptyBody
         if (! sequenceFlow.getTagName().equals(style("sequenceFlow"))) {
@@ -1201,6 +1191,7 @@ public class Model {
      * Replace the old element with the new.
      * Nothing else should be affected (i.e. the incoming / outgoing
      * sequenceFlows)
+     *
      * @param newElem the old Element (will be deleted)
      * @param oldElem the new Element
      */
@@ -1354,8 +1345,6 @@ public class Model {
 
 
     /**
-     * ASKANA if this is a good method to recognize merges
-     *
      * @param gateway the gateway that we have to evaluate
      * @return true is it has one outgoingFlow and more than one incoming flow.
      */
@@ -1481,9 +1470,11 @@ public class Model {
      */
     private Element findDcBounds (Element bpmndiElement) {
 
-        @SuppressWarnings ("unused") String idofBPMNDI =
+        @SuppressWarnings ("unused") String idOfBPMNDI =
          bpmndiElement.getAttribute("id");
-        System.out.println("The id of the bpmndi is " + idofBPMNDI);
+        // UNLOCKTHIS
+        //System.out.println("The id of the bpmndi is " + idOfBPMNDI);
+
         Element dcBounds =
          (Element) bpmndiElement.getElementsByTagName(this.style("Bounds")).item(0);
 
@@ -1697,6 +1688,7 @@ public class Model {
 
         return positions;
     }
+
 
     /**
      * this method changes a tag to conform to the correct style of the document

@@ -1,5 +1,4 @@
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -30,20 +29,19 @@ class Reverse1 {
         // incoming flow.
 
         //all the parallel gateways in the model:
-        NodeList parallelGatewayInstances = model.doc.getElementsByTagName(
-        "bpmn:parallelGateway");
+        ArrayList<Element> parallelGatewayInstances =
+         model.findElementsByType("parallelGateway");
 
-        System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
+        System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.size());
 
-        if (parallelGatewayInstances.getLength() == 0) {
+        if (parallelGatewayInstances.size() == 0) {
             System.out.println("RULE1: there are no parallel gateways in " +
             "this" + " model");
         }
 
         ArrayList<Element> candidates = new ArrayList<>();
         //let's add in our candidate list only those gateways that are merges.
-        for (int i = 0 ; i < parallelGatewayInstances.getLength() ; i++) {
-            Element candidate = (Element) parallelGatewayInstances.item(i);
+        for (Element candidate : parallelGatewayInstances) {
             //additionally, to avoid having a "one in, one out" type of
             // gateway (which is undesired) we have to check that the number of
             //incomingFlows of our candidate is bigger than the parameter
