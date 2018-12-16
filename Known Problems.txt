@@ -1,0 +1,62 @@
+Known Problems:
+        
+        Una regola, credo la 4a, crea degli output con tanti outgoing flows a partire da uno start.            
+        Un'altra, o forse la stessa, crea degli incoming flows che vanno tutti dentro l'end.
+                 Devo controllare che sia la 1 che la 2 si applichino solo alle task.
+
+        Una regola, non so quale ma basta guardare nel report, crea delle task senza outgoing flows.        
+        
+        Il programma non riconosce i folder se non finiscono con '\'
+
+
+        Provare con modelli che hanno loop. Forse getPaths non funzionerà!!
+
+        COMPLETARE LA REGOLA 3C:
+
+            ========= Reverse3c ==========
+            Alla fine faccio così per la regola 3c.
+            Evito solo che si creino coppie di contraddizioni, nel modo che ho già usato.
+            Se capita che ci sono dei gateway vuoti, li cancello alla fine.
+            Basta che controllo se il gateway split punta a un merge di quelli nuovi, ma come faccio?
+            Mi creo una lista di predecessor del primo merge.
+            Anzi faccio proprio così direttamente alla fine del programmino:
+
+                ritrovo i miei follower
+                ritrovo i predecessor del MP
+                Per ogni follower controllo che il suo target diretto non sia incluso nei predecessor.
+                Se lo è, li cancello entrambi.
+                Fare tutto questo in un metodo a parte che prende come input solo il nuovo parallel split e il MP.
+
+
+TODO:
+
+        HIGH PRIORITY:
+            
+            Accettare modelli con più di uno start.
+            Accettare modelli con più di una fine.
+
+            Quali sono i vari tipi di espressioni? Spiegali e tienine conto nel programma.
+
+            Se ci sono due lanes, ci sono anche due processi. Considerare questa cosa, è importante, credo che rompi qualcosa, probabilmente devo aggiungere un for loop e in model avere un array di processi invece che un field per il processo.
+
+        LOW PRIORITY:
+
+            Metti lista Resulting model lista allínizio del report.
+            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR, ma non so se è corretto trattarle come task, probabilmente è meglio lasciare così.
+       
+            Cambiare naming metodi e commenti e variables da 'split' a 'fork', e da 'merge' a 'join'.
+        
+            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR.
+
+            Cosa succede se invece dello start event normale c'è un message event ad esempio o altri tipi di start?
+            Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto. Magari metti qualche test dove c'è un start event speciale tanto per fare vedere che il tuo programma funziona lo stesso.
+
+            TODO AGGIUNGI QUESTA COSA NEL PROGRAMMA:
+                The software creates a folder inside the locations of the starting models, called "output" plus the date and time of the execution, e.g. \texttt{output 14-12-2018 1626}. If a folder with the same name already exists, for example because the user launched two consecutive executions in less than a minute, a new folder called (1) will be launched  
+
+            Capire perché le label sono al posto giusto anche se io non le modifico mai. Forse le loro coordinate sono relative?
+
+        
+
+
+
