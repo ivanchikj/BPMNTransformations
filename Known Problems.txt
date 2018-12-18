@@ -1,15 +1,8 @@
 Known Problems:
-        
-        Una regola, credo la 4a, crea degli output con tanti outgoing flows a partire da uno start.            
-        Un'altra, o forse la stessa, crea degli incoming flows che vanno tutti dentro l'end.
-                 Devo controllare che sia la 1 che la 2 si applichino solo alle task.
+    
+        Una regola, non so quale ma mi basterebbe guardare nel report, crea delle task senza outgoing flows a volte. Credo sia la 3.
 
-        Una regola, non so quale ma basta guardare nel report, crea delle task senza outgoing flows.        
-        
-        Il programma non riconosce i folder se non finiscono con '\'
-
-
-        Provare con modelli che hanno loop. Forse getPaths non funzionerà!!
+        Provare con modelli che hanno loop. Molto probabilmente getPaths non funzionerà!!
 
         COMPLETARE LA REGOLA 3C:
 
@@ -46,7 +39,7 @@ TODO:
        
             Cambiare naming metodi e commenti e variables da 'split' a 'fork', e da 'merge' a 'join'.
         
-            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR.
+            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR. Ma forse è un bene che non vengano riconosciuti come task.
 
             Cosa succede se invece dello start event normale c'è un message event ad esempio o altri tipi di start?
             Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto. Magari metti qualche test dove c'è un start event speciale tanto per fare vedere che il tuo programma funziona lo stesso.
@@ -56,7 +49,8 @@ TODO:
 
             Capire perché le label sono al posto giusto anche se io non le modifico mai. Forse le loro coordinate sono relative?
 
-        
+            Il programma non riconosce i folder se non finiscono con '\'
 
+            Provare a vedere come sono scritti i modelli di inubit, e eventualmente aggiungere compatibilità con inubit.
 
-
+            Aggiungere anche il check che le regole non siano opposte, quelle date dall'utente. Nel main, ma dai all'utente la possibilità di continuare.

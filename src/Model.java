@@ -56,113 +56,6 @@ public class Model {
     // serve in più di una regola mi sa. Quindi è meglio metterlo qua
 
 
-    public Document getDoc () {
-
-        return doc;
-    }
-
-
-    public void setDoc (Document doc) {
-
-        this.doc = doc;
-    }
-
-
-    public Element getProcess () {
-
-        return process;
-    }
-
-
-    public void setProcess (Element process) {
-
-        this.process = process;
-    }
-
-
-    public Element getBpmndiDiagram () {
-
-        return bpmndiDiagram;
-    }
-
-
-    public void setBpmndiDiagram (Element bpmndiDiagram) {
-
-        this.bpmndiDiagram = bpmndiDiagram;
-    }
-
-
-    public Element getBpmndiPlane () {
-
-        return bpmndiPlane;
-    }
-
-
-    public void setBpmndiPlane (Element bpmndiPlane) {
-
-        this.bpmndiPlane = bpmndiPlane;
-    }
-
-
-    public String getTagStyle () {
-
-        return tagStyle;
-    }
-
-
-    public void setTagStyle (String tagStyle) {
-
-        this.tagStyle = tagStyle;
-    }
-
-
-    public String getPath () {
-
-        return path;
-    }
-
-
-    public void setPath (String path) {
-
-        this.path = path;
-    }
-
-
-    public XPath getXpath () {
-
-        return xpath;
-    }
-
-
-    public void setXpath (XPath xpath) {
-
-        this.xpath = xpath;
-    }
-
-
-    public DocumentBuilder getDocBuilder () {
-
-        return docBuilder;
-    }
-
-
-    public void setDocBuilder (DocumentBuilder docBuilder) {
-
-        this.docBuilder = docBuilder;
-    }
-
-
-    public ArrayList<String> getRulesApplied () {
-
-        return rulesApplied;
-    }
-
-
-    public void setRulesApplied (ArrayList<String> rulesApplied) {
-
-        this.rulesApplied = rulesApplied;
-    }
-
 
     /**
      * @param path the filepath of the Model
@@ -848,7 +741,6 @@ public class Model {
         //let's now add the previously created waypoints:
         //NOTE: the order in which the waypoints are added decides the order
         // of the arrow!
-        //This is a little bit counterintuitive imho, but it is like it is.
         sequenceFlowBPMNDI.appendChild(sourceWP);
         sequenceFlowBPMNDI.appendChild(targetWP);
 
@@ -1073,7 +965,7 @@ public class Model {
     void changeType (Element e, String type) {
 
         String styledType = this.style(type);
-        System.out.println("CIAO " + styledType);
+        //System.out.println(styledType);
         this.doc.renameNode(e, "", styledType);
     }
 
@@ -1087,7 +979,7 @@ public class Model {
 
 
     //TODO this would be better if I had a class sequenceFlow
-    private Element getSource (Element sequenceFlow) throws XPathExpressionException {
+    Element getSource (Element sequenceFlow) throws XPathExpressionException {
 
         String sourceID = sequenceFlow.getAttribute("sourceRef");
         return findElemById(sourceID);
@@ -1202,9 +1094,9 @@ public class Model {
 
         //Let's save the ID of the old element
         String oldId = oldElem.getAttribute("id");
-        System.out.println("CIAO");
-        System.out.println("New el ID " + newElem.getAttribute("id"));
-        System.out.println("Old El ID " + oldId);
+
+//        System.out.println("New el ID " + newElem.getAttribute("id"));
+//        System.out.println("Old El ID " + oldId);
         //let's save the child elements of the oldElement
         //those child elements will contain the oldElement's incoming and
         // outgoing sequenceFlows
@@ -1522,16 +1414,12 @@ public class Model {
      * <p>
      * Note that since the gateways are tilted squares, it's better to only
      * point the arrows in the 4 corners of items. This works best for both
-     * tasks and
-     * gateways.
+     * tasks and gateways.
      * <p>
      * NOTE that counter intuitively, with this system, the higher the value
      * of Y, the LOWER an item is.
      * <p>
-     * TODO this can be done more elegantly, with less repetition of code,
-     * and also in a way
-     * to avoid problems when an item is just SLIGHTLY higher or lower than
-     * the other
+     * TODO this can be done more elegantly, with less repetition of code.
      * Another idea would be to create 4 candidate anchor points for both items,
      * go through each permutation (16 in total) of the 4 anchor points
      * and select the one with the lower distance. This would take less code
@@ -1691,78 +1579,100 @@ public class Model {
 
 
     /**
-     * this method changes a tag to conform to the correct style of the document
-     * for now this uses camunda or signavio styles.
+     * //TODO
+     * //usa nelle regole 1 e 2 e anche 4. Per evitare di avere degli start e
+     * degli
+     * // end con multiple outgoing flows.
      *
-     * @param tagName the tagName that has to be 'translated'
-     * @return the translated String
+     * The method uses contains instead of equals to account for the multiple
+     * types of task that exist in BPMN.
+     * @param e the element i want to know if it is a task
+     * @return true if it is, false otherwise.
      */
-    String style (String tagName) {
+    boolean isTask (Element e) {
 
-        //BPMNDI elements have the same tagnames in both camunda and signavio
-        // so no need to change anything
-        if (tagName.contains("bpmndi")) {
-            return tagName;
-        } else if (tagName.equals("Bounds")) {
-            if (tagStyle.equals("camunda")) {
-                return "dc:" + tagName;
-            }
-            if (tagStyle.equals("signavio")) {
-                return "omgdc:" + tagName;
-            }
-        } else if (tagName.equals("waypoint")) {
-            if (tagStyle.equals("camunda")) {
-                return "di:" + tagName;
-            }
-            if (tagStyle.equals("signavio")) {
-                return "omgdi:" + tagName;
-            }
-        } else {
-            switch (tagStyle) {
-                case "camunda":
-                    return "bpmn:" + tagName;
-
-                case "signavio":
-                    return tagName;
-                default:
-                    //this is impossible but let's use signavio style
-                    return tagName;
-            }
-        }
-        return tagName;
+        return e.getTagName().toLowerCase().contains("task");
     }
+        /**
+         * this method changes a tag to conform to the correct style of the
+         * document
+         * for now this uses camunda or signavio styles.
+         *
+         * @param tagName the tagName that has to be 'translated'
+         * @return the translated String
+         */
+        String style (String tagName){
+
+            //BPMNDI elements have the same tagnames in both camunda and
+            // signavio
+            // so no need to change anything
+            if (tagName.contains("bpmndi")) {
+                return tagName;
+            } else if (tagName.equals("Bounds")) {
+                if (tagStyle.equals("camunda")) {
+                    return "dc:" + tagName;
+                }
+                if (tagStyle.equals("signavio")) {
+                    return "omgdc:" + tagName;
+                }
+            } else if (tagName.equals("waypoint")) {
+                if (tagStyle.equals("camunda")) {
+                    return "di:" + tagName;
+                }
+                if (tagStyle.equals("signavio")) {
+                    return "omgdi:" + tagName;
+                }
+            } else {
+                switch (tagStyle) {
+                    case "camunda":
+                        return "bpmn:" + tagName;
+
+                    case "signavio":
+                        return tagName;
+                    default:
+                        //this is impossible but let's use signavio style
+                        return tagName;
+                }
+            }
+            return tagName;
+        }
+
+        /**
+         * TODO explain in the thesis that a QName (what is it?) cannot start
+         * with a number but a letter.
+         *
+         * @return the newly created ID. All new ID start with "USI" as new IDs
+         * cannot start with a digit
+         */
+        private String newId () {
+
+            return "USI" + UUID.randomUUID().toString();
+        }
+
+        //TODO "extension" should be a field in Model.java?
 
 
     /**
-     * TODO explain in the thesis that a QName (what is it?) cannot start
-     * with a number but a letter.
-     *
-     * @return the newly created ID. All new ID start with "USI" as new IDs
-     * cannot start with a digit
+     * Saves the current model in the outputPath.
+     * @param outputPath the folder path in which the model will be saved
+     * @param extension the extension that the model will have. Usually it is
+     *  ".bpmn.xml"
+     * @return the final path of the saved file.
      */
-    private String newId () {
+        String saveToFile (String outputPath, String extension) throws
+        TransformerException {
+            //Building the name:
+            String path = outputPath + name + extension;
+            // Saving the file
 
-        return "USI" + UUID.randomUUID().toString();
+            TransformerFactory transformerFactory =
+             TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(path));
+            transformer.transform(source, result);
+            //System.out.println("Saved the XML file in + " + path);
+
+            return path;
+        }
     }
-
-
-    //TODO "extension" should be a field?
-    //TODO add description
-    String saveToFile (String outputPath, String extension) throws TransformerException {
-        //Building the name:
-        String path = outputPath + name + extension;
-        // Saving the file
-
-        TransformerFactory transformerFactory =
-         TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File(path));
-        transformer.transform(source, result);
-        //System.out.println("Saved the XML file in + " + path);
-
-        return path;
-    }
-
-
-}

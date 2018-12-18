@@ -1,7 +1,6 @@
 
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -18,11 +17,11 @@ public class Reverse4 {
 
         System.out.println("I'm applying rule REVERSE4a to model " + model.name);
 
-        //TODO spiegare nella tesi perché non si può applicare alle altre cose.
-        NodeList tasks = model.doc.getElementsByTagName("task");
 
-        for (int i = 0 ; i < tasks.getLength() ; i++) {
-            Element task = (Element) tasks.item(i);
+        ArrayList<Element> tasks = model.findElementsByType("task");
+
+        for (Element task : tasks) {
+
             ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
             //if it has more than one outgoing Flow then we can add a
@@ -51,11 +50,10 @@ public class Reverse4 {
 
                     ArrayList<Element> successors = model.getSuccessors(task);
 
-                    Coordinates position = model.calculatePositionOfNewNode(task
-                    , successors);
+                    Coordinates position =
+                     model.calculatePositionOfNewNode(task, successors);
 
-                    String newParallelID =
-                     model.newParallelGateway(position);
+                    String newParallelID = model.newParallelGateway(position);
 
                     //finally here's the newly created parallel gateway
                     //Element newParall = model.findElemById(newParallelID);
@@ -89,10 +87,10 @@ public class Reverse4 {
         // cercarli con il loro tag e poi
         //aggiungerli alla lista tasks (che a questo punto avrà un nome diverso)
 
-        NodeList tasks = model.doc.getElementsByTagName("task");
+        ArrayList<Element> tasks = model.findElementsByType("task");
 
-        for (int i = 0 ; i < tasks.getLength() ; i++) {
-            Element task = (Element) tasks.item(i);
+        for (Element task : tasks) {
+
             ArrayList<Element> incomingFlows = model.getIncomingFlows(task);
 
             //if it has more than one incoming Flow then we can add a
@@ -134,19 +132,18 @@ public class Reverse4 {
 
         System.out.println("I'm applying rule REVERSE4c to model " + model.path);
 
-        //TODO spiegare nella tesi perché non si può applicare alle altre cose.
-        //TODO Ana ha detto che si può applicare anche agli eventi
-        NodeList tasks = model.doc.getElementsByTagName("task");
+        ArrayList<Element> tasks = model.findElementsByType("task");
 
-        for (int i = 0 ; i < tasks.getLength() ; i++) {
-            Element task = (Element) tasks.item(i);
+        for (Element task : tasks) {
+
             ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
             //if it has more than one outgoing Flow then we can add a
             // parallel in there
             //BUT only if none of the incoming flows has a condition
 
-            if (outgoingFlows.size() > 1) {
+            if (outgoingFlows.size() > 1 && allOutHaveNoConditions(outgoingFlows,
+             model)) {
 
                 //Before creating the new parallel gateway, we have to
                 // calculate its future position
@@ -173,9 +170,24 @@ public class Reverse4 {
         }
     }
 
-    //TODO vedi se quest'ordine va bene
 
+    /**
+     * Checks if all the flows contained in outgoingFlows have no conditions
+     * @param outgoingFlows
+     * @param model
+     * @return true if none has a condition, false otherwise.
+     */
+    private static boolean allOutHaveNoConditions (ArrayList<Element> outgoingFlows, Model model) {
 
+        for (Element flow : outgoingFlows) {
+            if (model.hasCondition(flow)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //TODO decidi se quest'ordine va bene
     public static void all (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE4 to model " + model.path);

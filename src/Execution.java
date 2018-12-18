@@ -69,6 +69,10 @@ public class Execution {
         //analyzeInput();
 
         printExecutionStatus();
+        if (this.startingModels.size() == 0){
+            System.err.println("There are no starting Models to transform");
+            System.exit(0);
+        }
         this.report = new Report(this);
         decideWhatToDo(); //and do it
         saveResultingModels();

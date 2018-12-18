@@ -25,13 +25,14 @@ public class Rule4 {
             System.out.println("working on " + oldParallelGateway.getAttribute("id"));
             System.out.println("The id of the element is " + oldParallelGateway.getAttribute("id"));
 
+
+
             ArrayList<Element> outgoingFlows =
              model.getOutgoingFlows(oldParallelGateway);
             ArrayList<Element> incomingFlows =
              model.getIncomingFlows(oldParallelGateway);
+            if (model.isASplit(oldParallelGateway) && model.isTask(model.getPredecessors(oldParallelGateway).get(0))) {
 
-            if ((incomingFlows.size() == 1)) { //TODO check if this
-                // conditions is actually a solid way to distinguish merges
                 System.out.println(oldParallelGateway.getAttribute("id") + " "
                  + "has only one incoming flow and the rule 4a can be applied");
 
@@ -43,7 +44,7 @@ public class Rule4 {
 
                 //let's connect the successors to it's predecessor
                 //TODO think what happens if one of the arrows has attributes
-                // . I think it works but let's write this in the thesis.
+                //I think it works but let's write this in the thesis.
                 for (Element outgoingFlow : outgoingFlows) {
                     model.setSource(outgoingFlow.getAttribute("id"),
                      predecessor.getAttribute("id"));
@@ -55,9 +56,8 @@ public class Rule4 {
                 //TODO
                 // make the method "delete" take an Element as an input
             } else {
-                System.out.println(oldParallelGateway.getAttribute("id") +
-                "has more than one incoming flow thus rule4a cannot be " +
-                 "applied!");
+                System.out.println("Rule 4a cannot be  applied to " + oldParallelGateway.getAttribute("id"));
+
             }
         }
     }
@@ -83,18 +83,18 @@ public class Rule4 {
             System.out.println("working on " + oldExclusiveGateway.getAttribute("id"));
             System.out.println("The id of the element is " + oldExclusiveGateway.getAttribute("id"));
 
-            ArrayList<Element> outgoingFlows =
-             model.getOutgoingFlows(oldExclusiveGateway);
-            ArrayList<Element> incomingFlows =
-             model.getIncomingFlows(oldExclusiveGateway);
+
 
             //merges are gateways that have more than one incoming flow
             //but only one outgoingFlow
-            if ((incomingFlows.size() > 1 && outgoingFlows.size() == 1)) {
-                //TODO check if this conditions is actually a solid way to
-                // distinguish merges
+            if (model.isAMerge(oldExclusiveGateway) && model.isTask(model.getSuccessors(oldExclusiveGateway).get(0))) {
                 System.out.println(oldExclusiveGateway.getAttribute("id") +
                 " Is a merge exclusive gateway and will be deleted!");
+
+                ArrayList<Element> outgoingFlows =
+                        model.getOutgoingFlows(oldExclusiveGateway);
+                ArrayList<Element> incomingFlows =
+                        model.getIncomingFlows(oldExclusiveGateway);
 
                 //let;s find out the successor:
                 ArrayList<Element> successors =
@@ -128,8 +128,7 @@ public class Rule4 {
                 // instance, instead of simply changing the direction of a flow
                 model.delete(oldExclusiveGateway.getAttribute("id"));
             } else {
-                System.out.println(oldExclusiveGateway.getAttribute("id") +
-                " Is a merge exclusive gateway!");
+                System.out.println("Rule 4a cannot be  applied to " + oldExclusiveGateway.getAttribute("id"));
             }
         }
     }
@@ -156,8 +155,7 @@ public class Rule4 {
             ArrayList<Element> incomingFlows =
              model.getIncomingFlows(oldInclusiveGateway);
 
-            if ((incomingFlows.size() == 1)) { //TODO check if this
-                // conditions is actually a solid way to distinguish merges
+            if (model.isASplit(oldInclusiveGateway) && model.isTask(model.getPredecessors(oldInclusiveGateway).get(0))) {
                 System.out.println(oldInclusiveGateway.getAttribute("id") +
                 " has only one incoming flow and the rule 4a can be applied");
 
@@ -185,9 +183,7 @@ public class Rule4 {
                 model.delete(oldInclusiveGateway.getAttribute("id"));//TODO
                 // make the method "delete" take an Element as an input
             } else {
-                System.out.println(oldInclusiveGateway.getAttribute("id") +
-                " has more than one incoming flow thus rule4a cannot be " +
-                "applied!");
+                System.out.println("Rule 4a cannot be  applied to " + oldInclusiveGateway.getAttribute("id"));
             }
         }
     }

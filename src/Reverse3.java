@@ -236,7 +236,13 @@ public class Reverse3 {
 
 
     /**
-     * TODO do tests
+     * TODO faimetodo che crea i gruppi di flow, non mettere quelli vuoti
+     * insieme
+     * e controlla le condizioni con WA.
+     *
+     * TODO controlla anche quando calcoli la posizione dei nuovi
+     * exclGateway, secondo me la calcoli troppo presto, e per quello ce ne
+     * sono tanti nella stessa posizione.
      */
     static void c (Model model, int aggregateBy) throws XPathExpressionException {
 
@@ -309,6 +315,34 @@ public class Reverse3 {
         }
     }
 
+    //TODO in rule3c and here do a method that afterwards, for every exclusive
+    // (or inclusive, in the case of rule3c)
+    // gateway, checks if it has more than one empty outgoing flow and then
+    // merges them.
+    //TODO afterwards, check if there's still the possibility that there are
+    // 1in-1out gateways and delete them. Dovresti già avere il metodo per fare
+    // questo, basta che lo applichi dopo quello descritto sopra.
+
+    /**
+     * This method tries to avoid putting empty paths in the same gateway.
+     * @param flows
+     * @param model
+     * @param aggregateBy
+     */
+    private static void createTuples (ArrayList<Element> flows, Model model,
+     int aggregateBy) throws XPathExpressionException {
+        //let's separate empty flows from non empty flows
+
+//        ArrayList<Element> nonEmptyFlows = new ArrayList<>();
+//        ArrayList<Element> EmptyFlows = new ArrayList<>();
+//        for (Element flow : flows){
+//            TravelAgency ta = new TravelAgency(model,model.getSource(flow));
+//            if (ta.firstMandatorySuccessor.getAttribute("id").equals(model.getTarget()))
+//
+//        }
+
+    }
+
 
     private static void doReverse3c (Reverse3Construct construct, Model model
     , int aggregateBy) throws XPathExpressionException {
@@ -374,6 +408,16 @@ public class Reverse3 {
 
             String flowId =
              model.newSequenceFlow(inclusive.getAttribute("id"), id);
+
+
+            //one last thing. We want to avoid having "one in, one out"
+            // types of gateways, so to avoid this situation we want to
+            //do one last check:
+            Element newExcl = model.findElemById(id);
+            newExcl.setAttribute("name", "NUOVO");
+            if (model.isUselessGateway(newExcl)) {
+                model.deleteUselesGateway(newExcl);
+            }
         }
 
         for (int i = 0 ; i < numberOfExclPreds ; i++) {
@@ -405,8 +449,17 @@ public class Reverse3 {
             //now let's create a new flow to connect me to the startingInclusive
             //(which will later become a parallel split
 
-            String flowId = model.newSequenceFlow(id, mp.getAttribute(
+            model.newSequenceFlow(id, mp.getAttribute(
             "id"));
+
+            //one last thing. We want to avoid having "one in, one out"
+            // types of gateways, so to avoid this situation we want to
+            //do one last check:
+            Element newExcl = model.findElemById(id);
+            newExcl.setAttribute("name", "NUOVO");
+            if (model.isUselessGateway(newExcl)) {
+                model.deleteUselesGateway(newExcl);
+            }
         }
 
         model.changeType(inclusive, "parallelGateway");
@@ -496,7 +549,7 @@ public class Reverse3 {
         String question = c1 + " && " + c2;
 
         String appid = ""; //OPTIONAL insert your appID here.
-        if (appid.length() < 3) {
+        if (appid.length() < 3) { //if it is there it is longer than 3 chars.
             appid = Main.checkWAAppID();
         }
 

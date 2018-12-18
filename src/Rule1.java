@@ -1,5 +1,4 @@
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -14,11 +13,11 @@ class Rule1 {
 
         // Here I'm creating a list of all the parallel gateways in the
         // inputModel
-        NodeList parallelGatewayInstances =
-         model.doc.getElementsByTagName(model.style("parallelGateway"));
-        System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.getLength());
+        ArrayList<Element> parallelGatewayInstances =
+         model.findElementsByType("parallelGateway");
+        System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.size());
 
-        if (parallelGatewayInstances.getLength() == 0) {
+        if (parallelGatewayInstances.size() == 0) {
             System.out.println("RULE1: there are no parallel gateways in " +
              "this" + " model");
         }
@@ -30,9 +29,8 @@ class Rule1 {
         //elements it analyzes first.
 
         //going through all of the parallelGateways in the model:
-        for (int i = 0 ; i < parallelGatewayInstances.getLength() ; i++) {
+        for (Element gateway : parallelGatewayInstances) {
 
-            Element gateway = (Element) parallelGatewayInstances.item(i);
             //this will be the element in case
 //	    System.out.println("working on the " + (i) + "nd parallelGateway");
 //	    System.out.println("working on " + gateway.getAttribute("id"));

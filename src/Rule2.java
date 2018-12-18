@@ -1,5 +1,4 @@
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
@@ -17,11 +16,11 @@ class Rule2 {
         System.out.println("I'm applying Rule2 to model: " + model.name);
         //TODO make it such that it works with every gateway, not just
         // exclusive ones.
-        NodeList gatewayInstances =
-         model.doc.getElementsByTagName(model.style("exclusiveGateway"));
-        System.out.println("number of " + " gateway instances: " + gatewayInstances.getLength()); //TODO make it work with every gateway type.
+        ArrayList<Element> gatewayInstances =
+         model.findElementsByType("exclusiveGateway");
+        System.out.println("number of " + " gateway instances: " + gatewayInstances.size()); //TODO make it work with every gateway type.
 
-        if (gatewayInstances.getLength() == 0) {
+        if (gatewayInstances.size() == 0) {
             System.out.println("RULE1: there are no exclusive gateways in " +
              "this model");
             //RETURN FALSE
@@ -34,18 +33,18 @@ class Rule2 {
         //elements it analyzes first.
 
         //going through all of the Gateways in the model:
-        for (int i = 0 ; i < gatewayInstances.getLength() ; i++) {
+        for (Element gateway : gatewayInstances) {
 
-            Element gateway = (Element) gatewayInstances.item(i); //this will
-            // be the element in case
+//            System.out.println("working on " + gateway.getAttribute("id"));
+//            System.out.println("The id of the element is " + gateway.getAttribute("id"));
 
-            System.out.println("working on the " + (i) + "nd parallelGateway");
-            System.out.println("working on " + gateway.getAttribute("id"));
-            System.out.println("The id of the element is " + gateway.getAttribute("id"));
-
-            if (isApplicable(model, gateway)) {
+            //TODO perché non mettere isAMerge dentro isApplicable per
+            // chiarezza?
+            if (isApplicable(model, gateway) && model.isASplit(gateway)) {
                 readyToBeChangedGateways.add(gateway); //I will do the edits
                 // at the end to avoid recursive behavior
+
+
             }
         }
 

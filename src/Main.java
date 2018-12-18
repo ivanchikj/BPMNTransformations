@@ -214,11 +214,11 @@ public class Main {
         ArrayList<Parameter> parameters;
         //searchForRecursive();
         //searchForPermutations();
-
-        Document doc = tryToOpenAFile(input);
+        Document doc = tryToOpenAFile(input + "");
         if (doc == null) { //Could not find a file to be opened in the input
             // string
             isAFolder = true; // ^ this means it must be a folder.
+
             startingModels = initializeModels(folderPath);
         } else {
             isAFolder = false;
@@ -324,13 +324,21 @@ public class Main {
      * This method just find the parameters part of the input string. The
      * parameter part starts after the first round bracket and ends before
      * the first one.
+     * If the user doesn't provide a couple of round brackets, the standard
+     * set of rules 1,2,3,4 should be used later.
      *
      * @param input the input provided by the user
      * @return the part of the input that contains only the parameters
      */
     private static String findParameters (String input) {
+        if (input.indexOf('(') != -1 && input.indexOf(')') != -1 && input.indexOf('(') < input.indexOf(')')){
 
-        return input.substring(input.indexOf('('), (input.indexOf(')')));
+            return input.substring(input.indexOf('('), (input.indexOf(')')));
+
+        } else {
+            return null;
+        }
+
     }
 
 
@@ -348,7 +356,6 @@ public class Main {
 
     /**
      * TODO test this
-     * TODO if this works delete "searchFormPermutations()" and
      * "searchForRecursive()"
      * <p>
      * <p>
@@ -424,7 +431,7 @@ public class Main {
 
         ArrayList<Model> models = new ArrayList<>();
         System.out.println("Opening a folder at: " + folderPath);
-        //List<String> bmpnXMLFiles = new ArrayList<>();
+        //List<String> bpmnXMLFiles = new ArrayList<>();
         File dir = new File(folderPath);
         System.out.println("I've found " + Objects.requireNonNull(dir.listFiles()).length + " files inside the folder");
         for (File file : Objects.requireNonNull(dir.listFiles())) {
@@ -450,6 +457,10 @@ public class Main {
 
 
     /**
+     * TODO vedi se c'è un modo diverso di farlo oppure se si possono
+     * nascondere i fatal error che vengono generati nella console che sono
+     * brutti.
+     *
      * This method tries to find a file inside the user provided input string.
      * To better distinguish between the path and the parameters it tries to
      * open the first letter of the string.
@@ -495,6 +506,47 @@ public class Main {
         return null; //will be null if it didn't find a file successfully.
     }
 
+    /**
+     * TODO SPIEGA.
+     * QUESTO FUNZIONA AL CONTRARIO DELL'ALTRO.
+     * @param input
+     * @return
+     * @throws ParserConfigurationException
+     */
+    private static File tryToOpenAFolder2 (String input) throws ParserConfigurationException {
+
+        System.out.println("PROVA");
+        StringBuilder str = new StringBuilder();
+        str.append(input);
+        System.out.println("STR INIZIO  " + str);
+        DocumentBuilderFactory docFactory =
+                DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        Document doc;
+        System.out.println("CIAOOO" + input.length());
+        for (int i = str.length()-1 ; i >= 0 ; i--) {
+            System.out.println("CIAO " + i);
+            System.out.println("TEST    " + str.charAt(i));
+            str.deleteCharAt(i);
+            System.out.println("S T R : " + str);
+            try {
+
+                File  f = new File(str.toString());
+
+                return f;
+            } catch (Exception e) { //I expect a bunch FileNotFoundExceptions
+                // until I can open one.
+                // System.out.println("Failed to open file at position " + str);
+                if (str.length() == 0) { //this means I got to
+                    // the end and I haven''
+                    System.out.println("I've reached the end of the string " + "without finding a single folder.");
+
+                    return null; //will be null
+                }
+            }
+        }
+        return null; //will be null if it didn't find a file successfully.
+    }
 
     /**
      * TODO this works but has false positives.
