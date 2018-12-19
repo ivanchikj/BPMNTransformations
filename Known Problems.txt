@@ -54,3 +54,7 @@ TODO:
             Provare a vedere come sono scritti i modelli di inubit, e eventualmente aggiungere compatibilità con inubit.
 
             Aggiungere anche il check che le regole non siano opposte, quelle date dall'utente. Nel main, ma dai all'utente la possibilità di continuare.
+
+            Cleaning the console.
+
+            Fare in modo che il programma accetti più di un plane e di un process.

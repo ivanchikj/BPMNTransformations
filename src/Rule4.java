@@ -190,9 +190,8 @@ public class Rule4 {
 
 
     /**
-     * TODO controlla l'ordine
-     * TODO spiega come hai scelto l'ordine
-     *
+     *  For this rule the order is unimportant, as they don't interact with
+     *  the same BPMN symbols.
      * @param model the model that will be transformed.
      */
     public static void all (Model model) throws XPathExpressionException {

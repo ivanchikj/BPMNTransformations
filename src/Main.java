@@ -14,8 +14,6 @@ import java.util.Scanner;
 
 public class Main {
 
-
-    //private static String appIDPath = "prova";
     private static String appIDPath = "WAappid.txt";
     private static Scanner reader = new Scanner(System.in);
     static String appID;
@@ -52,7 +50,6 @@ public class Main {
             st.append(s);
             }
             br.close();
-
 
             appid = st.toString();
             if (appid.length() < 2){ //The ID is supposed to be way longer
@@ -106,8 +103,7 @@ public class Main {
      * This method allows me to easily test any public method
      * Activated only by unlocking comment at line 21
      */
-    @SuppressWarnings ("RedundantThrows")
-    private static void manualTest () throws Exception {
+    private static void manualTest () {
         //INSERT MANUAL TEST HERE
     }
 
