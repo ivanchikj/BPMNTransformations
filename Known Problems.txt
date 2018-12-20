@@ -42,7 +42,8 @@ TODO:
             Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR. Ma forse è un bene che non vengano riconosciuti come task.
 
             Cosa succede se invece dello start event normale c'è un message event ad esempio o altri tipi di start?
-            Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto. Magari metti qualche test dove c'è un start event speciale tanto per fare vedere che il tuo programma funziona lo stesso.
+            Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto.
+            Magari metti qualche test dove c'è un start event speciale tanto per fare vedere che il tuo programma funziona lo stesso.
 
             TODO AGGIUNGI QUESTA COSA NEL PROGRAMMA:
                 The software creates a folder inside the locations of the starting models, called "output" plus the date and time of the execution, e.g. \texttt{output 14-12-2018 1626}. If a folder with the same name already exists, for example because the user launched two consecutive executions in less than a minute, a new folder called (1) will be launched  
@@ -55,6 +56,6 @@ TODO:
 
             Aggiungere anche il check che le regole non siano opposte, quelle date dall'utente. Nel main, ma dai all'utente la possibilità di continuare.
 
-            Cleaning the console.
+            Clean the console.
 
             Fare in modo che il programma accetti più di un plane e di un process.
