@@ -23,7 +23,7 @@ class Rule2Test {
 
         Model result = startingModel.cloneModel();
 
-        Rule2.applyRule(result);
+        Rule2.apply(result);
 
         assertFalse(TravelAgency.modelsAreDifferent(result, expected));
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
@@ -40,7 +40,7 @@ class Rule2Test {
                 "/Rule2DoubleLayer2" + ".bpmn.xml");
 
         Model result = startingModel.cloneModel();
-        Rule2.applyRule(result);
+        Rule2.apply(result);
 
         assertFalse(TravelAgency.modelsAreDifferent(result, expected));
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));

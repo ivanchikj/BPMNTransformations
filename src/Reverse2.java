@@ -17,7 +17,7 @@ class Reverse2 {
      *                    then for every two incoming gateways I create a new
      *                    gateway
      */
-    static void applyRule (Model model, int aggregateBy) throws XPathExpressionException {
+    static void apply (Model model, int aggregateBy) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE2 to model " + model.name);
         if (aggregateBy < 2) {

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 class Rule1 {
 
 
-    static void applyRule (Model model) throws Exception {
+    static void apply (Model model) throws Exception {
 //    System.out.println("I'm applying rule RULE1 to model " + startingModel
 // .path);
 

@@ -14,7 +14,7 @@ class Reverse1 {
      *                    aggregateBy == 3 then for every 3 incoming
      *                    flows I create a new gateway.
      */
-    static void applyRule (Model model, int aggregateBy) throws XPathExpressionException {
+    static void apply (Model model, int aggregateBy) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE1 to model " + model.name);
 

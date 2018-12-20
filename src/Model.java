@@ -56,7 +56,6 @@ public class Model {
     // serve in più di una regola mi sa. Quindi è meglio metterlo qua
 
 
-
     /**
      * @param path the filepath of the Model
      */
@@ -158,7 +157,6 @@ public class Model {
 
 
     /**
-     * TODO metti questa cosa nella tesi
      * This methods finds out whether the user-provided file that represents
      * this model is written using Signavio or
      * Camunda's tag style. To do so, it searches for the startEvent in the
@@ -187,6 +185,8 @@ public class Model {
         } else {
             System.err.println("THIS SOFTWARE ONLY SUPPORTS MODELS CREATED " + "WITH CAMUNDA OR SIGNAVIO");
             System.err.println("The model " + this.name + " appears to be " + "written in a different style.");
+            System.err.println("Either that, or it is missing the start " +
+            "element.");
         }
         return "";
     }
@@ -1583,9 +1583,10 @@ public class Model {
      * //usa nelle regole 1 e 2 e anche 4. Per evitare di avere degli start e
      * degli
      * // end con multiple outgoing flows.
-     *
+     * <p>
      * The method uses contains instead of equals to account for the multiple
      * types of task that exist in BPMN.
+     *
      * @param e the element i want to know if it is a task
      * @return true if it is, false otherwise.
      */
@@ -1593,86 +1594,91 @@ public class Model {
 
         return e.getTagName().toLowerCase().contains("task");
     }
-        /**
-         * this method changes a tag to conform to the correct style of the
-         * document
-         * for now this uses camunda or signavio styles.
-         *
-         * @param tagName the tagName that has to be 'translated'
-         * @return the translated String
-         */
-        String style (String tagName){
 
-            //BPMNDI elements have the same tagnames in both camunda and
-            // signavio
-            // so no need to change anything
-            if (tagName.contains("bpmndi")) {
-                return tagName;
-            } else if (tagName.equals("Bounds")) {
-                if (tagStyle.equals("camunda")) {
-                    return "dc:" + tagName;
-                }
-                if (tagStyle.equals("signavio")) {
-                    return "omgdc:" + tagName;
-                }
-            } else if (tagName.equals("waypoint")) {
-                if (tagStyle.equals("camunda")) {
-                    return "di:" + tagName;
-                }
-                if (tagStyle.equals("signavio")) {
-                    return "omgdi:" + tagName;
-                }
-            } else {
-                switch (tagStyle) {
-                    case "camunda":
-                        return "bpmn:" + tagName;
 
-                    case "signavio":
-                        return tagName;
-                    default:
-                        //this is impossible but let's use signavio style
-                        return tagName;
-                }
-            }
+    /**
+     * this method changes a tag to conform to the correct style of the
+     * document
+     * for now this uses camunda or signavio styles.
+     *
+     * @param tagName the tagName that has to be 'translated'
+     * @return the translated String
+     */
+    String style (String tagName) {
+
+        //BPMNDI elements have the same tagnames in both camunda and
+        // signavio
+        // so no need to change anything
+        if (tagName.contains("bpmndi")) {
             return tagName;
+        } else if (tagName.equals("Bounds")) {
+            if (tagStyle.equals("camunda")) {
+                return "dc:" + tagName;
+            }
+            if (tagStyle.equals("signavio")) {
+                return "omgdc:" + tagName;
+            }
+        } else if (tagName.equals("waypoint")) {
+            if (tagStyle.equals("camunda")) {
+                return "di:" + tagName;
+            }
+            if (tagStyle.equals("signavio")) {
+                return "omgdi:" + tagName;
+            }
+        } else {
+            switch (tagStyle) {
+                case "camunda":
+                    return "bpmn:" + tagName;
+
+                case "signavio":
+                    return tagName;
+                default:
+                    //this is impossible but let's use signavio style
+                    return tagName;
+            }
         }
+        return tagName;
+    }
 
-        /**
-         * TODO explain in the thesis that a QName (what is it?) cannot start
-         * with a number but a letter.
-         *
-         * @return the newly created ID. All new ID start with "USI" as new IDs
-         * cannot start with a digit
-         */
-        private String newId () {
 
-            return "USI" + UUID.randomUUID().toString();
-        }
+    /**
+     * TODO explain in the thesis that a QName (what is it?) cannot start
+     * with a number but a letter.
+     *
+     * @return the newly created ID. All new ID start with "USI" as new IDs
+     * cannot start with a digit
+     */
+    private String newId () {
 
-        //TODO "extension" should be a field in Model.java?
+        return "USI" + UUID.randomUUID().toString();
+    }
+
+    //TODO "extension" should be a field in Model.java?
 
 
     /**
      * Saves the current model in the outputPath.
+     *
      * @param outputPath the folder path in which the model will be saved
-     * @param extension the extension that the model will have. Usually it is
-     *  ".bpmn.xml"
+     * @param extension  the extension that the model will have. Usually it is
+     *                   ".bpmn.xml"
      * @return the final path of the saved file.
      */
-        String saveToFile (String outputPath, String extension) throws
-        TransformerException {
-            //Building the name:
-            String path = outputPath + name + extension;
-            // Saving the file
+    String saveToFile (String outputPath, String extension) throws TransformerException {
+        //Building the name:
+        String path = outputPath + name + extension;
+        // Saving the file
 
-            TransformerFactory transformerFactory =
-             TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(path));
-            transformer.transform(source, result);
-            //System.out.println("Saved the XML file in + " + path);
+        TransformerFactory transformerFactory =
+         TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(path));
+        transformer.transform(source, result);
+        //System.out.println("Saved the XML file in + " + path);
 
-            return path;
-        }
+        return path;
     }
+
+
+}

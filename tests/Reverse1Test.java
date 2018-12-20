@@ -21,7 +21,7 @@ class Reverse1Test {
 
         Model result = startingModel.cloneModel();
 
-        Reverse1.applyRule(result, 0);
+        Reverse1.apply(result, 0);
         assertFalse(TravelAgency.modelsAreDifferent(result, expected));
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
@@ -38,7 +38,7 @@ class Reverse1Test {
 
         Model result = startingModel.cloneModel();
 
-        Reverse1.applyRule(result, 3);
+        Reverse1.apply(result, 3);
         assertFalse(TravelAgency.modelsAreDifferent(result, expected));
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }

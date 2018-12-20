@@ -468,7 +468,7 @@ public class Reverse3 {
 
 
     //TODO DECIDE the ORDER AND EXPLAIN IN THE THESIS
-    static void applyRule (Model model, int aggregateBy) throws Exception {
+    static void apply (Model model, int aggregateBy) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3 to model " + model.name);
         c(model, aggregateBy);

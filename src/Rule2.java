@@ -11,7 +11,7 @@ class Rule2 {
      *
      * @param model the model that will be transformed
      */
-    static void applyRule (Model model) throws XPathExpressionException {
+    static void apply (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying Rule2 to model: " + model.name);
         //TODO make it such that it works with every gateway, not just

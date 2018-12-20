@@ -1,0 +1,29 @@
+Execution time: 20-12-2018 1432
+
+Original input: /Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1DoubleLayer1r1*3.bpmn.xml npnr (-5)
+
+Recursive: false
+Permutations: false
+
+Input Models: 
+file:/Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1DoubleLayer1r1*3.bpmn.xml
+
+
+
+
+
+
+List of rules: 
+5 
+
+
+
+
+---------------------------------------------------------------------
+Starting model: Rule1DoubleLayer1r1*3
+
+Rules applied: 
+
+Successful: false
+
+the application of the rule  on model Rule1DoubleLayer1r1*3 was unsuccessful. The resulting model is identical to the starting model and will not be saved

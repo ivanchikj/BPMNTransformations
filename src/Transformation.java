@@ -76,12 +76,12 @@ class Transformation {
         System.out.println("IM APPLYING RULE " + this.parameter.rule + " ON MODEL: " + this.resultingModel.path);
         System.out.println();
         if (parameter.rule.equals("1")) {
-            Rule1.applyRule(resultingModel);
+            Rule1.apply(resultingModel);
             System.out.println();
         }
 
         if (parameter.rule.equals("2")) {
-            Rule2.applyRule(resultingModel);
+            Rule2.apply(resultingModel);
             System.out.println();
         }
 
@@ -120,15 +120,15 @@ class Transformation {
         }
 
         if (parameter.rule.equals("r1")) {
-            Reverse1.applyRule(resultingModel, parameter.aggregateBy);
+            Reverse1.apply(resultingModel, parameter.aggregateBy);
         }
 
         if (parameter.rule.equals("r2")) {
-            Reverse2.applyRule(resultingModel, parameter.aggregateBy);
+            Reverse2.apply(resultingModel, parameter.aggregateBy);
         }
 
         if (parameter.rule.equals("r3")) {
-            Reverse3.applyRule(resultingModel, parameter.aggregateBy);
+            Reverse3.apply(resultingModel, parameter.aggregateBy);
         }
 
         if (parameter.rule.equals("r3a")) {
@@ -157,6 +157,10 @@ class Transformation {
 
         if (parameter.rule.equals("r4c")) {
             Reverse4.c(resultingModel);
+        }
+
+        if (parameter.rule.equals("5")){
+            Rule5.apply(resultingModel);
         }
 
         System.out.println("IM DONE APPLYING RULE " + this.parameter.rule + " ON MODEL: " + this.resultingModel.path);

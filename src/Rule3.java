@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Rule3 {
 
-    //TODO applyRule will actually become just a (simple) method calling
+    //TODO apply will actually become just a (simple) method calling
     // other specific methods referring to part 1, part 2 of rule 3 etc
     //this method will be renamed and be called by said method. 
 
