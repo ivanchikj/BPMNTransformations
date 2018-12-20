@@ -4,19 +4,26 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
-
 //TODO fare dei test per testare il parsing delle stringhe.
 
+
+
+
 public class Main {
+
 
     private static String appIDPath = "WAappid.txt";
     private static Scanner reader = new Scanner(System.in);
     static String appID;
+
 
     public static void main (String[] args) throws Exception {
 
@@ -47,12 +54,12 @@ public class Main {
             String s;
 
             while ((s = br.readLine()) != null) {
-            st.append(s);
+                st.append(s);
             }
             br.close();
 
             appid = st.toString();
-            if (appid.length() < 2){ //The ID is supposed to be way longer
+            if (appid.length() < 2) { //The ID is supposed to be way longer
                 printHowToGetAppID();
             }
             System.out.println("AppID " + appid);
@@ -85,12 +92,12 @@ public class Main {
         System.out.println();
         System.out.println("Create a file called \"WAappid.txt\" in the " +
         "BPMNTransformations folder.");
-        System.out.println("Now paste your newly obtained wolfram alpha appID" +
-         " inside WAappid.txt.");
+        System.out.println("Now paste your newly obtained wolfram alpha " +
+        "appID" + " inside WAappid.txt.");
         System.out.println();
         System.out.println();
-        System.out.println("YOU CAN STILL RUN THE PROGRAM BUT REVERSE3b WILL " +
-         "NOT WORK");
+        System.out.println("YOU CAN STILL RUN THE PROGRAM BUT REVERSE3b WILL "
+         + "NOT WORK");
     }
 
 
@@ -247,10 +254,7 @@ public class Main {
         //initializeParams(paramString);
 
         try {
-            //TODO qui controlla che le regole non siano opposte:
-            //areRulesOpposite()
-            //Scrivi un syserr e poi lascia all'utente la possibilità di
-            // continuare.
+            areRulesOpposite(parameters);
             new Execution(input, isAFolder, startingModels, folderPath,
              permutations, recursive, parameters);
         } catch (Exception e) {
@@ -327,14 +331,13 @@ public class Main {
      * @return the part of the input that contains only the parameters
      */
     private static String findParameters (String input) {
-        if (input.indexOf('(') != -1 && input.indexOf(')') != -1 && input.indexOf('(') < input.indexOf(')')){
+
+        if (input.indexOf('(') != - 1 && input.indexOf(')') != - 1 && input.indexOf('(') < input.indexOf(')')) {
 
             return input.substring(input.indexOf('('), (input.indexOf(')')));
-
         } else {
             return null;
         }
-
     }
 
 
@@ -456,7 +459,7 @@ public class Main {
      * TODO vedi se c'è un modo diverso di farlo oppure se si possono
      * nascondere i fatal error che vengono generati nella console che sono
      * brutti.
-     *
+     * <p>
      * This method tries to find a file inside the user provided input string.
      * To better distinguish between the path and the parameters it tries to
      * open the first letter of the string.
@@ -502,9 +505,11 @@ public class Main {
         return null; //will be null if it didn't find a file successfully.
     }
 
+
     /**
      * TODO SPIEGA.
      * QUESTO FUNZIONA AL CONTRARIO DELL'ALTRO.
+     *
      * @param input
      * @return
      * @throws ParserConfigurationException
@@ -516,18 +521,18 @@ public class Main {
         str.append(input);
         System.out.println("STR INIZIO  " + str);
         DocumentBuilderFactory docFactory =
-                DocumentBuilderFactory.newInstance();
+         DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         Document doc;
         System.out.println("CIAOOO" + input.length());
-        for (int i = str.length()-1 ; i >= 0 ; i--) {
+        for (int i = str.length() - 1 ; i >= 0 ; i--) {
             System.out.println("CIAO " + i);
             System.out.println("TEST    " + str.charAt(i));
             str.deleteCharAt(i);
             System.out.println("S T R : " + str);
             try {
 
-                File  f = new File(str.toString());
+                File f = new File(str.toString());
 
                 return f;
             } catch (Exception e) { //I expect a bunch FileNotFoundExceptions
@@ -544,6 +549,7 @@ public class Main {
         return null; //will be null if it didn't find a file successfully.
     }
 
+
     /**
      * TODO this works but has false positives.
      * This method wants to avoid having infinite loops of trying to apply a
@@ -555,13 +561,49 @@ public class Main {
      * Moreover, it doesn't stop the program. It merely asks the user if
      * he/she wishes to continue.
      */
-    private boolean areRulesOpposite (Parameter parameter1,
-     Parameter parameter2) {
+    private static void areRulesOpposite (ArrayList<Parameter> parameters) {
 
-        String p1 = parameter1.rule;
-        String p2 = parameter2.rule;
+        ArrayList<String> paramsNormalDirection = new ArrayList<>();
+        ArrayList<String> paramsReverseDirection = new ArrayList<>();
 
-        return p1.equals("r" + p2) || p2.equals("r" + p1);
+        for (Parameter p : parameters) {
+            Character c = p.rule.charAt(0);// used to distinguish those
+            // who begin with 'r'
+            if (c == 'r') {
+                paramsReverseDirection.add(p.rule);
+            } else {
+                paramsNormalDirection.add(p.rule);
+            }
+        }
+
+        //now that we have separated rules in the normal direction from
+        //those in the opposite direction, let's check that there are no
+        //conflicts
+
+        boolean conflict = false;
+
+        for (String n : paramsNormalDirection) {
+            for (String r : paramsReverseDirection) {
+                String s = "r" + n;
+                if (s.equals(r)) {
+                    conflict = true;
+                }
+            }
+        }
+
+        if (conflict) {
+            System.out.println("I have found a rule and its opposite version "
+             + "in the list of applicable rules. Are you sure you wish to " + "continue? ");
+            System.out.println("If you wish to continue type 'y', otherwise " + "type 'n'"); //it actually stops with any key other than y.
+
+            String answer = reader.nextLine();
+
+            if (answer.toLowerCase().equals("y")) {
+
+            } else {
+                System.exit(0);
+            }
+        }
     }
 
     //TODO:

@@ -59,3 +59,5 @@ TODO:
             Clean the console.
 
             Fare in modo che il programma accetti più di un plane e di un process.
+
+            /Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1Classic.bpmn.xml npnr (-1-3-2-r2)
