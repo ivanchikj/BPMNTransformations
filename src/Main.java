@@ -134,9 +134,8 @@ public class Main {
 
         String n = System.getProperty("line.separator");
         String mail = "realityhas@gmail.com";//TODO
-
         String info = "";
-        info += n + "For questions and suggestions write to " + mail;
+        info += n + "For questions and suggestions write to " + mail + "." + n + "This program has been developed as a master thesis at USI. The " + "author is an inexperienced programmer, so tips and suggestions are " + "very welcome.";
 
         System.out.println(info);
     }

@@ -181,31 +181,117 @@ A new folder called 'output' will be created inside the input folder,
 
 
 ## Extending the program
-```
-TODO
-```
-<!---spiega come fare per creare una nuova regola. Non è complicato, si tratta di modificare 2 o 3 classi al massimo e poche righe di codice.-->
-<!---includi un disegno dell'architettura. e spiega velocemente come è organizzato il codice-->
 
+### Adding new rules
+
+There's an empty Rule 5 method already present in the program, that can be filled with the desired transformations without needing to change the program further.
+*However, the procedure to add a new rule is as follows:*
+Create a .java class inside the 'src' folder (e.g. Rule5.java). Inside create a new static void apply(Model model). Inside that method write all the desired transformations using the methods of the classes Model.java and TravelAgency.java.
+
+Then choose a parameter name for the new rule, e.g. "5" and add it to the list of valid parameter, which is a field of the class Parameter.java.
+Transformation.java decides which Rule to apply to a Model depending on which Parameter the user provided, so inside the method applyRule() of Transformation.java a new "if block" has to be added that looks like this, where instead of ""5"" and "Rule5" the previously chosen parameter name and class name have to be put.
+
+```
+if (parameter.rule.equals("5")){
+            Rule5.apply(resultingModel);
+        }    
+``` 
+
+
+Then, optionally, the "printHelp()" method inside Main.java can also be updated to display the new parameter in the list of possible parameters.
+
+
+### Adding compatibility with new editors (other than Camunda and Signavio)
+
+When a new Model is created, the method findOutTagStyle() extrapolates the tag style from the start element's tag: first it looks for a start model tag in the written in Camunda's Style ("bpmn:startEvent"), then it looks for a start model tag written in Signavio's style ("startEvent").
+Depending on which elements it finds, the field private String tagStyle of the Model.java class stores the style of the model information.
+
+An alternative would be using the attribute "exporter" of the <bpmn:definitions> element of the XML, which explicitly states which exporter has been used to create the program (e.g. "Camunda Modeler") but using the start element instead allows the program to work even with models that are not exported with Camunda or Signavio but that might use the same style as one of the two.
+
+To add a new tag style the attribute "exporter" might be used to distinguish the exporter explicitly, or depending on which element's tag is written in the peculiar style that element could be used; if it is an element that, unlike the start element, is not always present in a model the new style would be used only in cases where that element is present, otherwise another style could be used (and it would work correctly because the elements that are present would be written in the same way, otherwise they themselves could be used to distinguish the style).
+
+```
+        private String findOutTagStyle () {
+
+        Element camunda = 
+         (Element) doc.getElementsByTagName("bpmn:startEvent").item(0);
+        Element signavio =
+         (Element) doc.getElementsByTagName("startEvent").item(0);
+
+        if (camunda != null) {
+            //This model uses the camunda style for the tag names
+            return "camunda";
+        } else if (signavio != null) {
+            //This model uses the signavio style for the tag names.
+            return "signavio";
+        } else {
+            System.err.println("THIS SOFTWARE ONLY SUPPORTS MODELS CREATED " + 
+            "WITH CAMUNDA OR SIGNAVIO");
+            System.err.println("The model " + this.name + " appears to be " + 
+            "written in a different style.");
+            System.err.println("Either that, or it is missing the start " +
+             "element.");
+        }
+        return "";
+    }
+```
+
+
+After recognizing the tag style of the Model, every time the program searches for a certain element using an XML tag, or it creates a new element in the XML it has to first "translate" the tag to be the correct one. The translation is different depending on the type of the element for example "bpmndi" elements need not to be translated, while children of the process elements need "bpmn:" to be added as an appendix. The first "if" identifies the type of tagname, then secondly the appropriate modification is applied depending on the style of the model (saved in the \texttt{tagName} field of Model.Java). Editing this method to accept a third language is a matter of adding an "if" in the correct place and the applying the desired modification to the original string.
+
+```
+    String style (String tagName) {
+    
+        if (tagName.contains("bpmndi")) {
+        // BPMNDI elements have the same tagnames in both camunda and
+        // signavio so no need to change anything there
+            return tagName;
+        } else if (tagName.equals("Bounds")) {
+            if (tagStyle.equals("camunda")) {
+                return "dc:" + tagName;
+            }
+            if (tagStyle.equals("signavio")) {
+                return "omgdc:" + tagName;
+            }
+        } else if (tagName.equals("waypoint")) {
+            if (tagStyle.equals("camunda")) {
+                return "di:" + tagName;
+            }
+            if (tagStyle.equals("signavio")) {
+                return "omgdi:" + tagName;
+            }
+        } else {
+            switch (tagStyle) {
+                case "camunda":
+                    return "bpmn:" + tagName;
+
+                case "signavio":
+                    return tagName;
+                default:
+                    //this is impossible but let's use signavio style
+                    return tagName;
+            }
+        }
+        return tagName;
+    }
+```
+
+<!-- 
 ## Built With Libraries:
 
 * [Camunda](www.google.com) - The API that...
-* [Xpath](www.google.com) - The tool that..
+* [Xpath](www.google.com) - The tool that.. -->
 
 
-## Author
+<!-- ## Author
 
 * [**Ruben**](https://github.com/realityhas)
 
 ## Supervised by
 
 * [**A**](www.google.com)
-* [**C**](www.google.com)
+* [**C**](www.google.com) -->
 
 ## License
 
 todo?
-
-## Acknowledgments
-
-* todo
