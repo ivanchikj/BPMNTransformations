@@ -24,9 +24,6 @@ import java.util.UUID;
 
 //TODO aggiungere i line breaks negli XML che generi per renderli più leggibili.
 
-
-
-
 //TODO:
 //Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
 // dentro le regole, sarebbe meglio usare la traduzione come prima riga nei
@@ -36,8 +33,14 @@ public class Model {
 
     public Document doc; // This is the xml representation of my model
     private Element process; //This is the process view of the model
+    // TODO
+    // delete the process as a field, as there might be more than one so it
+    // is best to find out the correct process inside the methods.
+
+
     private Element bpmndiDiagram; //This is the BPMNDI view of the model,
-    // here are stored the positions of all nodes and SequenceFlows
+//    // here are stored the positions of all nodes and SequenceFlows
+
     private Element bpmndiPlane; //A model can have more than one plane TODO
     // consider this. Maybe this can become an arrayList and in the Rules we
     // can have a for loop circling everything. This way rules get applied
@@ -197,11 +200,11 @@ public class Model {
 
         String t = style(type);
         NodeList nl = doc.getElementsByTagName(t);
-        ArrayList<Element> ae = new ArrayList<>();
+        ArrayList<Element> e = new ArrayList<>();
         for (int i = 0 ; i < nl.getLength() ; i++) {
-            ae.add((Element) nl.item(i));
+            e.add((Element) nl.item(i));
         }
-        return ae;
+        return e;
     }
 
 
@@ -314,23 +317,23 @@ public class Model {
         String y = c.y;
         // PROCESS VIEW
         String id = newId();
-        Element newNode = doc.createElement(this.style("parallelGateway"));
-        newNode.setAttribute("id", id);
-        //newNode.setAttribute("name", "NEW");
-        process.appendChild(newNode);
+        Element newElem = doc.createElement(this.style("parallelGateway"));
+        newElem.setAttribute("id", id);
+        //newElem.setAttribute("name", "NEW");
+        this.process.appendChild(newElem);
 
         // BPMNDI VIEW
-        Element newNodeDI = doc.createElement(this.style("bpmndi:BPMNShape"));
-        //bpmndiDiagram.appendChild(newGatDI);
-        newNodeDI.setAttribute("bpmnElement", id);
-        newNodeDI.setAttribute("id", id + "_di"); // I don't know if this is
+        Element newElemDI = doc.createElement(this.style("bpmndi:BPMNShape"));
+
+        newElemDI.setAttribute("bpmnElement", id);
+        newElemDI.setAttribute("id", id + "_di"); // I don't know if this is
         // mandatory
         System.out.println(" I created a new Parallel Gateway with the id " + id);
 
         Element size = doc.createElement(this.style("Bounds"));
-        bpmndiPlane.appendChild(newNodeDI);
+        this.bpmndiPlane.appendChild(newElemDI);
 
-        newNodeDI.appendChild(size);
+        newElemDI.appendChild(size);
         size.setAttribute("height", "50");
         size.setAttribute("width", "50");
         size.setAttribute("x", x);
@@ -416,10 +419,7 @@ public class Model {
 
     /**
      * TODO aggiungere un errore quando l'id non corrisponde a un elemento
-     * SequenceFlow TODO manage BPMNDI aspects
-     * TODO vedi se puoi riutilizzare alcuni pezzi per il metodo newSequenceFlow
-     * TODO vedi cosa succede se una task è source di due flow, se ne cambi
-     * uno, cosa succede al secondo?
+     * SequenceFlow
      *
      * @param id     the id of the sequenceFlow that will be changing source
      * @param source the new source
@@ -460,7 +460,7 @@ public class Model {
         sourceElement.appendChild(outgoing);
 
         //Since it's impossible to distinguish the source waypoints from the
-        // target waipoints,
+        // target waypoints,
         //(aside from looking at the order, but this doesn't seem like a good
         // solution
         //it's best to simply delete all
@@ -1243,7 +1243,7 @@ public class Model {
     boolean isAMerge (Element gateway) throws XPathExpressionException {
         //if (gateway.getTagName()) TODO check that is a gateway and return a
         // message when it's not
-        //noinspection RedundantIfStatement
+
         if (getIncomingFlows(gateway).size() > 1 && getOutgoingFlows(gateway).size() == 1) {
             return true;
         } else {

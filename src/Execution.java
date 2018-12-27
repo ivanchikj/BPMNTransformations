@@ -207,15 +207,6 @@ public class Execution {
                 for (Model m : startingModels) {
                     applyRecNoPerm(m);
                 }
-
-//      QUESTA MODALITÀ NON HA MOLTO SENSO, PERCHÉ POSSO RIAPPLICARE LA
-// REGOLA DUE VOLTE ALLO STESSO MODELLO, MA NON
-//      POSSO CAMBIARE L'ORDINE DELLE REGOLE? ALLORA È COME AVERE UNA
-// SEQUENZA SPECIFICA DI REGOLE.
-//      Ha senso solo con le regole che possono essere applicate più volte.
-
-//TODO scrivere nella tesi: alla fine faccio 1122333
-
             } else //noinspection ConstantConditions
                 if (permutations && ! recursive) {
                     System.out.println();
@@ -257,13 +248,6 @@ public class Execution {
 //            resultingModels.add(m); // finally we can add the model to the
 // resulting models (the ones that will be saved)
 //        }
-
-        //Todo spiega questa cosa nella tesi:
-        // NOTE that it will be added regardless of the fact that the models
-        // is different or not,
-        //because in this model the user provides the exact order of rules
-        // himself.
-        //TODO ma non è vero?
     }
 
 
@@ -375,10 +359,10 @@ public class Execution {
         }
     }
 
-    //TODO tradurre in inglese
 
 
-    /**
+
+    /** //TODO tradurre in inglese
      * //            Permutations but no recursion:
      * //
      * //            Per ogni modello del mio pool (input: Model, rulePool):
@@ -412,22 +396,4 @@ public class Execution {
         }
     }
 
-//    private boolean continueAfterWarning(String warning) {
-//        System.out.println();
-//        System.out.println();
-//        System.out.println(" WARNING :" + warning);
-//        System.out.println();
-//        System.out.println(" Do you wish to continue?  - Y/N");
-//        Scanner scanner = new Scanner(System.in);
-//        String input = scanner.next().toLowerCase();
-//
-//        if (input.equals("y")) {
-//            return true;
-//        } else if (input.equals("n")) {
-//            return false;
-//        } else {
-//            System.out.println("You can only write - y/n");
-//            return continueAfterWarning(warning); //Does this works?
-//        }
-//    }
 }

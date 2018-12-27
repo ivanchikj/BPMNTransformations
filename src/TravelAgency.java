@@ -9,17 +9,15 @@ public class TravelAgency {
     //TODO add a check for loops, because when there's one the program crashes.
 
     public Model model;
+    private Element startingPoint;
     ArrayList<ArrayList<Element>> paths;
     //private ArrayList<String> visited;
     //private ArrayList<String> toVisit;
-    private Element startingPoint;
     //private ArrayList<Element> startingList;
     ArrayList<Element> mandatorySuccessors;
     Element firstMandatorySuccessor;
     //private int pastID;
-    //TODO decide if the starting point has to be a class variable
 
-    //TODO address the fact that a model can have more than one startEvent
 
     /**
      * Constructor with startingPoint
@@ -50,7 +48,7 @@ public class TravelAgency {
         mandatorySuccessors = new ArrayList<>();
         getMandatorySuccessors();
 
-        if (mandatorySuccessors.size() > 0){
+        if (mandatorySuccessors.size() > 0) {
             this.firstMandatorySuccessor = mandatorySuccessors.get(0);
         }
 
@@ -63,7 +61,7 @@ public class TravelAgency {
      * TODO scrivi la docum
      * Spiega che se non è specificato lo startingPoint, inizi dallo start
      */
-    private TravelAgency (Model model) throws XPathExpressionException {
+    public TravelAgency (Model model) throws XPathExpressionException {
 
         this.model = model;
 
@@ -76,8 +74,7 @@ public class TravelAgency {
         //Element start = (Element) model.doc.getElementsByTagName
         // ("bpmn:startEvent").item(0);
 
-        this.startingPoint =
-         (Element) model.doc.getElementsByTagName(model.style("startEvent")).item(0);
+        this.startingPoint = model.findElementsByType("startEvent").get(0);
 
         //this.startingList = fromElementToArrayList();
 
@@ -88,7 +85,7 @@ public class TravelAgency {
         //getPathsFrom(startingList);
         getPaths(startingPoint);
 
-        //getPaths(); TODO deletethis
+        //getPaths();
 
         mandatorySuccessors = new ArrayList<>();
         getMandatorySuccessors();
@@ -105,7 +102,8 @@ public class TravelAgency {
     }
 
 
-    private void getPathsFromPast (Element start, ArrayList<Element> past) throws XPathExpressionException { //TODO fai partire solo da uno startingPoint
+    private void getPathsFromPast (Element start, ArrayList<Element> past) throws XPathExpressionException {
+
         past.add(start);
         //String id = start.getAttribute("id");
         //System.out.println("I'm visiting element " + id); //UNLOCKTHIS
@@ -116,9 +114,11 @@ public class TravelAgency {
             paths.add(past);
         } else {
             for (Element successor : successors) {
-                ArrayList<Element> newPastArrayList =
-                 (ArrayList<Element>) past.clone();
-                getPathsFromPast(successor, newPastArrayList);
+                if (!past.contains(successor)) { //to avoid infinite loops
+                    ArrayList<Element> newPastArrayList =
+                     (ArrayList<Element>) past.clone();
+                    getPathsFromPast(successor, newPastArrayList);
+                }
             }
         }
     }
@@ -222,7 +222,7 @@ public class TravelAgency {
      * Used for testing
      */
     @SuppressWarnings ("unused")
-    public void printMandatorySuccessors () {
+    private void printMandatorySuccessors () {
 
         System.out.println("PRINTING THE MANDATORY DEEP SUCCESSORS: ");
         for (Element element : mandatorySuccessors) {
@@ -235,7 +235,7 @@ public class TravelAgency {
      * Used for testing
      */
     @SuppressWarnings ("unused")
-    private void printPaths () {
+    public void printPaths () {
 
         System.out.println("======= PRINTING PATHS =======");
         System.out.println("STARTING POINT: " + startingPoint.getAttribute(
@@ -255,7 +255,7 @@ public class TravelAgency {
      * Used for testing
      */
     @SuppressWarnings ("unused")
-    public void printNumberOfPaths () {
+    private void printNumberOfPaths () {
 
         System.out.println("THE NUMBER OF PATHS FROM STARTING POINT: " + startingPoint.getAttribute("id") + " is: " + paths.size());
     }
@@ -323,7 +323,7 @@ public class TravelAgency {
 
     @SuppressWarnings ("BooleanMethodIsAlwaysInverted")
     private static boolean foundAMatch (ArrayList<String> pathInTypes,
-                                        ArrayList<ArrayList<String>> AllPathsInTypes) {
+     ArrayList<ArrayList<String>> AllPathsInTypes) {
 
         //let's go through every path in allPathsInTypes and see if there's
         // one identical to pathInTypes

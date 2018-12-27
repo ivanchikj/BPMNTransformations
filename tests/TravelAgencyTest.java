@@ -48,18 +48,19 @@ class TravelAgencyTest {
          "/onlyOneExpressionIsAdded.bpmn.xml");
 
         assertFalse(TravelAgency.modelsAreDifferent(base, expressionAdded));
-        //This model is equal from the base model: a couple of sequenceFlows
-        // have
-        //TODO this should change, but if it doesn't I can justify it by saying
-        // that there are no rules that only change expressions.
+        // This model is equal from the base model: a couple of sequenceFlows
+        // have added conditions.
+        // TODO this could be improved to detect changes in sequenceFlows,
+        // but for now there just are no rules that only change expressions.
 
     }
 
 
     /**
-     * TODO maybe create an equal model but from Signavio.?
+     * TODO maybe create an equal model but from Signavio?
      * It will fail, because types are different, unless I add a translator
-     * to the code which is not difficult i just have to find the right place.
+     * to the code which is not difficult i just have to find the right place
+     * to add it in.
      *
      * @throws ParserConfigurationException
      * @throws SAXException
@@ -81,6 +82,46 @@ class TravelAgencyTest {
         //The position of the BPMN symbols should not matter. As such, it
         // should be equal to the base model.
 
+    }
+
+
+    @Test
+    void withALoop () throws ParserConfigurationException,
+            SAXException, IOException, XPathExpressionException {
+
+        Model base = new Model("./tests/TestModels/TravelAgency" +
+                "/withALoop.bpmn.xml");
+        //the model against which all others will be tested.
+
+        Model onlyPositionsAreDifferent = new Model("./tests/TestModels" +
+                "/TravelAgency/withALoopEqual.bpmn.xml");
+        assertFalse(TravelAgency.modelsAreDifferent(base,
+                onlyPositionsAreDifferent));
+
+
+        //The position of the BPMN symbols should not matter. As such, it
+        // should be equal to the base model.
+
+    }
+
+
+
+    @Test
+    void twoEnds () throws ParserConfigurationException,
+            SAXException, IOException, XPathExpressionException {
+
+        Model base = new Model("./tests/TestModels/TravelAgency" +
+                "/twoEnds.bpmn.xml");
+        //the model against which all others will be tested.
+
+        Model onlyPositionsAreDifferent = new Model("./tests/TestModels" +
+                "/TravelAgency/twoEndsEqual.bpmn.xml");
+        assertFalse(TravelAgency.modelsAreDifferent(base,
+                onlyPositionsAreDifferent));
+        //The position of the BPMN symbols should not matter. As such, it
+        // should be equal to the base model.
+        TravelAgency ta = new TravelAgency(base);
+        ta.printPaths();
     }
 
 

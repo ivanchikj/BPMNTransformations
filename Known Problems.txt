@@ -2,9 +2,7 @@ Known Problems:
     
         Una regola, non so quale ma mi basterebbe guardare nel report, crea delle task senza outgoing flows a volte. Credo sia la 3.
 
-        Provare con modelli che hanno loop. Molto probabilmente getPaths non funzionerà!!
-
-        COMPLETARE LA REGOLA 3C:
+        Aggiustare LA REGOLA 3C:
 
             ========= Reverse3c ==========
             Alla fine faccio così per la regola 3c.
@@ -24,12 +22,7 @@ Known Problems:
 TODO:
 
         HIGH PRIORITY:
-            
-            Accettare modelli con più di uno start.
-            Accettare modelli con più di una fine.
-
-            Quali sono i vari tipi di espressioni? Spiegali e tienine conto nel programma.
-
+    
             Se ci sono due lanes, ci sono anche due processi. Considerare questa cosa, è importante, credo che rompi qualcosa, probabilmente devo aggiungere un for loop e in model avere un array di processi invece che un field per il processo.
 
         LOW PRIORITY:
