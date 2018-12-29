@@ -44,4 +44,37 @@ class Reverse1Test {
     }
 
 
+
+    @Test
+    void twoByTwoExclusive () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule1" +
+                "/Rule1DoubleLayerExclusive1.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule1" +
+                "/Rule1DoubleLayerExclusive1r1.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse1.apply(result, 0);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+    @Test
+    void twoByTwoInclusive () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule1" +
+                "/Rule1DoubleLayerInclusive1.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule1" +
+                "/Rule1DoubleLayerInclusive1r1.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse1.apply(result, 0);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
 }
