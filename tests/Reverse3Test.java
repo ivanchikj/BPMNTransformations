@@ -155,8 +155,9 @@ class Reverse3Test {
         assertTrue(Reverse3.areAlwaysTrue("1 == 1"));
         assertFalse(Reverse3.areAlwaysTrue("1 == 2"));
         assertTrue(Reverse3.areAlwaysTrue("'a' == 'a'"));
-        assertFalse(Reverse3.areAlwaysTrue("'a' == 'b'"));
         //this works if words are surrounded by 'quotation marks'
+        assertFalse(Reverse3.areAlwaysTrue("a == a"));
+        assertFalse(Reverse3.areAlwaysTrue("'a' == 'b'"));
         assertFalse(Reverse3.areAlwaysTrue("anyWord"));
         assertFalse(Reverse3.areAlwaysTrue("4"));
         assertFalse(Reverse3.areAlwaysTrue("4 > 5"));

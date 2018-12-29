@@ -129,7 +129,7 @@ public class Rule3 {
     }
 
 
-    private static class Rule3cConstruct {
+    private static class Rule3cTargetStructure {
 
 
         Element firstParallel;
@@ -140,10 +140,10 @@ public class Rule3 {
         // successors of the firstMeetingPoint
 
 
-        Rule3cConstruct (Element firstParallel,
-         Element firstMeetingPoint,
-          ArrayList<Element> exclusiveSuccessors,
-           ArrayList<Element> exclusivePredecessors) {
+        Rule3cTargetStructure (Element firstParallel,
+                               Element firstMeetingPoint,
+                               ArrayList<Element> exclusiveSuccessors,
+                               ArrayList<Element> exclusivePredecessors) {
 
             this.firstParallel = firstParallel;
             this.firstMeetingPoint = firstMeetingPoint;
@@ -154,7 +154,7 @@ public class Rule3 {
 
         void printInfo () {
 
-            System.out.println("Rule 3c Construct composed of:");
+            System.out.println("Rule 3c target structure composed of:");
             System.out.println("First parallel: " + firstParallel.getAttribute("id"));
             System.out.println("First meeting point" + firstMeetingPoint.getAttribute("id"));
             System.out.println("Exclusive successors : ");
@@ -181,7 +181,7 @@ public class Rule3 {
 
         System.out.println("I'm applying rule RULE3c to model " + model.name);
 
-        ArrayList<Rule3cConstruct> constructs = new ArrayList<>();
+        ArrayList<Rule3cTargetStructure> targets = new ArrayList<>();
 
         System.out.println("Going through every parallel Element in the " +
         "gateway");
@@ -255,17 +255,17 @@ public class Rule3 {
                          model.getPredecessors(firstParallelMP);
 
                         System.out.println("I'm creating a " + "new " +
-                        "construct");
-                        Rule3cConstruct construct =
-                         new Rule3cConstruct(parallelGat, firstParallelMP,
+                        "target structure");
+                        Rule3cTargetStructure target =
+                         new Rule3cTargetStructure(parallelGat, firstParallelMP,
                           parallelGatSuccessors, mpPredecessors);
-                        constructs.add(construct);
+                        targets.add(target);
                     }
                 }
             }
 
         }
-        applyRule3c(constructs, model);
+        applyRule3c(targets, model);
     }
 
 
@@ -316,18 +316,18 @@ public class Rule3 {
      * Once we have find all the parts of the model that we want to
      * transform, we can actually transform them.
      *
-     * @param constructs an arraylist of all the construct (a series of BPMN
+     * @param targets an arrayList of all the targets (a series of BPMN
      *                   Elements connected in such a way to make the
      *                   application of rule 3c possible) on which to apply
      *                   rule 3c
      */
-    private static void applyRule3c (ArrayList<Rule3cConstruct> constructs,
+    private static void applyRule3c (ArrayList<Rule3cTargetStructure> targets,
      Model model) throws XPathExpressionException {
 
-        for (Rule3cConstruct construct : constructs) {
-            construct.printInfo(); //UNLOCKTHIS
-            Element firstParallel = construct.firstParallel;
-            Element firstMeetingPoint = construct.firstMeetingPoint;
+        for (Rule3cTargetStructure target : targets) {
+            target.printInfo(); //UNLOCKTHIS
+            Element firstParallel = target.firstParallel;
+            Element firstMeetingPoint = target.firstMeetingPoint;
 
             Coordinates c1 = model.getPosition(firstParallel);
             Coordinates c2 = model.getPosition(firstMeetingPoint);
@@ -341,7 +341,7 @@ public class Rule3 {
 //            // old element remains.
 //
 
-            for (Element successor : construct.exclusiveSuccessors) {
+            for (Element successor : target.exclusiveSuccessors) {
                 ArrayList<Element> outgoingFlows =
                  model.getOutgoingFlows(successor);
                 for (Element flow : outgoingFlows) {
@@ -354,7 +354,7 @@ public class Rule3 {
                 model.delete(succID);
             }
 
-            for (Element predecessor : construct.exclusivePredecessors) {
+            for (Element predecessor : target.exclusivePredecessors) {
                 ArrayList<Element> incomingFlows =
                  model.getIncomingFlows(predecessor);
                 for (Element flow : incomingFlows) {

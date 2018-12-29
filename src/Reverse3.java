@@ -94,21 +94,21 @@ public class Reverse3 {
     }
 
 
-    static class Reverse3Construct {
+    static class Reverse3TargetStructure {
 
 
         Element firstInclusive;
         Element firstMeetingPoint;
 
 
-        Reverse3Construct (Element firstInclusive, Element firstMeetingPoint) {
+        Reverse3TargetStructure (Element firstInclusive, Element firstMeetingPoint) {
 
             this.firstInclusive = firstInclusive;
             this.firstMeetingPoint = firstMeetingPoint;
         }
 
 
-        void printConstruct () {
+        void printStructure () {
 
             System.out.println("The first Inclusive" + firstInclusive.getAttribute("id"));
             System.out.println("The first incl meet Point " + firstMeetingPoint.getAttribute("id"));
@@ -253,7 +253,7 @@ public class Reverse3 {
             System.out.println("aggregateBy must be bigger than 1");
         }
 
-        ArrayList<Reverse3Construct> constructs = new ArrayList<>();
+        ArrayList<Reverse3TargetStructure> targets = new ArrayList<>();
 
         ArrayList<Element> inclusiveGatewayInstances =
          model.findElementsByType("inclusiveGateway");
@@ -288,12 +288,12 @@ public class Reverse3 {
             Element firstMeetingPoint = ta.firstMandatorySuccessor;
             if (firstMeetingPoint.getTagName().equals(model.style(
             "inclusiveGateway"))) {
-                //ok now I can create a construct.
+                //ok now I can create a target.
                 //System.out.println(ta.paths.size());//UNLOCKTHIS
                 //System.out.println(candidate.getAttribute("name"));
-                Reverse3Construct construct = new Reverse3Construct(candidate
+                Reverse3TargetStructure target = new Reverse3TargetStructure(candidate
                 , firstMeetingPoint);
-                constructs.add(construct);
+                targets.add(target);
             } else {
                 //UNLOCKTHIS
 //                System.out.println(ta.paths.size());//UNLOCKTHIS
@@ -304,14 +304,14 @@ public class Reverse3 {
             }
         }
 
-        System.out.println("I've found : " + constructs);
-        for (Reverse3Construct rc : constructs) {
-            rc.printConstruct();
+        System.out.println("I've found : " + targets);
+        for (Reverse3TargetStructure rc : targets) {
+            rc.printStructure();
         }
 
-        //now let's go through all constructs and do the necessary changes.
-        for (Reverse3Construct construct : constructs) {
-            doReverse3c(construct, model, aggregateBy);
+        //now let's go through all targets and do the necessary changes.
+        for (Reverse3TargetStructure structure : targets) {
+            doReverse3c(structure, model, aggregateBy);
         }
     }
 
@@ -344,11 +344,11 @@ public class Reverse3 {
     }
 
 
-    private static void doReverse3c (Reverse3Construct construct, Model model
+    private static void doReverse3c (Reverse3TargetStructure target, Model model
     , int aggregateBy) throws XPathExpressionException {
 
-        Element inclusive = construct.firstInclusive;
-        Element mp = construct.firstMeetingPoint;
+        Element inclusive = target.firstInclusive;
+        Element mp = target.firstMeetingPoint;
 
         ArrayList<Element> outFlows = model.getOutgoingFlows(inclusive);
         ArrayList<Element> inFlows = model.getIncomingFlows(mp);
