@@ -7,7 +7,14 @@ import java.util.ArrayList;
 class Rule1 {
 
 
-    static void apply (Model model) throws Exception {
+    static void apply(Model model) throws Exception {
+    applyParallel(model);
+    applyExclusive(model);
+    applyInclusive(model);
+    }
+
+
+    private static void applyParallel (Model model) throws Exception {
 //    System.out.println("I'm applying rule RULE1 to model " + startingModel
 // .path);
 
@@ -28,52 +35,57 @@ class Rule1 {
         //recursively depending on which
         //elements it analyzes first.
 
-        //going through all of the parallelGateways in the model:
-        for (Element gateway : parallelGatewayInstances) {
+        //Apply the changes to all of the parallelGateways in the model:
+        applyChanges(model, parallelGatewayInstances, readyToBeChangedGateways);
+    }
 
-            //this will be the element in case
-//	    System.out.println("working on the " + (i) + "nd parallelGateway");
-//	    System.out.println("working on " + gateway.getAttribute("id"));
-//	    System.out.println("The id of the element is " + gateway.getAttribute
-// ("id") );
 
-            if (model.isAMerge(gateway) && isApplicable(model, gateway)) {
-                //TODO perché non mettere isAMerge dentro isApplicable per
-                // chiarezza?
 
-                readyToBeChangedGateways.add(gateway); //I do the edits at
-                // the end to avoid recursive behavior
-            }
+
+
+    private static void applyExclusive (Model model) throws Exception {
+
+        // Here I'm creating a list of all the exclusive gateways in the
+        // inputModel
+        ArrayList<Element> exclusiveGatewayInstances =
+                model.findElementsByType("exclusiveGateway");
+        System.out.println("number of exclusive gateway instances: " + exclusiveGatewayInstances.size());
+
+        if (exclusiveGatewayInstances.size() == 0) {
+            System.out.println("RULE1: there are no exclusive gateways in " +
+                    "this" + " model");
         }
 
-        if (readyToBeChangedGateways.size() > 0) {
-            for (Element gateway : readyToBeChangedGateways) {
-                ArrayList<Element> predecessors =
-                 model.getPredecessors(gateway); //predecessors will be
-                // eliminated
-                for (Element pred : predecessors) {
+        ArrayList<Element> readyToBeChangedGateways = new ArrayList<>();
+        //NOTE with this rule
+        //I cannot do edits in real time otherwise the program would behave
+        //recursively depending on which
+        //elements it analyzes first.
 
-                    ArrayList<Element> flowsToDelete =
-                     model.getOutgoingFlows(pred); //this is also the
-                    // incoming flow of the gateway at hand
-                    ArrayList<Element> flowsToKeep =
-                     model.getIncomingFlows(pred);
+        //Apply the changes to all of the parallelGateways in the model:
+        applyChanges(model, exclusiveGatewayInstances, readyToBeChangedGateways);
+    }
 
-                    //deleting all the flows (it should be only one) from the
-                    // item to be deleted to its successor:
-                    for (Element aFlowsToDelete : flowsToDelete) {
-                        model.delete(aFlowsToDelete.getAttribute("id"));
-                    }
-                    //changing the targets of all their sequence flows
-                    for (Element aFlowsToKeep : flowsToKeep) {
-                        model.setTarget(aFlowsToKeep.getAttribute("id"),
-                         gateway.getAttribute("id"));
-                    }
-                    //finally deleting the gateways
-                    model.delete(pred.getAttribute("id"));
-                }
-            }
+
+    private static void applyInclusive (Model model) throws Exception {
+
+        ArrayList<Element> inclusiveGatewayInstances =
+                model.findElementsByType("inclusiveGateway");
+        System.out.println("number of inclusive gateway instances: " + inclusiveGatewayInstances.size());
+
+        if (inclusiveGatewayInstances.size() == 0) {
+            System.out.println("RULE1: there are no inclusive gateways in " +
+                    "this" + " model");
         }
+
+        ArrayList<Element> readyToBeChangedGateways = new ArrayList<>();
+        //NOTE with this rule
+        //I cannot do edits in real time otherwise the program would behave
+        //recursively depending on which
+        //elements it analyzes first.
+
+        //Apply the changes to all of the parallelGateways in the model:
+        applyChanges(model, inclusiveGatewayInstances, readyToBeChangedGateways);
     }
 
 
@@ -86,13 +98,13 @@ class Rule1 {
      * then the rule is applicable.
      */
     private static boolean isApplicable (Model model,
-     Element parallelGateway) throws XPathExpressionException {
+     Element gateway) throws XPathExpressionException {
 
-        System.out.println("I'm checking if gateway " + parallelGateway.getAttribute("id") + " is suitable for rule 1:");
+        System.out.println("I'm checking if gateway " + gateway.getAttribute("id") + " is suitable for rule 1:");
 
         ArrayList<Element> predecessors =
-         model.getPredecessors(parallelGateway);
-        String type = parallelGateway.getTagName();
+         model.getPredecessors(gateway);
+        String type = gateway.getTagName();
 
         boolean sameType = true;
         boolean innerMost = false;
@@ -104,12 +116,12 @@ class Rule1 {
             //checking that all predecessors are of the same type:
             System.out.println("I'm analyzing predecessor " + predecessor.getAttribute("id"));
             if (! predecessor.getTagName().equals(type)) {
-                System.out.println("The gateway " + parallelGateway.getAttribute("id") + " is preceded by something that is not a gateway of the same type.");
+                System.out.println("The gateway " + gateway.getAttribute("id") + " is preceded by something that is not a gateway of the same type.");
                 System.out.println("The rule1 cannot be applied on that " +
                 "gateway");
                 sameType = false;
             } else {
-                System.out.println("I haven't found a single predecessor of " + parallelGateway.getAttribute("id") + " that is not a parallel gateway");
+                System.out.println("I haven't found a single predecessor of " + gateway.getAttribute("id") + " that is not a parallel gateway");
                 //sameType remains true
             }
 
@@ -144,5 +156,48 @@ class Rule1 {
         }
     }
 
+
+    private static void applyChanges (Model model, ArrayList<Element> gatewayInstances, ArrayList<Element> readyToBeChangedGateways) throws XPathExpressionException {
+
+        for (Element gateway : gatewayInstances) {
+
+            if (model.isAMerge(gateway) && isApplicable(model, gateway)) {
+                //TODO perché non mettere isAMerge dentro isApplicable per
+                // chiarezza?
+
+                readyToBeChangedGateways.add(gateway); //I do the edits at
+                // the end to avoid recursive behavior
+            }
+        }
+
+        if (readyToBeChangedGateways.size() > 0) {
+            for (Element gateway : readyToBeChangedGateways) {
+                ArrayList<Element> predecessors =
+                        model.getPredecessors(gateway); //predecessors will be
+                // eliminated
+                for (Element pred : predecessors) {
+
+                    ArrayList<Element> flowsToDelete =
+                            model.getOutgoingFlows(pred); //this is also the
+                    // incoming flow of the gateway at hand
+                    ArrayList<Element> flowsToKeep =
+                            model.getIncomingFlows(pred);
+
+                    //deleting all the flows (it should be only one) from the
+                    // item to be deleted to its successor:
+                    for (Element aFlowsToDelete : flowsToDelete) {
+                        model.delete(aFlowsToDelete.getAttribute("id"));
+                    }
+                    //changing the targets of all their sequence flows
+                    for (Element aFlowsToKeep : flowsToKeep) {
+                        model.setTarget(aFlowsToKeep.getAttribute("id"),
+                                gateway.getAttribute("id"));
+                    }
+                    //finally deleting the gateways
+                    model.delete(pred.getAttribute("id"));
+                }
+            }
+        }
+    }
 
 }

@@ -2,6 +2,10 @@ Known Problems:
     
         Una regola, non so quale ma mi basterebbe guardare nel report, crea delle task senza outgoing flows a volte. Credo sia la 3.
 
+        I misunderstood rules 1 and 2 and tought rule 1 was only about parallel gateways and rule 2 was only about exclusive gateways
+
+
+
         Aggiustare LA REGOLA 3C:
 
             ========= Reverse3c ==========
@@ -26,6 +30,10 @@ TODO:
             Se ci sono due lanes, ci sono anche due processi. Considerare questa cosa, è importante, credo che rompi qualcosa, probabilmente devo aggiungere un for loop e in model avere un array di processi invece che un field per il processo.
 
         LOW PRIORITY:
+
+            Fare metodo in Model public Element getFirstMeetingPoint(Element e) which returns the first MP of an element. If used in certain rules it could simplify the code. And it should be really simple.
+
+            Fare overload metodo per creare nuovi sequenceFlow con già un certo target e una certa source al momento della creazione. Basta chiamare il metodo standard per creare flow, poi setSource e setTarget. 
 
             Metti lista Resulting model lista allínizio del report.
             Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR, ma non so se è corretto trattarle come task, probabilmente è meglio lasciare così.

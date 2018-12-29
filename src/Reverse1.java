@@ -35,7 +35,8 @@ class Reverse1 {
         System.out.println("number of parallel gateway instances: " + parallelGatewayInstances.size());
 
         if (parallelGatewayInstances.size() == 0) {
-            System.out.println("RULE1: there are no parallel gateways in " +
+            System.out.println("REVERSE RULE1: there are no parallel gateways" +
+             " in " +
             "this" + " model");
         }
 
