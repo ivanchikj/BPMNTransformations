@@ -8,6 +8,8 @@ class Rule1 {
 
 
     static void apply(Model model) throws Exception {
+            System.out.println("I'm applying rule RULE1 to model " + model
+ .path);
     applyParallel(model);
     applyExclusive(model);
     applyInclusive(model);

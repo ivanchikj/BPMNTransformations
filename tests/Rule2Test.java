@@ -47,4 +47,38 @@ class Rule2Test {
     }
 
 
+    @Test
+    void twoLayersParallel () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayerParallel.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayerParallel2" + ".bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+        Rule2.apply(result);
+
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+
+    @Test
+    void twoLayersInclusive () throws Exception {
+
+        Model startingModel = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayerInclusive.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule2" +
+                "/Rule2DoubleLayerInclusive2" + ".bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+        Rule2.apply(result);
+
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+
 }

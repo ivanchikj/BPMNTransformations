@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 class Rule2 {
 
-
     /**
      * Rule 2 in the normal direction:
      *
@@ -14,15 +13,21 @@ class Rule2 {
     static void apply (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying Rule2 to model: " + model.name);
-        //TODO make it such that it works with every gateway, not just
-        // exclusive ones.
+        applyExclusive(model);
+        applyInclusive(model);
+        applyParallel(model);
+    }
+
+
+
+    private static void applyExclusive (Model model) throws XPathExpressionException {
+
         ArrayList<Element> gatewayInstances =
          model.findElementsByType("exclusiveGateway");
-        System.out.println("number of " + " gateway instances: " + gatewayInstances.size()); //TODO make it work with every gateway type.
+        System.out.println("number of exclusive" + " gateway instances: " + gatewayInstances.size());
 
         if (gatewayInstances.size() == 0) {
-            System.out.println("RULE1: there are no exclusive gateways in " +
-             "this model");
+            System.out.println("RULE1: there are no exclusive gateways in " + "this model");
             //RETURN FALSE
         }
 
@@ -36,7 +41,8 @@ class Rule2 {
         for (Element gateway : gatewayInstances) {
 
 //            System.out.println("working on " + gateway.getAttribute("id"));
-//            System.out.println("The id of the element is " + gateway.getAttribute("id"));
+//            System.out.println("The id of the element is " + gateway
+//            .getAttribute("id"));
 
             //TODO perché non mettere isAMerge dentro isApplicable per
             // chiarezza?
@@ -44,77 +50,182 @@ class Rule2 {
                 readyToBeChangedGateways.add(gateway); //I will do the edits
                 // at the end to avoid recursive behavior
 
+            }
+        }
+
+        ApplyChangesWithConditions(model, readyToBeChangedGateways);
+    }
+
+
+    private static void applyInclusive (Model model) throws XPathExpressionException {
+
+        System.out.println("I'm applying Rule2 to model: " + model.name);
+        ArrayList<Element> gatewayInstances =
+         model.findElementsByType("inclusiveGateway");
+        System.out.println("number of " + "inclusive gateway instances: " + gatewayInstances.size());
+
+        if (gatewayInstances.size() == 0) {
+            System.out.println("RULE1: there are no inclusive gateways in " + "this model");
+        }
+
+        ArrayList<Element> readyToBeChangedGateways = new ArrayList<>();
+        //NOTE with this rule
+        //I cannot do edits in real time otherwise the program would behave
+        // recursively depending on which
+        //elements it analyzes first.
+
+        //going through all of the Gateways in the model:
+        for (Element gateway : gatewayInstances) {
+
+//            System.out.println("working on " + gateway.getAttribute("id"));
+//            System.out.println("The id of the element is " + gateway
+//            .getAttribute("id"));
+
+            //TODO perché non mettere isAMerge dentro isApplicable per
+            // chiarezza?
+            if (isApplicable(model, gateway) && model.isASplit(gateway)) {
+                readyToBeChangedGateways.add(gateway); //I will do the edits
+                // at the end to avoid recursive behavior
 
             }
         }
 
-        if (readyToBeChangedGateways.size() > 0) {
+        ApplyChangesWithConditions(model, readyToBeChangedGateways);
+    }
+
+
+    private static void ApplyChangesWithConditions (Model model, ArrayList<Element> readyToBeChangedGateways) throws XPathExpressionException {
+
+        for (Element gateway : readyToBeChangedGateways) {
+            ArrayList<Element> successors = model.getSuccessors(gateway); //successors will be eliminated
+            for (Element succ : successors) {
+
+                //Let's add the conditions of the incomingFlows to the
+                // OutgoingFlows
+
+                ArrayList<Element> flowsToDelete =
+                 model.getIncomingFlows(succ); //this is also the
+                // outGoing flow of the gateway at hand. It should be
+                // only one.
+                ArrayList<Element> flowsToKeep =
+                 model.getOutgoingFlows(succ);
+                String firstPartofCondition = "";
+                @SuppressWarnings ("UnusedAssignment") String secondPartOfCondition = "";
+                //deleting all the flows (it should be only one) from the
+                // item to be deleted to its successor:
+                for (Element aFlowsToDelete : flowsToDelete) {
+                    model.delete(aFlowsToDelete.getAttribute("id"));
+                    firstPartofCondition =
+                     model.returnConditionString(aFlowsToDelete);
+                    //TODO This works only because I have only one
+                    // outGoing flow. Otherwise it should be outside of
+                    // the for loop.
+                }
+                //changing the targets of all their sequence flows
+                for (Element flowToKeep : flowsToKeep) {
+                    model.setSource(flowToKeep.getAttribute("id"),
+                     gateway.getAttribute("id"));
+
+                    String newCondition = firstPartofCondition; // the
+                    // initialization value should not matter.
+
+                    secondPartOfCondition =
+                     model.returnConditionString(flowToKeep);
+                    // if both flows have a condition, I merge them with
+                    // an AND in the middle.
+                    // if else, I only keep the non - empty one.
+                    if (! firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
+                        //changing the condition of that outgoing flow:
+                        newCondition =
+                         generateCondition(firstPartofCondition,
+                          secondPartOfCondition);
+                    } else if (! firstPartofCondition.equals("") && secondPartOfCondition.equals("")) {
+                        //noinspection ConstantConditions
+                        newCondition = firstPartofCondition;
+                    } else if (firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
+                        newCondition = secondPartOfCondition;
+                    }
+
+                    //Adding the newCondition
+
+                    System.out.println(newCondition);
+                    //Normally, we wouldn't need this check, because it
+                    // is illegal to have exclusive that have no
+                    // conditions on both outgoing flows.
+                    //Still, sometimes it happens.
+                    if (model.hasCondition(flowToKeep)) {
+                        model.returnConditionElement(flowToKeep).setTextContent(newCondition);
+                    }
+                }
+                //finally deleting the gateways
+                model.delete(succ.getAttribute("id"));
+            }
+        }
+    }
+
+
+    private static void applyParallel (Model model) throws XPathExpressionException {
+
+        System.out.println("I'm applying Rule2 to model: " + model.name);
+        //TODO make it such that it works with every gateway, not just
+        // exclusive ones.
+        ArrayList<Element> gatewayInstances =
+         model.findElementsByType("parallelGateway");
+        System.out.println("number of " + "parallel gateway instances: " + gatewayInstances.size());
+
+        if (gatewayInstances.size() == 0) {
+            System.out.println("RULE1: there are no parallel gateways in " +
+            "this model");
+            //RETURN FALSE
+        }
+
+        ArrayList<Element> readyToBeChangedGateways = new ArrayList<>();
+        //NOTE with this rule
+        //I cannot do edits in real time otherwise the program would behave
+        // recursively depending on which
+        //elements it analyzes first.
+
+        //going through all of the Gateways in the model:
+        for (Element gateway : gatewayInstances) {
+
+//            System.out.println("working on " + gateway.getAttribute("id"));
+//            System.out.println("The id of the element is " + gateway
+//            .getAttribute("id"));
+
+            //TODO perché non mettere isAMerge dentro isApplicable per
+            // chiarezza?
+            if (isApplicable(model, gateway) && model.isASplit(gateway)) {
+                readyToBeChangedGateways.add(gateway); //I will do the edits
+                // at the end to avoid recursive behavior
+
+            }
+        }
+
+
             for (Element gateway : readyToBeChangedGateways) {
                 ArrayList<Element> successors = model.getSuccessors(gateway); //successors will be eliminated
                 for (Element succ : successors) {
-
-                    //Let's add the conditions of the incomingFlows to the
-                    // OutgoingFlows
-
                     ArrayList<Element> flowsToDelete =
                      model.getIncomingFlows(succ); //this is also the
                     // outGoing flow of the gateway at hand. It should be
                     // only one.
                     ArrayList<Element> flowsToKeep =
                      model.getOutgoingFlows(succ);
-                    String firstPartofCondition = "";
-                    @SuppressWarnings ("UnusedAssignment") String secondPartOfCondition = "";
-                    //deleting all the flows (it should be only one) from the
+                    // deleting all the flows (it should be only one) from the
                     // item to be deleted to its successor:
                     for (Element aFlowsToDelete : flowsToDelete) {
                         model.delete(aFlowsToDelete.getAttribute("id"));
-                        firstPartofCondition =
-                         model.returnConditionString(aFlowsToDelete);
-                        //TODO This works only because I have only one
-                        // outGoing flow. Otherwise it should be outside of
-                        // the for loop.
                     }
                     //changing the targets of all their sequence flows
                     for (Element flowToKeep : flowsToKeep) {
                         model.setSource(flowToKeep.getAttribute("id"),
                          gateway.getAttribute("id"));
-
-                        String newCondition = firstPartofCondition; // the
-                        // initialization value should not matter.
-
-                        secondPartOfCondition =
-                         model.returnConditionString(flowToKeep);
-                        // if both flows have a condition, I merge them with
-                        // an AND in the middle.
-                        // if else, I only keep the non - empty one.
-                        if (! firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
-                            //changing the condition of that outgoing flow:
-                            newCondition =
-                             generateCondition(firstPartofCondition,
-                              secondPartOfCondition);
-                        } else if (! firstPartofCondition.equals("") && secondPartOfCondition.equals("")) {
-                            //noinspection ConstantConditions
-                            newCondition = firstPartofCondition;
-                        } else if (firstPartofCondition.equals("") && ! secondPartOfCondition.equals("")) {
-                            newCondition = secondPartOfCondition;
-                        }
-
-                        //Adding the newCondition
-
-                        System.out.println(newCondition);
-                        //Normally, we wouldn't need this check, because it
-                        // is illegal to have exclusive that have no
-                        // conditions on both outgoing flows.
-                        //Still, sometimes it happens.
-                        if (model.hasCondition(flowToKeep)) {
-                            model.returnConditionElement(flowToKeep).setTextContent(newCondition);
-                        }
                     }
                     //finally deleting the gateways
                     model.delete(succ.getAttribute("id"));
                 }
             }
-        }
+
     }
 
 
