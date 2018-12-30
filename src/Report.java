@@ -1,26 +1,29 @@
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class Report {
 
 
     public String time;
-    private String text;
-    private String header;
-    private String resultingModels;
-    private String failedTransformations;
+    private String body = "";
+    private String header = "";
+    private String resultingModels = "";
+    private String finalText= "";
+    private String failedTransformations= "";
     private String allTransformations;
-    //TODO fai in modo che il report venga tutto ricomposto alla fine.
+    final String newline = System.getProperty("line.separator");
+    //TODO spiega come funziona questa classe: in breve il testo viene
+    // composto tutto alla fine in modo da avere i resulting models prima dei
+    // singoli outcomes.
 
 
     Report (Execution execution) {
 
-        this.header = "";
         this.time = execution.executionMoment;
 
         //let's write the header
-        String newline = System.getProperty("line.separator");
         header += "Execution time: " + time + newline;
         header += newline;
         header += "Original input: " + execution.input + newline;
@@ -36,12 +39,6 @@ public class Report {
         header += newline;
         header += newline;
         header += newline;
-        for (Model resultingModel : execution.resultingModels) {
-            header += resultingModel.path + newline;
-        }
-        header += newline;
-        header += newline;
-        header += newline;
         header += "List of rules: " + newline;
         for (Parameter param : execution.parameters) {
             if (param.aggregateBy != 0) {
@@ -53,7 +50,19 @@ public class Report {
         header += newline;
         header += newline;
         header += newline;
+
     }
+
+    public void addResultingModels(ArrayList<Model> resultingModels){
+        this.resultingModels += "Resulting models: " + resultingModels.size() + newline;
+        for (Model resultingModel : resultingModels) {
+            this.resultingModels += resultingModel.path + newline;
+        }
+        this.resultingModels += newline;
+        this.resultingModels += newline;
+        this.resultingModels += newline;
+    }
+
 
 
     /**
@@ -70,43 +79,37 @@ public class Report {
      */
     void addOutcome (String startingModel, String resultingModel,
      String ruleString, boolean outcome) {
-
+        this.body += newline;
         String newline = System.getProperty("line.separator");
-        header += newline;
-        header +=
+        body += newline;
+        body +=
         "---------------------------------------------------------------------";
-        header += newline;
-        header += "Starting model: " + startingModel + newline;
-        header += newline;
-        header += "Rules applied: " + ruleString + newline;
-        header += newline;
-        header += "Successful: " + outcome + newline;
-        header += newline;
+        body += newline;
+        body += "Starting model: " + startingModel + newline;
+        body += newline;
+        body += "Rules applied: " + ruleString + newline;
+        body += newline;
+        body += "Successful: " + outcome + newline;
+        body += newline;
         //the resultingModel gets saved only if the transformation is
         // successful:
         if (outcome) {
-            header += "The application of the rule was successful (the " +
-            "resulting model is different from the starting model)" + newline;
-            header += "Resulting model: " + resultingModel + newline;
-            header += newline;
+//            header += "The application of the rule was successful (the " +
+//            "resulting model is different from the starting model)" + newline;
+            body += "Resulting model: " + resultingModel + newline;
+            body += newline;
         } else {
-            header += "the application of the rule " + ruleString + " on " +
+            body += "the application of the rule " + ruleString + " on " +
             "model " + startingModel + " was unsuccessful. The resulting " +
             "model is " + "identical to the starting model and will not be " + "saved";
         }
 
-        header += newline;
+        body += newline;
     }
 
 
-    void addFailedTransformation (Transformation t) {
-        //TODO
-    }
-
-
-    void Compose () {
-
-        text = header + resultingModels + failedTransformations;
+    void compose () {
+        this.finalText = header + resultingModels + failedTransformations + body;
     }
 
 
@@ -139,16 +142,17 @@ public class Report {
 
 
     public void addError (Model model, Parameter parameter, Exception e) {
-
         //Se creo addTransformation non ho bisogno di questo metodo, gli
         // errori saranno gestiti lì dentro.
         String newline = System.getProperty("line.separator");
-        header += newline;
-        header += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
+        this.failedTransformations += newline;
+        this.failedTransformations += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
          + "! ! ! ! ! !";
-        header += newline;
-        header += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
-        header += newline;
+        this.failedTransformations += newline;
+        this.failedTransformations += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
+        this.failedTransformations += newline;
+        this.failedTransformations += newline;
+        this.failedTransformations += newline;
     }
 
 
@@ -157,7 +161,7 @@ public class Report {
         String filename = folderPath + "Report-" + this.time + ".txt";
         BufferedWriter writer = new BufferedWriter(new PrintWriter(filename));
         System.out.println("I'm saving a report in " + filename);
-        writer.write(header);
+        writer.write(finalText);
         writer.close();
     }
 

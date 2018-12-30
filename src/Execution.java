@@ -76,6 +76,7 @@ public class Execution {
         this.report = new Report(this);
         decideWhatToDo(); //and do it
         saveResultingModels();
+        this.report.addResultingModels(this.resultingModels);
         saveTheReport();
 
         System.out.println("I've created " + resultingModels.size() + " new " + "Models and saved them in " + outputPath);
@@ -106,7 +107,7 @@ public class Execution {
 
 
     private void saveTheReport () throws IOException {
-
+        report.compose();
         report.saveToFile(outputPath);
     }
 

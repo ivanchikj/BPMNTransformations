@@ -94,14 +94,14 @@ public class Reverse3 {
     }
 
 
-    static class Reverse3TargetStructure {
+    static class Reverse3cTargetStructure {
 
 
         Element firstInclusive;
         Element firstMeetingPoint;
 
 
-        Reverse3TargetStructure (Element firstInclusive, Element firstMeetingPoint) {
+        Reverse3cTargetStructure (Element firstInclusive, Element firstMeetingPoint) {
 
             this.firstInclusive = firstInclusive;
             this.firstMeetingPoint = firstMeetingPoint;
@@ -253,7 +253,7 @@ public class Reverse3 {
             System.out.println("aggregateBy must be bigger than 1");
         }
 
-        ArrayList<Reverse3TargetStructure> targets = new ArrayList<>();
+        ArrayList<Reverse3cTargetStructure> targets = new ArrayList<>();
 
         ArrayList<Element> inclusiveGatewayInstances =
          model.findElementsByType("inclusiveGateway");
@@ -291,7 +291,7 @@ public class Reverse3 {
                 //ok now I can create a target.
                 //System.out.println(ta.paths.size());//UNLOCKTHIS
                 //System.out.println(candidate.getAttribute("name"));
-                Reverse3TargetStructure target = new Reverse3TargetStructure(candidate
+                Reverse3cTargetStructure target = new Reverse3cTargetStructure(candidate
                 , firstMeetingPoint);
                 targets.add(target);
             } else {
@@ -305,12 +305,12 @@ public class Reverse3 {
         }
 
         System.out.println("I've found : " + targets);
-        for (Reverse3TargetStructure rc : targets) {
+        for (Reverse3cTargetStructure rc : targets) {
             rc.printStructure();
         }
 
         //now let's go through all targets and do the necessary changes.
-        for (Reverse3TargetStructure structure : targets) {
+        for (Reverse3cTargetStructure structure : targets) {
             doReverse3c(structure, model, aggregateBy);
         }
     }
@@ -344,7 +344,7 @@ public class Reverse3 {
     }
 
 
-    private static void doReverse3c (Reverse3TargetStructure target, Model model
+    private static void doReverse3c (Reverse3cTargetStructure target, Model model
     , int aggregateBy) throws XPathExpressionException {
 
         Element inclusive = target.firstInclusive;

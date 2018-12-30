@@ -35,12 +35,10 @@ TODO:
 
             Fare overload metodo per creare nuovi sequenceFlow con già un certo target e una certa source al momento della creazione. Basta chiamare il metodo standard per creare flow, poi setSource e setTarget. 
 
-            Metti lista Resulting model lista allínizio del report.
-            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR, ma non so se è corretto trattarle come task, probabilmente è meglio lasciare così.
        
             Cambiare naming metodi e commenti e variables da 'split' a 'fork', e da 'merge' a 'join'.
         
-            Testare come funziona con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR. Ma forse è un bene che non vengano riconosciuti come task.
+            Fare dei test con i subProcesses. Non dovrebbe rompere niente per come sono scritti, non verranno riconosciuti come task però a meno che non aggiungo un OR. Ma forse è un bene che non vengano riconosciuti come task.
 
             Cosa succede se invece dello start event normale c'è un message event ad esempio o altri tipi di start?
             Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto.
