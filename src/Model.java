@@ -24,6 +24,9 @@ import java.util.UUID;
 
 //TODO aggiungere i line breaks negli XML che generi per renderli più leggibili.
 
+
+
+
 //TODO:
 //Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
 // dentro le regole, sarebbe meglio usare la traduzione come prima riga nei
@@ -1252,6 +1255,29 @@ public class Model {
     }
 
 
+    /**
+     * Being default is not a characteristic of the flow, rather is an
+     * attribute ("default=" of the gateway element). So to know whether a
+     * flow is the default outgoing flow of a gateway, we must simply find a
+     * gateway with the attribute "default=" equal to the ID of the flow we
+     * want to analyze.
+     *
+     * @param flow
+     * @return
+     */
+    boolean isDefault (Element flow) {
+
+        String id = flow.getAttribute("id");
+        try {
+            NodeList gat = xpathFindNodeWithCertainAttributeValue("default",
+             id);
+            return gat != null && gat.getLength() != 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
     //TODO spiega nella tesi che isAmerge e isASplit sono mutualmente
     // esclusivi ma non del tutto
     //TODO spiegalo nella prima regola che lo usa, e poi menzionalo anche
@@ -1267,6 +1293,14 @@ public class Model {
         } else {
             return false;
         }
+    }
+
+
+
+    public Element getFirstMandatoryMeetingPoint (Element e) throws XPathExpressionException {
+
+        TravelAgency ta = new TravelAgency(this, e);
+        return ta.firstMandatorySuccessor;
     }
 
 

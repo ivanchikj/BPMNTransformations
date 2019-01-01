@@ -31,10 +31,7 @@ TODO:
             I initially misunderstood rules 1 and 2 and tought rule 1 was only about parallel gateways and rule 2 was only about exclusive gateways. Now the rules work correctly, but rule 1 and rule 2, in both directions, now contain a lot of duplicate code that should be refactored.
 
 
-            Fare metodo in Model public Element getFirstMeetingPoint(Element e) which returns the first MP of an element. If used in certain rules it could simplify the code. And it should be really simple.
-
             Fare overload metodo per creare nuovi sequenceFlow con già un certo target e una certa source al momento della creazione. Basta chiamare il metodo standard per creare flow, poi setSource e setTarget. 
-
        
             Cambiare naming metodi e commenti e variables da 'split' a 'fork', e da 'merge' a 'join'.
         
@@ -60,3 +57,5 @@ TODO:
             Fare in modo che il programma accetti più di un plane e di un process.
 
             /Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1Classic.bpmn.xml npnr (-1-3-2-r2)
+
+            Gestisci le eccezioni con try e catch.

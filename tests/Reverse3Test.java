@@ -152,20 +152,20 @@ class Reverse3Test {
     @Test
     void areAlwaysTrue () {
 
-        assertTrue(Reverse3.areAlwaysTrue("1 == 1"));
-        assertFalse(Reverse3.areAlwaysTrue("1 == 2"));
-        assertTrue(Reverse3.areAlwaysTrue("'a' == 'a'"));
+        assertTrue(Reverse3.isAlwaysTrue("1 == 1"));
+        assertFalse(Reverse3.isAlwaysTrue("1 == 2"));
+        assertTrue(Reverse3.isAlwaysTrue("'a' == 'a'"));
         //this works if words are surrounded by 'quotation marks'
-        assertFalse(Reverse3.areAlwaysTrue("a == a"));
-        assertFalse(Reverse3.areAlwaysTrue("'a' == 'b'"));
-        assertFalse(Reverse3.areAlwaysTrue("anyWord"));
-        assertFalse(Reverse3.areAlwaysTrue("4"));
-        assertFalse(Reverse3.areAlwaysTrue("4 > 5"));
-        assertTrue(Reverse3.areAlwaysTrue("4 < 5"));
-        assertTrue(Reverse3.areAlwaysTrue("TRUE"));
-        assertTrue(Reverse3.areAlwaysTrue("true"));
-        assertFalse(Reverse3.areAlwaysTrue("FALSE"));
-        assertFalse(Reverse3.areAlwaysTrue("FaLse"));
+        assertFalse(Reverse3.isAlwaysTrue("a == a"));
+        assertFalse(Reverse3.isAlwaysTrue("'a' == 'b'"));
+        assertFalse(Reverse3.isAlwaysTrue("anyWord"));
+        assertFalse(Reverse3.isAlwaysTrue("4"));
+        assertFalse(Reverse3.isAlwaysTrue("4 > 5"));
+        assertTrue(Reverse3.isAlwaysTrue("4 < 5"));
+        assertTrue(Reverse3.isAlwaysTrue("TRUE"));
+        assertTrue(Reverse3.isAlwaysTrue("true"));
+        assertFalse(Reverse3.isAlwaysTrue("FALSE"));
+        assertFalse(Reverse3.isAlwaysTrue("FaLse"));
     }
 
 

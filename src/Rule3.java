@@ -5,14 +5,6 @@ import java.util.ArrayList;
 
 public class Rule3 {
 
-    //TODO apply will actually become just a (simple) method calling
-    // other specific methods referring to part 1, part 2 of rule 3 etc
-    //this method will be renamed and be called by said method. 
-
-    //TODO fai un metodo che prende un elemento e ritorna il
-    // firstMandatoryMeeting point, mettilo in model anche se ovviamente usa
-    // i metodi di TravelAgency
-
 
     public static void a (Model model) throws Exception {
 
@@ -141,9 +133,8 @@ public class Rule3 {
 
 
         Rule3cTargetStructure (Element firstParallel,
-                               Element firstMeetingPoint,
-                               ArrayList<Element> exclusiveSuccessors,
-                               ArrayList<Element> exclusivePredecessors) {
+         Element firstMeetingPoint, ArrayList<Element> exclusiveSuccessors,
+          ArrayList<Element> exclusivePredecessors) {
 
             this.firstParallel = firstParallel;
             this.firstMeetingPoint = firstMeetingPoint;
@@ -221,8 +212,7 @@ public class Rule3 {
 
             if (parallelTA.firstMandatorySuccessor != null) {
 
-                Element firstParallelMP =
-                 parallelTA.firstMandatorySuccessor;
+                Element firstParallelMP = parallelTA.firstMandatorySuccessor;
 
                 // This always works
                 // because we meet at the merge anyway. If there's no merge,
@@ -238,7 +228,7 @@ public class Rule3 {
                 //of course it has to be a parallel for
                 // the rule to be applied
                 if (firstParallelMP.getTagName().equals(model.style(
-                "parallelGateway"))) {
+                "parallelGateway"))) { // I could have used "contains"
 
                     System.out.println("All paths from the parallel " + parallelGat.getAttribute("id") + " meet in the same parallel: " + firstParallelMP.getAttribute("id"));
 
@@ -257,13 +247,13 @@ public class Rule3 {
                         System.out.println("I'm creating a " + "new " +
                         "target structure");
                         Rule3cTargetStructure target =
-                         new Rule3cTargetStructure(parallelGat, firstParallelMP,
-                          parallelGatSuccessors, mpPredecessors);
+                         new Rule3cTargetStructure(parallelGat,
+                          firstParallelMP, parallelGatSuccessors,
+                           mpPredecessors);
                         targets.add(target);
                     }
                 }
             }
-
         }
         applyRule3c(targets, model);
     }
@@ -294,6 +284,66 @@ public class Rule3 {
     }
 
 
+    /**
+     * This method sets the condition of the default gateway to be exactly
+     * the opposite of all other conditions.
+     *
+     * @param m
+     * @param excusiveGateway
+     * @return
+     * @throws XPathExpressionException
+     */
+    static void setInverseCondition (Model m, Element excusiveGateway) throws XPathExpressionException {
+
+        ArrayList<Element> outgoingFlows = m.getOutgoingFlows(excusiveGateway);
+        ArrayList<String> conditions = new ArrayList<>();
+        //First let's check that the gateway has a default outgoing flows.
+        Element defaultFlow = null;
+
+        for (Element flow : outgoingFlows) {
+            if (m.isDefault(flow)) {
+                defaultFlow = flow;
+            } else { //if it's not a default flow, then add its condition to the
+                // list of the ones we will have to reverse.
+                String c = m.returnConditionString(flow);
+                conditions.add(c);
+            }
+        }
+        //if it doesn't have a default flow we don't need to do anything.
+        if (defaultFlow != null) {
+            String newCondition = createInverseCondition(conditions);
+            m.applyCondition(defaultFlow, newCondition);
+        }
+    }
+
+
+    /**
+     * Creates substitute for default sequence flows. It creates a condition
+     * that
+     * reflects the opposite of all the other conditions in the array.
+     * I.e. if the array contains "a > 0";"b > 0", the resulting condition
+     * would be "!(a > 0) && !(b > 0)".
+     */
+    static String createInverseCondition (ArrayList<String> conditions) {
+
+        String resultingCondition = "";
+        for (int i = 0 ; i < conditions.size() ; i++) {
+            String c = conditions.get(i);
+            if (c.length() > 0) {
+                c = "!(" + c + ")";
+                if (i == 0) {// it means it is the first condition so we
+                    // shouldn't put
+                    // an && before.
+                    resultingCondition = c;
+                } else {
+                    resultingCondition = resultingCondition + " && " + c;
+                }
+            }
+        }
+        return resultingCondition;
+    }
+
+
     private static boolean areAllPredecessorsExclusiveGateway (Element firstParallelMP, Model model) throws XPathExpressionException {
 
         ArrayList<Element> predecessors =
@@ -317,14 +367,16 @@ public class Rule3 {
      * transform, we can actually transform them.
      *
      * @param targets an arrayList of all the targets (a series of BPMN
-     *                   Elements connected in such a way to make the
-     *                   application of rule 3c possible) on which to apply
-     *                   rule 3c
+     *                Elements connected in such a way to make the
+     *                application of rule 3c possible) on which to apply
+     *                rule 3c
      */
-    private static void applyRule3c (ArrayList<Rule3cTargetStructure> targets,
-     Model model) throws XPathExpressionException {
+    private static void applyRule3c (ArrayList<Rule3cTargetStructure> targets
+    , Model model) throws XPathExpressionException {
 
         for (Rule3cTargetStructure target : targets) {
+
+
             target.printInfo(); //UNLOCKTHIS
             Element firstParallel = target.firstParallel;
             Element firstMeetingPoint = target.firstMeetingPoint;
@@ -342,8 +394,11 @@ public class Rule3 {
 //
 
             for (Element successor : target.exclusiveSuccessors) {
+                setInverseCondition(model, successor);
+
                 ArrayList<Element> outgoingFlows =
                  model.getOutgoingFlows(successor);
+
                 for (Element flow : outgoingFlows) {
                     model.setSource(flow.getAttribute("id"), oldParallelID);
                 }

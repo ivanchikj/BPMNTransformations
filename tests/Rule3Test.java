@@ -1,7 +1,8 @@
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class Rule3Test {
 
@@ -57,6 +58,24 @@ class Rule3Test {
 
         assertFalse(TravelAgency.modelsAreDifferent(result, expected));
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+    }
+
+    @Test
+    void createInverseCondition(){
+        String c1 = "a > 0";
+        String c2 = "b > 0";
+        String c3 = "c > 0 && d < 9";
+        ArrayList<String> l = new ArrayList<>();
+        l.add(c1);
+        l.add(c2);
+        l.add(c3);
+
+
+        String r = Rule3.createInverseCondition(l);
+        System.out.println(r);
+        String correctAnswer = "!(a > 0) && !(b > 0) && !(c > 0 && d < 9)";
+        assertEquals(r, correctAnswer);
+
     }
 
 

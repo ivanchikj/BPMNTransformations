@@ -5,11 +5,6 @@
       <bpmn:outgoing>SequenceFlow_1ueq2za</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1ueq2za" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_0c71s0n" />
-    <bpmn:parallelGateway id="ExclusiveGateway_0c71s0n">
-      <bpmn:incoming>SequenceFlow_1ueq2za</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1y6fhnm</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0wk0wtv</bpmn:outgoing>
-    </bpmn:parallelGateway>
     <bpmn:task id="Task_0pzb8lh">
       <bpmn:incoming>SequenceFlow_1y6fhnm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_12gw6ix</bpmn:outgoing>
@@ -21,16 +16,21 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_0wk0wtv" sourceRef="ExclusiveGateway_0c71s0n" targetRef="Task_1qsmh0u" />
     <bpmn:sequenceFlow id="SequenceFlow_1klfbua" sourceRef="Task_1qsmh0u" targetRef="ExclusiveGateway_0moi02x" />
-    <bpmn:parallelGateway id="ExclusiveGateway_0moi02x">
-      <bpmn:incoming>SequenceFlow_1klfbua</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_12gw6ix</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_11y327k</bpmn:outgoing>
-    </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="SequenceFlow_12gw6ix" sourceRef="Task_0pzb8lh" targetRef="ExclusiveGateway_0moi02x" />
     <bpmn:endEvent id="EndEvent_1168val">
       <bpmn:incoming>SequenceFlow_11y327k</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_11y327k" sourceRef="ExclusiveGateway_0moi02x" targetRef="EndEvent_1168val" />
+    <bpmn:parallelGateway id="ExclusiveGateway_0c71s0n">
+      <bpmn:incoming>SequenceFlow_1ueq2za</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1y6fhnm</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0wk0wtv</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="ExclusiveGateway_0moi02x">
+      <bpmn:incoming>SequenceFlow_1klfbua</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_12gw6ix</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_11y327k</bpmn:outgoing>
+    </bpmn:parallelGateway>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
@@ -44,15 +44,9 @@
         <di:waypoint xsi:type="dc:Point" x="201" y="216" />
         <di:waypoint xsi:type="dc:Point" x="277" y="216" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="239" y="194.5" width="0" height="13" />
+          <dc:Bounds x="194" y="194.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ParallelGateway_0prm9rp_di" bpmnElement="ExclusiveGateway_0c71s0n">
-        <dc:Bounds x="277" y="191" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="302" y="244" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_0pzb8lh_di" bpmnElement="Task_0pzb8lh">
         <dc:Bounds x="389" y="97" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -61,7 +55,7 @@
         <di:waypoint xsi:type="dc:Point" x="302" y="137" />
         <di:waypoint xsi:type="dc:Point" x="389" y="137" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="317" y="157" width="0" height="13" />
+          <dc:Bounds x="272" y="157.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_1qsmh0u_di" bpmnElement="Task_1qsmh0u">
@@ -72,7 +66,7 @@
         <di:waypoint xsi:type="dc:Point" x="302" y="284" />
         <di:waypoint xsi:type="dc:Point" x="389" y="284" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="317" y="255.5" width="0" height="13" />
+          <dc:Bounds x="272" y="256" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1klfbua_di" bpmnElement="SequenceFlow_1klfbua">
@@ -80,21 +74,15 @@
         <di:waypoint xsi:type="dc:Point" x="572" y="284" />
         <di:waypoint xsi:type="dc:Point" x="572" y="241" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="530.5" y="262.5" width="0" height="13" />
+          <dc:Bounds x="485.5" y="262.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ParallelGateway_0wmgvrw_di" bpmnElement="ExclusiveGateway_0moi02x">
-        <dc:Bounds x="547" y="191" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="572" y="244" width="0" height="13" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_12gw6ix_di" bpmnElement="SequenceFlow_12gw6ix">
         <di:waypoint xsi:type="dc:Point" x="489" y="137" />
         <di:waypoint xsi:type="dc:Point" x="572" y="137" />
         <di:waypoint xsi:type="dc:Point" x="572" y="191" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="530.5" y="115" width="0" height="13" />
+          <dc:Bounds x="485.5" y="115.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1168val_di" bpmnElement="EndEvent_1168val">
@@ -107,9 +95,21 @@
         <di:waypoint xsi:type="dc:Point" x="597" y="216" />
         <di:waypoint xsi:type="dc:Point" x="664" y="216" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="630.5" y="194" width="0" height="13" />
+          <dc:Bounds x="585.5" y="194.5" width="90" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_119kcwk_di" bpmnElement="ExclusiveGateway_0c71s0n">
+        <dc:Bounds x="277" y="191" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="257" y="244" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ParallelGateway_1bhahcv_di" bpmnElement="ExclusiveGateway_0moi02x">
+        <dc:Bounds x="547" y="191" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="527" y="244" width="0" height="13" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -56,13 +56,12 @@ public class Report {
     public void addResultingModels(ArrayList<Model> resultingModels){
         this.resultingModels += "Resulting models: " + resultingModels.size() + newline;
         for (Model resultingModel : resultingModels) {
-            this.resultingModels += resultingModel.path + newline;
+            this.resultingModels += resultingModel.name+ newline;
         }
         this.resultingModels += newline;
         this.resultingModels += newline;
         this.resultingModels += newline;
     }
-
 
 
     /**

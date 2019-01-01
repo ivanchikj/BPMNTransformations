@@ -48,9 +48,9 @@ public class Reverse3 {
 // allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model));
 
             if (model.isASplit(inclusiveSplit) && allOutGoingFlowsAreAlwaysTrue(inclusiveSplit, model)) {
-                TravelAgency ta = new TravelAgency(model, inclusiveSplit);
+
                 Element firstMandatoryDeepSuccessor =
-                 ta.firstMandatorySuccessor;
+                 model.getFirstMandatoryMeetingPoint(inclusiveSplit);
                 if (firstMandatoryDeepSuccessor.getTagName().contains(
                 "inclusiveGateway")) {
 
@@ -94,14 +94,14 @@ public class Reverse3 {
     }
 
 
-    static class Reverse3cTargetStructure {
+    static class Reverse3TargetStructure {
 
 
         Element firstInclusive;
         Element firstMeetingPoint;
 
 
-        Reverse3cTargetStructure (Element firstInclusive, Element firstMeetingPoint) {
+        Reverse3TargetStructure (Element firstInclusive, Element firstMeetingPoint) {
 
             this.firstInclusive = firstInclusive;
             this.firstMeetingPoint = firstMeetingPoint;
@@ -236,7 +236,7 @@ public class Reverse3 {
 
 
     /**
-     * TODO faimetodo che crea i gruppi di flow, non mettere quelli vuoti
+     * TODO fai metodo che crea i gruppi di flow, non mettere quelli vuoti
      * insieme
      * e controlla le condizioni con WA.
      *
@@ -253,7 +253,7 @@ public class Reverse3 {
             System.out.println("aggregateBy must be bigger than 1");
         }
 
-        ArrayList<Reverse3cTargetStructure> targets = new ArrayList<>();
+        ArrayList<Reverse3TargetStructure> targets = new ArrayList<>();
 
         ArrayList<Element> inclusiveGatewayInstances =
          model.findElementsByType("inclusiveGateway");
@@ -269,33 +269,34 @@ public class Reverse3 {
 
             if (model.isASplit(candidate) && model.getOutgoingFlows(candidate).size() > aggregateBy) {
                 candidates.add(candidate);
-            } else {
-
-                // TODO c'è un'altro modo invece che non trasformarlo del
-                // tutto in questo caso? Magari posso avere un valore
-                // provvisorio di aggregateBy che diventa uguale al numero di
-                // outgoingFLows.
-
             }
+//            else {
+//
+//                // TODO c'è un'altro modo invece che non trasformarlo del
+//                // tutto in questo caso? Magari posso avere un valore
+//                // provvisorio di aggregateBy che diventa uguale al numero di
+//                // outgoingFLows.
+//
+//            }
         }
 
         // Now we have to find out if the firstMeetingPoint of that
         // candidate is also an inclusiveGateway.
-        // It should always be.
+        // (It should always be)
 
         for (Element candidate : candidates) {
             TravelAgency ta = new TravelAgency(model, candidate);
             Element firstMeetingPoint = ta.firstMandatorySuccessor;
             if (firstMeetingPoint.getTagName().equals(model.style(
-            "inclusiveGateway"))) {
-                //ok now I can create a target.
+            "inclusiveGateway"))) { // I could use contains.
+                //ok now I can create a target structure.
                 //System.out.println(ta.paths.size());//UNLOCKTHIS
                 //System.out.println(candidate.getAttribute("name"));
-                Reverse3cTargetStructure target = new Reverse3cTargetStructure(candidate
+                Reverse3TargetStructure target = new Reverse3TargetStructure(candidate
                 , firstMeetingPoint);
                 targets.add(target);
             } else {
-                //UNLOCKTHIS
+
 //                System.out.println(ta.paths.size());//UNLOCKTHIS
 //                System.out.println(candidate.getAttribute("id"));
 //                System.out.println(candidate.getAttribute("name"));
@@ -304,24 +305,21 @@ public class Reverse3 {
             }
         }
 
-        System.out.println("I've found : " + targets);
-        for (Reverse3cTargetStructure rc : targets) {
-            rc.printStructure();
-        }
+//        System.out.println("I've found : " + targets);
+//        for (Reverse3TargetStructure rc : targets) {
+//            rc.printStructure();
+//        }
 
         //now let's go through all targets and do the necessary changes.
-        for (Reverse3cTargetStructure structure : targets) {
+        for (Reverse3TargetStructure structure : targets) {
             doReverse3c(structure, model, aggregateBy);
         }
     }
 
-    //TODO in rule3c and here do a method that afterwards, for every exclusive
-    // (or inclusive, in the case of rule3c)
-    // gateway, checks if it has more than one empty outgoing flow and then
-    // merges them.
+
     //TODO afterwards, check if there's still the possibility that there are
-    // 1in-1out gateways and delete them. Dovresti già avere il metodo per fare
-    // questo, basta che lo applichi dopo quello descritto sopra.
+    // 1in-1out gateways and delete them. Questo si chiama isUselessGateway
+    // in un'altra regola. Prima copialo qua poi mettilo in model.
 
     /**
      * This method tries to avoid putting empty paths in the same gateway.
@@ -344,7 +342,7 @@ public class Reverse3 {
     }
 
 
-    private static void doReverse3c (Reverse3cTargetStructure target, Model model
+    private static void doReverse3c (Reverse3TargetStructure target, Model model
     , int aggregateBy) throws XPathExpressionException {
 
         Element inclusive = target.firstInclusive;
@@ -484,13 +482,14 @@ public class Reverse3 {
      * "1 != 1" returns false
      * "1 > 2" returns false
      * WARNING! "a == a" returns false!
+     * but "'a' == 'a'" returns true.
      * "True" returns true, as "TRUE" and "true"
      * NOTE that any other random word, such as "word" returns false!
      *
      * @param condition the condition of a sequence flow in String form
      * @return true if the condition is a tautology, and false if it's not.
      */
-    static boolean areAlwaysTrue (String condition) {
+    static boolean isAlwaysTrue (String condition) {
 
         String c = condition.toLowerCase();
         try {
@@ -510,7 +509,7 @@ public class Reverse3 {
 
         for (Element flow : outgoingFlows) {
             if (model.hasCondition(flow)) {
-                if (! areAlwaysTrue(model.returnConditionString(flow))) {
+                if (! isAlwaysTrue(model.returnConditionString(flow))) {
                     System.out.println(flow.getAttribute("id") + " is not a " + "tautology");
                     return false; //there is at least one that is not always
                     // true
@@ -611,18 +610,20 @@ public class Reverse3 {
         }
         return false;
     }
-
-
     private static boolean allOutgoingFlowsAreMutuallyExclusive (Element oldInclusive, Model model) throws XPathExpressionException {
-
         System.out.println("I'm analyzing gateway " + oldInclusive.getAttribute("id"));
         System.out.println("To see if all its outgoing flows are");
         System.out.println("mutually exclusive");
 
         ArrayList<Element> outgoingFlows = model.getOutgoingFlows(oldInclusive);
 
-        for (Element flow : outgoingFlows) {
-            for (Element flow2 : outgoingFlows) {
+        return allFlowsAreMutuallyExclusive(outgoingFlows, model);
+    }
+
+    private static boolean allFlowsAreMutuallyExclusive (ArrayList<Element> flows, Model model) throws XPathExpressionException {
+
+        for (Element flow : flows) {
+            for (Element flow2 : flows) {
                 if (! (flow.getAttribute("id").equals(flow2.getAttribute("id")))) {
                     //Obviously I don't want to compare a flow with itself
 //                because that will never be mutually exclusive with itself.
