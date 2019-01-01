@@ -247,14 +247,10 @@ public class Reverse3 {
      * exclGateway, secondo me la calcoli troppo presto, e per quello ce ne
      * sono tanti nella stessa posizione.
      */
-    static void c (Model model, int aggregateBy) throws XPathExpressionException {
+    static void c (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE3c to model " + model.name);
 
-        if (aggregateBy < 2) {
-            System.out.println();
-            System.out.println("aggregateBy must be bigger than 1");
-        }
 
         ArrayList<Reverse3TargetStructure> targets = new ArrayList<>();
 
@@ -270,7 +266,7 @@ public class Reverse3 {
 
         for (Element candidate : inclusiveGatewayInstances) {
 
-            if (model.isASplit(candidate) && model.getOutgoingFlows(candidate).size() > aggregateBy) {
+            if (model.isASplit(candidate)) {
                 candidates.add(candidate);
             }
 //            else {
@@ -315,7 +311,7 @@ public class Reverse3 {
 
         //now let's go through all targets and do the necessary changes.
         for (Reverse3TargetStructure structure : targets) {
-            doReverse3c(structure, model, aggregateBy);
+            doReverse3c(structure, model);
         }
     }
 
@@ -348,7 +344,7 @@ public class Reverse3 {
 
 
     private static void doReverse3c (Reverse3TargetStructure target,
-     Model model, int aggregateBy) throws XPathExpressionException {
+     Model model) throws XPathExpressionException {
 
         Element inclusive = target.firstInclusive;
         Element mp = target.firstMeetingPoint;
@@ -356,113 +352,85 @@ public class Reverse3 {
         ArrayList<Element> outFlows = model.getOutgoingFlows(inclusive);
         ArrayList<Element> inFlows = model.getIncomingFlows(mp);
 
-        groupFlows(outFlows, model);
+        ArrayList<ArrayList<Element>> flowGroups = groupFlows(outFlows, model);
 
         //Let's calculate how many exclusive gateway we have to create on the
         //'left side'.
-
-        int numberOfExclSuccs = outFlows.size() / aggregateBy;
-        //Also, since we're dealing with ints, we should add one more
-        // parallel in the case there's a remainder
-        if (inFlows.size() % aggregateBy != 0) {
-            numberOfExclSuccs++;
+        if (flowGroups.size() < 2) {
+            return; //it means the program wasn't able to find a satisfactory
+            // grouping.
         }
+        int i = 0;
+        for (ArrayList<Element> group : flowGroups) {
+            // to chose a position for the exclusive gateway, we must first
+            // have the position of the successors, which are the targets of
+            // the sequence flows in this group.
+            ArrayList<Element> succsOfGroup = new ArrayList<>();
 
-        System.out.println("Number of exclusive successors " + numberOfExclSuccs);
-
-        //Let's calculate of many exclusive gateway we have to create on the
-        // 'right side'
-        int numberOfExclPreds = inFlows.size() / aggregateBy;
-        //Also, since we're dealing with ints, we should add one more
-        // parallel in the case there's a remainder
-        if (inFlows.size() % aggregateBy != 0) {
-            numberOfExclPreds++;
-        }
-        System.out.println("Number of exclusive predecessors " + numberOfExclPreds);
-
-        for (int i = 0 ; i < numberOfExclSuccs ; i++) {
-
-            ArrayList<Element> myOutGoingFlows = new ArrayList<>();
-            //The outFlows that now belong to the new gateway
-            while (outFlows.size() > 0 && myOutGoingFlows.size() < aggregateBy) {
-                Element flow = outFlows.get(0);
-                outFlows.remove(flow);
-                myOutGoingFlows.add(flow);
+            for (Element flow : group) {
+                flow.setAttribute("name", "G: " + i);
+                Element t = model.getTarget(flow);
+                succsOfGroup.add(t);
             }
 
-            //now that I have a list of my new outgoingFlows, i want a list
-            // of my successors.
-            ArrayList<Element> mySuccessors = new ArrayList<>();
-            for (Element flow : myOutGoingFlows) {
-                mySuccessors.add(model.getTarget(flow));
-            }
-            //Now that I have a list of my successors, i can calculate my
-            // position
-
-            Coordinates position = model.calculatePositionOfNewNode(inclusive
-            , mySuccessors);
-
-            String id = model.newExclusiveGateway(position);
-            //now let's change my outgoingflows to have me as a source.
-            for (Element flow : myOutGoingFlows) {
-                model.setSource(flow.getAttribute("id"), id);
+            Coordinates c = model.calculatePositionOfNewNode(inclusive,
+             succsOfGroup);
+            String newExclGatSplitID = model.newExclusiveGateway(c);
+            //the flows must now have the new exclusive gat as a source.
+            for (Element flow : group) {
+                model.setSource(flow.getAttribute("id"), newExclGatSplitID);
             }
 
-            //now let's create a new flow to connect me to the startingInclusive
-            //(which will later become a parallel split
+            // Now we must create an exclusive merge for our group.
+            // First we must collect all inFlows that have a match in our
+            // exclusive.
+            ArrayList<Element> inFlowsThatMatch = new ArrayList<>();
+            for (Element flow : inFlows) {
 
-            String flowId =
-             model.newSequenceFlow(inclusive.getAttribute("id"), id);
-
-            //one last thing. We want to avoid having "one in, one out"
-            // types of gateways, so to avoid this situation we want to
-            //do one last check:
-            Element newExcl = model.findElemById(id);
-            newExcl.setAttribute("name", "NUOVO");
-            if (model.isUselessGateway(newExcl)) {
-                model.deleteUselesGateway(newExcl);
-            }
-        }
-
-        for (int i = 0 ; i < numberOfExclPreds ; i++) {
-            ArrayList<Element> myIncomingFlows = new ArrayList<>();
-            //The outFlows that now belong to the new gateway
-            while (inFlows.size() > 0 && myIncomingFlows.size() < aggregateBy) {
-                Element flow = inFlows.get(0);
-                inFlows.remove(flow);
-                myIncomingFlows.add(flow);
+                for (Element outFlow : group) {
+                    if (isAMatch(outFlow, flow, model)) {
+                        inFlowsThatMatch.add(flow);
+                    }
+                }
             }
 
-            //now that I have a list of my new outgoingFlows, i want a list
-            // of my successors.
-            ArrayList<Element> myPredecessors = new ArrayList<>();
-            for (Element flow : myIncomingFlows) {
-                myPredecessors.add(model.getTarget(flow));
-            }
-            //Now that I have a list of my successors, i can calculate my
-            // position
-            Coordinates position = model.calculatePositionOfNewNode(inclusive
-            , myPredecessors);
+            //Now we must collect all their sources to place the exclusive
+            // gateway merge in the correct position
+            ArrayList<Element> predsOfGroup = new ArrayList<>();
 
-            String id = model.newExclusiveGateway(position);
-            //now let's change my outgoingFlows to have me as a source.
-            for (Element flow : myIncomingFlows) {
-                model.setTarget(flow.getAttribute("id"), id);
+            for (Element flow : inFlowsThatMatch) {
+                flow.setAttribute("name", "G: " + i);
+                Element t = model.getSource(flow);
+                predsOfGroup.add(t);
             }
 
-            //now let's create a new flow to connect me to the startingInclusive
-            //(which will later become a parallel split
+            Coordinates c2 = model.calculatePositionOfNewNode(predsOfGroup, mp);
+            String newExclGatMergeID = model.newExclusiveGateway(c2);
 
-            model.newSequenceFlow(id, mp.getAttribute("id"));
-
-            //one last thing. We want to avoid having "one in, one out"
-            // types of gateways, so to avoid this situation we want to
-            //do one last check:
-            Element newExcl = model.findElemById(id);
-            newExcl.setAttribute("name", "NUOVO");
-            if (model.isUselessGateway(newExcl)) {
-                model.deleteUselesGateway(newExcl);
+            //the flows must now have the new exclusive gat as a source.
+            for (Element flow : inFlowsThatMatch) {
+                model.setTarget(flow.getAttribute("id"), newExclGatMergeID);
             }
+//it is possible that some outgoingFlows are empty, if such they
+            //are not included in the matching system.
+            for (Element flow : group) {
+                for (Element inFlow : inFlows) {
+                    String ID1 = flow.getAttribute("id");
+                    String ID2 = inFlow.getAttribute("id");
+                    if (ID1.equals(ID2)) {
+                        //i have found an empty flow.
+                        model.setTarget(ID1, newExclGatMergeID);
+                    }
+
+                }
+            }
+            //now we must create two new sequence flows, one from the
+            //inclusive to the split, and one from the split to the mp.
+            model.newSequenceFlow(inclusive.getAttribute("id"),
+             newExclGatSplitID);
+            model.newSequenceFlow(newExclGatMergeID, mp.getAttribute("id"));
+
+            i++;
         }
 
         model.changeType(inclusive, "parallelGateway");
@@ -470,10 +438,40 @@ public class Reverse3 {
     }
 
 
+    /**
+     * to see if two flows are part of the same path, we check if the
+     * source of the second is either the target of the first flow,
+     * or part of it's mandatory successors.
+     *
+     * @param fFlow
+     * @param sFlow
+     * @param model
+     * @return
+     * @throws XPathExpressionException
+     */
+    static boolean isAMatch (Element fFlow, Element sFlow, Model model) throws XPathExpressionException {
+
+        Element target = model.getTarget(fFlow);
+        Element source = model.getSource(sFlow);
+
+        if (target.getAttribute("id").equals(source.getAttribute("id"))) {
+            return true;
+        }
+        TravelAgency ta = new TravelAgency(model, target);
+        for (Element e : ta.mandatorySuccessors) {
+            String id = e.getAttribute("id");
+            if (id.equals(source.getAttribute("id"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     static void apply (Model model, int aggregateBy) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3 to model " + model.name);
-        c(model, aggregateBy);
+        c(model);
         a(model);
         b(model);
     }
@@ -669,7 +667,7 @@ public class Reverse3 {
     }
 
 
-    private static void groupFlows (ArrayList<Element> flows, Model model) throws XPathExpressionException {
+    private static ArrayList<ArrayList<Element>> groupFlows (ArrayList<Element> flows, Model model) throws XPathExpressionException {
 
         ArrayList<String> flowsID = new ArrayList<>();
         for (Element flow : flows) {
@@ -684,7 +682,29 @@ public class Reverse3 {
         System.out.println("FinalGroupings: " + finalGroupings.size());
         FlowGrouper.printFlows(finalGroupings);
 
-        System.exit(0);
+        ArrayList<ArrayList<Element>> finalGroupingsArray = new ArrayList<>();
+        finalGroupingsArray = fromSetToArray(finalGroupings, model);
+        return finalGroupingsArray;
+    }
+
+
+    //TODO
+    // provvisorio solo perché per testare i metodi era più
+    // facile usare gli ID che gli elementi
+    private static ArrayList<ArrayList<Element>> fromSetToArray (Set<Set<Set<String>>> finalGropings, Model model) throws XPathExpressionException {
+
+        ArrayList<ArrayList<Element>> finalGroupingsArray = new ArrayList<>();
+        for (Set<Set<String>> grouping : finalGropings) {
+
+            for (Set<String> setOFlows : grouping) {
+                ArrayList<Element> flowsSet = new ArrayList<>();
+                for (String id : setOFlows) {
+                    flowsSet.add(model.findElemById(id));
+                }
+                finalGroupingsArray.add(flowsSet);
+            }
+        }
+        return finalGroupingsArray;
     }
 
 

@@ -140,7 +140,7 @@ class Transformation {
         }
 
         if (parameter.rule.equals("r3c")) {
-            Reverse3.c(resultingModel, parameter.aggregateBy);
+            Reverse3.c(resultingModel);
         }
 
         if (parameter.rule.equals("r4")) {

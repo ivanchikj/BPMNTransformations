@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -122,8 +125,6 @@ class Reverse3Test {
     @Test
     void bOneInsideTheOther () throws Exception {
 
-        //TODO Usalo anche questo nella tesi.
-
         Model startingModel = new Model("./tests/TestModels/Rule3b" +
                 "/InclusiveInTheMiddle.bpmn.xml");
 
@@ -138,8 +139,18 @@ class Reverse3Test {
     }
 
     @Test
-    void c () {
+    void c () throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+        Model startingModel = new Model("./tests/TestModels/Rule3c" +
+                "/Rule3cTris3.bpmn.xml");
 
+        Model expected = new Model("./tests/TestModels/Rule3c" +
+                "/Rule3cTris3r3c.bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Reverse3.c(result);
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
 
