@@ -26,10 +26,11 @@ TODO:
     
             Se ci sono due lanes, ci sono anche due processi. Considerare questa cosa, è importante, credo che rompi qualcosa, probabilmente devo aggiungere un for loop e in model avere un array di processi invece che un field per il processo.
 
+            Il programma non riconosce i folder se non finiscono con '\'
+
         LOW PRIORITY:
 
             I initially misunderstood rules 1 and 2 and tought rule 1 was only about parallel gateways and rule 2 was only about exclusive gateways. Now the rules work correctly, but rule 1 and rule 2, in both directions, now contain a lot of duplicate code that should be refactored.
-
 
             Fare overload metodo per creare nuovi sequenceFlow con già un certo target e una certa source al momento della creazione. Basta chiamare il metodo standard per creare flow, poi setSource e setTarget. 
        
@@ -46,15 +47,11 @@ TODO:
 
             Capire perché le label sono al posto giusto anche se io non le modifico mai. Forse le loro coordinate sono relative?
 
-            Il programma non riconosce i folder se non finiscono con '\'
-
             Provare a vedere come sono scritti i modelli di inubit, e eventualmente aggiungere compatibilità con inubit.
 
             Aggiungere anche il check che le regole non siano opposte, quelle date dall'utente. Nel main, ma dai all'utente la possibilità di continuare.
 
             Clean the console.
-
-            Fare in modo che il programma accetti più di un plane e di un process.
 
             /Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1Classic.bpmn.xml npnr (-1-3-2-r2)
 

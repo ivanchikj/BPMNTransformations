@@ -17,6 +17,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Reverse3 {
 
@@ -101,7 +103,8 @@ public class Reverse3 {
         Element firstMeetingPoint;
 
 
-        Reverse3TargetStructure (Element firstInclusive, Element firstMeetingPoint) {
+        Reverse3TargetStructure (Element firstInclusive,
+         Element firstMeetingPoint) {
 
             this.firstInclusive = firstInclusive;
             this.firstMeetingPoint = firstMeetingPoint;
@@ -239,7 +242,7 @@ public class Reverse3 {
      * TODO fai metodo che crea i gruppi di flow, non mettere quelli vuoti
      * insieme
      * e controlla le condizioni con WA.
-     *
+     * <p>
      * TODO controlla anche quando calcoli la posizione dei nuovi
      * exclGateway, secondo me la calcoli troppo presto, e per quello ce ne
      * sono tanti nella stessa posizione.
@@ -292,8 +295,8 @@ public class Reverse3 {
                 //ok now I can create a target structure.
                 //System.out.println(ta.paths.size());//UNLOCKTHIS
                 //System.out.println(candidate.getAttribute("name"));
-                Reverse3TargetStructure target = new Reverse3TargetStructure(candidate
-                , firstMeetingPoint);
+                Reverse3TargetStructure target =
+                 new Reverse3TargetStructure(candidate, firstMeetingPoint);
                 targets.add(target);
             } else {
 
@@ -316,13 +319,14 @@ public class Reverse3 {
         }
     }
 
-
     //TODO afterwards, check if there's still the possibility that there are
     // 1in-1out gateways and delete them. Questo si chiama isUselessGateway
     // in un'altra regola. Prima copialo qua poi mettilo in model.
 
+
     /**
      * This method tries to avoid putting empty paths in the same gateway.
+     *
      * @param flows
      * @param model
      * @param aggregateBy
@@ -335,15 +339,16 @@ public class Reverse3 {
 //        ArrayList<Element> EmptyFlows = new ArrayList<>();
 //        for (Element flow : flows){
 //            TravelAgency ta = new TravelAgency(model,model.getSource(flow));
-//            if (ta.firstMandatorySuccessor.getAttribute("id").equals(model.getTarget()))
+//            if (ta.firstMandatorySuccessor.getAttribute("id").equals(model
+//            .getTarget()))
 //
 //        }
 
     }
 
 
-    private static void doReverse3c (Reverse3TargetStructure target, Model model
-    , int aggregateBy) throws XPathExpressionException {
+    private static void doReverse3c (Reverse3TargetStructure target,
+     Model model, int aggregateBy) throws XPathExpressionException {
 
         Element inclusive = target.firstInclusive;
         Element mp = target.firstMeetingPoint;
@@ -351,8 +356,10 @@ public class Reverse3 {
         ArrayList<Element> outFlows = model.getOutgoingFlows(inclusive);
         ArrayList<Element> inFlows = model.getIncomingFlows(mp);
 
-        //Let's calculate of many exclusive gateway we have to create on the
-        // 'left side'.
+        groupFlows(outFlows, model);
+
+        //Let's calculate how many exclusive gateway we have to create on the
+        //'left side'.
 
         int numberOfExclSuccs = outFlows.size() / aggregateBy;
         //Also, since we're dealing with ints, we should add one more
@@ -407,7 +414,6 @@ public class Reverse3 {
             String flowId =
              model.newSequenceFlow(inclusive.getAttribute("id"), id);
 
-
             //one last thing. We want to avoid having "one in, one out"
             // types of gateways, so to avoid this situation we want to
             //do one last check:
@@ -447,8 +453,7 @@ public class Reverse3 {
             //now let's create a new flow to connect me to the startingInclusive
             //(which will later become a parallel split
 
-            model.newSequenceFlow(id, mp.getAttribute(
-            "id"));
+            model.newSequenceFlow(id, mp.getAttribute("id"));
 
             //one last thing. We want to avoid having "one in, one out"
             // types of gateways, so to avoid this situation we want to
@@ -465,7 +470,6 @@ public class Reverse3 {
     }
 
 
-    //TODO DECIDE the ORDER AND EXPLAIN IN THE THESIS
     static void apply (Model model, int aggregateBy) throws Exception {
 
         System.out.println("I'm applying rule REVERSE3 to model " + model.name);
@@ -532,8 +536,8 @@ public class Reverse3 {
      * It checks that they are all mutually exclusive.
      * It uses wolfram Alpha's API to do so.
      * For this reason the method checks that it is connected to the internet,
-     * if it is not //TODO
-     * //TODO Testa bene questa cosa però, sia che manchi internet sia che
+     * if it is not
+     * //TODO Testa bene questa cosa sia che manchi internet sia che
      * //TODO manchi appID.
      * then it returns false and the transformation doesn't happen.
      *
@@ -610,7 +614,10 @@ public class Reverse3 {
         }
         return false;
     }
+
+
     private static boolean allOutgoingFlowsAreMutuallyExclusive (Element oldInclusive, Model model) throws XPathExpressionException {
+
         System.out.println("I'm analyzing gateway " + oldInclusive.getAttribute("id"));
         System.out.println("To see if all its outgoing flows are");
         System.out.println("mutually exclusive");
@@ -620,7 +627,8 @@ public class Reverse3 {
         return allFlowsAreMutuallyExclusive(outgoingFlows, model);
     }
 
-    private static boolean allFlowsAreMutuallyExclusive (ArrayList<Element> flows, Model model) throws XPathExpressionException {
+
+    private static boolean allFlowsAreMutuallyExclusive (ArrayList<Element> flows, Model model) {
 
         for (Element flow : flows) {
             for (Element flow2 : flows) {
@@ -661,6 +669,87 @@ public class Reverse3 {
     }
 
 
+    private static void groupFlows (ArrayList<Element> flows, Model model) throws XPathExpressionException {
+
+        ArrayList<String> flowsID = new ArrayList<>();
+        for (Element flow : flows) {
+            flowsID.add(flow.getAttribute("id"));
+        }
+
+        FlowGrouper fg = new FlowGrouper(flowsID);
+        Set<Set<Set<String>>> possibleGroupings = fg.groups;
+        Set<Set<Set<String>>> finalGroupings =
+         returnFinalGroupings(possibleGroupings, model);
+        System.out.println("CIAOOOO");
+        System.out.println("FinalGroupings: " + finalGroupings.size());
+        FlowGrouper.printFlows(finalGroupings);
+
+        System.exit(0);
+    }
+
+
+    private static Set<Set<Set<String>>> returnFinalGroupings (Set<Set<Set<String>>> possibleGroupings, Model model) throws XPathExpressionException {
+
+        Set<Set<Set<String>>> finalGroupings = new HashSet<>();
+
+        for (Set<Set<String>> possibleGrouping : possibleGroupings) {
+            boolean isGood = true; //it means that all the inner sets of
+            // flows are mutually exclusive.
+            // or that at least an inner set is smaller than two.
+
+            for (Set<String> set : possibleGrouping) {
+                if (set.size() < 2) {
+                    //There's a set smaller than two in this grouping, so
+                    // it's not good.
+                    isGood = false;
+                }
+                ArrayList<Element> elementsFlows = new ArrayList<>();
+                //TODO
+                // provvisorio solo perché per testare i metodi era più
+                // facile usare gli ID che gli elementi
+                for (String s : set) {
+                    elementsFlows.add(model.findElemById(s));
+                }
+
+                if (! allFlowsAreMutuallyExclusive(elementsFlows, model)) {
+                    isGood = false;
+                }
+            }
+
+            if (isGood) {
+                finalGroupings.add(possibleGrouping);
+                return finalGroupings; //as soon as i find a good one, I
+                // return as I dont'need more than one.
+            }
+        }
+
+        return finalGroupings;
+    }
+//    private static void groupFlows (ArrayList<Element> flows, Model model) {
+//
+//        int n = 2; //we start by dividing it in two groups.
+//        //int remainderGroupSize = flows.size() - normalGroupSize*(n-1);
+//
+//        ArrayList<ArrayList<Element>> groups = new ArrayList<>();
+//        //will store the final groups, (if we are able to create them).
+//
+//        boolean areOk = false; //True if all the flow's conditions are
+//        // mutually exclusive in all groups.
+//
+//        // Tries until it finds a satisfactory grouping, or until it is not
+//        // possible to further divide the flows.
+////        while ((!areOk) && (normalGroupSize > 1)){
+////            ArrayList<Element> temp = genPerm(flows, size);
+////
+////            areOk = true; //true unless we find a group in which they are
+// not
+////            // mEx.
+////
+////            allFlowsAreMutuallyExclusive(temp, model);
+////            n++;
+////        }
+//
+//    }
 }
 
 

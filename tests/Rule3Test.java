@@ -60,6 +60,29 @@ class Rule3Test {
         assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
     }
 
+
+    /**
+     * This variant has default flows and conditions.
+     *
+     * @throws Exception
+     */
+    @Test
+    void cVariant() throws  Exception{
+        Model startingModel = new Model("./tests/TestModels/Rule3c" +
+                "/Rule3cTris.bpmn.xml");
+
+        Model expected = new Model("./tests/TestModels/Rule3c/Rule3cTris3"
+                + ".bpmn.xml");
+
+        Model result = startingModel.cloneModel();
+
+        Rule3.c(result);
+
+        assertFalse(TravelAgency.modelsAreDifferent(result, expected));
+        assertTrue(TravelAgency.modelsAreDifferent(result, startingModel));
+
+    }
+
     @Test
     void createInverseCondition(){
         String c1 = "a > 0";
