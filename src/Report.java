@@ -10,10 +10,12 @@ public class Report {
     private String body = "";
     private String header = "";
     private String resultingModels = "";
-    private String finalText= "";
-    private String failedTransformations= "";
+    private String finalText = "";
+    private String failedTransformations = "";
     private String allTransformations;
     final String newline = System.getProperty("line.separator");
+    public int[] rulesCount = new int[20];
+    String countText = "";
     //TODO spiega come funziona questa classe: in breve il testo viene
     // composto tutto alla fine in modo da avere i resulting models prima dei
     // singoli outcomes.
@@ -50,13 +52,14 @@ public class Report {
         header += newline;
         header += newline;
         header += newline;
-
     }
 
-    public void addResultingModels(ArrayList<Model> resultingModels){
+
+    public void addResultingModels (ArrayList<Model> resultingModels) {
+
         this.resultingModels += "Resulting models: " + resultingModels.size() + newline;
         for (Model resultingModel : resultingModels) {
-            this.resultingModels += resultingModel.name+ newline;
+            this.resultingModels += resultingModel.name + newline;
         }
         this.resultingModels += newline;
         this.resultingModels += newline;
@@ -78,6 +81,7 @@ public class Report {
      */
     void addOutcome (String startingModel, String resultingModel,
      String ruleString, boolean outcome) {
+
         this.body += newline;
         String newline = System.getProperty("line.separator");
         body += newline;
@@ -102,13 +106,156 @@ public class Report {
             "model " + startingModel + " was unsuccessful. The resulting " +
             "model is " + "identical to the starting model and will not be " + "saved";
         }
-
         body += newline;
     }
 
 
+    /**
+     * This method is a really complicated way to do a simple thing, when
+     * addOutcome will use transformations instead it will be easier to count
+     * how many times every rule has been applied.
+     * @param p the rule applied
+     */
+    void count (Parameter p) {
+
+        if (p.rule.equals("1")) {
+            rulesCount[0]++;
+        }
+        if (p.rule.equals("2")) {
+            rulesCount[1]++;
+        }
+        if (p.rule.equals("3")) {
+            rulesCount[2]++;
+        }
+        if (p.rule.equals("3a")) {
+            rulesCount[3]++;
+        }
+        if (p.rule.equals("3b")) {
+            rulesCount[4]++;
+        }
+        if (p.rule.equals("3c")) {
+            rulesCount[5]++;
+        }
+        if (p.rule.equals("4")) {
+            rulesCount[6]++;
+        }
+        if (p.rule.equals("4a")) {
+            rulesCount[7]++;
+        }
+        if (p.rule.equals("4b")) {
+            rulesCount[8]++;
+        }
+        if (p.rule.equals("4c")) {
+            rulesCount[9]++;
+        }
+        if (p.rule.equals("r1")) {
+            rulesCount[10]++;
+        }
+        if (p.rule.equals("r2")) {
+            rulesCount[11]++;
+        }
+        if (p.rule.equals("r3")) {
+            rulesCount[12]++;
+        }
+        if (p.rule.equals("r3a")) {
+            rulesCount[13]++;
+        }
+        if (p.rule.equals("r3b")) {
+            rulesCount[14]++;
+        }
+        if (p.rule.equals("r3c")) {
+            rulesCount[15]++;
+        }
+        if (p.rule.equals("r4")) {
+            rulesCount[16]++;
+        }
+        if (p.rule.equals("r4a")) {
+            rulesCount[17]++;
+        }
+        if (p.rule.equals("r4b")) {
+            rulesCount[18]++;
+        }
+        if (p.rule.equals("r4c")) {
+            rulesCount[19]++;
+        }
+
+    }
+
+
+    /**
+     * TODO mettere degli if "== 0" per non aggiungere roba inutile.
+     */
+    void createCountText(){
+
+        countText += "Number of times rules have been applied: " + newline;
+        if (rulesCount[0] != 0) {
+            countText += "Rule 1: " + rulesCount[0] + newline;
+        }
+        if (rulesCount[1] != 0) {
+            countText += "Rule 2: " + rulesCount[1] + newline;
+        }
+        if (rulesCount[2] != 0){
+        countText += "Rule 3: " + rulesCount[2] + newline;
+        }
+        if (rulesCount[3] != 0) {
+            countText += "Rule 3a: " + rulesCount[3] + newline;
+        }
+        if (rulesCount[4] != 0) {
+            countText += "Rule 3b: " + rulesCount[4] + newline;
+        }
+        if (rulesCount[5] != 0) {
+            countText += "Rule 3c: " + rulesCount[5] + newline;
+        }
+        if (rulesCount[6] != 0) {
+            countText += "Rule 4: " + rulesCount[6] + newline;
+        }
+        if (rulesCount[7] != 0) {
+            countText += "Rule 4a: " + rulesCount[7] + newline;
+        }
+        if (rulesCount[8] != 0) {
+            countText += "Rule 4b: " + rulesCount[8] + newline;
+        }
+        if (rulesCount[9] != 0) {
+            countText += "Rule 4c: " + rulesCount[9] + newline;
+        }
+        if (rulesCount[10] != 0) {
+            countText += "Rule r1: " + rulesCount[10] + newline;
+        }
+        if (rulesCount[11] != 0) {
+            countText += "Rule r2: " + rulesCount[11] + newline;
+        }
+        if (rulesCount[12] != 0) {
+            countText += "Rule r3: " + rulesCount[12] + newline;
+        }
+        if (rulesCount[13] != 0) {
+            countText += "Rule r3a: " + rulesCount[13] + newline;
+        }
+        if (rulesCount[14] != 0) {
+            countText += "Rule r3b: " + rulesCount[14] + newline;
+        }
+        if (rulesCount[15] != 0) {
+            countText += "Rule r3c: " + rulesCount[15] + newline;
+        }
+        if (rulesCount[16] != 0) {
+            countText += "Rule r4: " + rulesCount[16] + newline;
+        }
+        if (rulesCount[17] != 0) {
+            countText += "Rule r4a: " + rulesCount[17] + newline;
+        }
+        if (rulesCount[18] != 0) {
+            countText += "Rule r4b: " + rulesCount[18] + newline;
+        }
+        if (rulesCount[19] != 0) {
+            countText += "Rule r4c: " + rulesCount[19] + newline;
+        }
+    }
+
+
+
     void compose () {
-        this.finalText = header + resultingModels + failedTransformations + body;
+        createCountText();
+        this.finalText =
+         header + resultingModels + countText + failedTransformations + body;
     }
 
 
@@ -145,10 +292,12 @@ public class Report {
         // errori saranno gestiti lì dentro.
         String newline = System.getProperty("line.separator");
         this.failedTransformations += newline;
-        this.failedTransformations += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
-         + "! ! ! ! ! !";
+        this.failedTransformations += "! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! " +
+         "! ! ! ! ! ! ! ! ! ! " + "! ! ! ! ! !";
         this.failedTransformations += newline;
-        this.failedTransformations += ("There was an error while trying to apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to model " + model.path + newline).toUpperCase();
+        this.failedTransformations += ("There was an error while trying to " +
+         "apply Rule: " + parameter.rule + "*" + parameter.aggregateBy + " to" +
+          " model " + model.path + newline).toUpperCase();
         this.failedTransformations += newline;
         this.failedTransformations += newline;
         this.failedTransformations += newline;

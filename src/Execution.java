@@ -235,6 +235,7 @@ public class Execution {
 
             m = transf.resultingModel; //now the model gets updated.
             if (transf.successful) {
+                report.count(param);
                 //out = true;
                 ruleString.append(param.rule).append(" ");
                 this.report.addOutcome(startingName, m.name,
@@ -299,6 +300,7 @@ public class Execution {
 
                 end = transf.resultingModel; //now the model gets updated.
                 if (transf.successful) {
+                    report.count(param);
                     ruleString.append(param.rule).append(" "); //we add the
                     // rule in the report only if it was successfull.
                     //TODO magari fare in modo di far vedere la lista
@@ -351,6 +353,7 @@ public class Execution {
             Transformation t = new Transformation(end, p);
             end = t.resultingModel;
             if (t.successful) {
+                report.count(p);
                 this.resultingModels.add(end); // we save it.
 
                 applyPermRec(end); // let's go further applying the rules on
@@ -386,6 +389,7 @@ public class Execution {
             Transformation t = new Transformation(end, p);
             end = t.resultingModel;
             if (t.successful) {
+                report.count(p);
                 this.resultingModels.add(end); // we save it.
                 ArrayList<Parameter> newParamList =
                  (ArrayList<Parameter>) parameters.clone();
