@@ -404,8 +404,7 @@ public class Rule3 {
                 }
                 String succID = successor.getAttribute("id");
                 model.deleteIncomingFlows(successor);
-                System.out.println("PIZZA");
-                System.out.println("Sto cancellando: " + succID);
+                System.out.println("I'm deleting: " + succID);
                 model.delete(succID);
             }
 
@@ -419,8 +418,7 @@ public class Rule3 {
 
                 model.deleteOutgoingFlows(predecessor);
 
-                System.out.println("PIZZA");
-                System.out.println("Sto cancellando: " + predID);
+                System.out.println("I'm deleting: " + predID);
                 model.delete(predID);
             }
 

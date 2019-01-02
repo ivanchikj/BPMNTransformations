@@ -678,7 +678,6 @@ public class Reverse3 {
         Set<Set<Set<String>>> possibleGroupings = fg.groups;
         Set<Set<Set<String>>> finalGroupings =
          returnFinalGroupings(possibleGroupings, model);
-        System.out.println("CIAOOOO");
         System.out.println("FinalGroupings: " + finalGroupings.size());
         FlowGrouper.printFlows(finalGroupings);
 
