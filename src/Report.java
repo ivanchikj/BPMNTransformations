@@ -102,7 +102,7 @@ public class Report {
             body += "Resulting model: " + resultingModel + newline;
             body += newline;
         } else {
-            body += "the application of the rule " + ruleString + " on " +
+            body += "the application of the rule(s) " + ruleString + " on " +
             "model " + startingModel + " was unsuccessful. The resulting " +
             "model is " + "identical to the starting model and will not be " + "saved";
         }

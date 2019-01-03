@@ -157,31 +157,24 @@ public class Rule4 {
 
             if (model.isASplit(oldInclusiveGateway) && model.isTask(model.getPredecessors(oldInclusiveGateway).get(0))) {
                 System.out.println(oldInclusiveGateway.getAttribute("id") +
-                " has only one incoming flow and the rule 4a can be applied");
+                " is a split and is preceded by a task so rule 4a can be " +
+                 "applied");
 
                 //let's find out the predecessor
                 ArrayList<Element> predecessors =
                  model.getPredecessors(oldInclusiveGateway);
                 Element predecessor = predecessors.get(0); //we know there's
-                // gonna be only one
+                // going to be only one
 
                 //let's connect the successors to it's predecessor
-                //TODO think what happens if one of the arrows has attributes
-                // . I think it works but let's write this in the thesis.
                 for (Element outgoingFlow : outgoingFlows) {
                     model.setSource(outgoingFlow.getAttribute("id"),
                      predecessor.getAttribute("id"));
-                    Element condition = model.doc.createElement("bpmn" +
-                    ":conditionExpression");
-                    condition.setAttribute("xsi:type", "bpmn" +
-                    ":tFormalExpression");
-                    condition.setAttribute("language", "");
-                    outgoingFlow.appendChild(condition);
                 }
                 //let's remember to delete the useless sequenceFlow
                 model.delete(incomingFlows.get(0).getAttribute("id"));
-                model.delete(oldInclusiveGateway.getAttribute("id"));//TODO
-                // make the method "delete" take an Element as an input
+                //and the inclusive split.
+                model.delete(oldInclusiveGateway.getAttribute("id"));
             } else {
                 System.out.println("Rule 4a cannot be  applied to " + oldInclusiveGateway.getAttribute("id"));
             }

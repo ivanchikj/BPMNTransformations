@@ -27,23 +27,7 @@ public class Reverse4 {
             //if it has more than one outgoing Flow then we can add a
             // parallel in there
             //BUT only if none of the incoming flows has a condiition
-            if (outgoingFlows.size() > 1) {
-
-                //let's check that NONE of the outgoing flows has a condition
-                //TODO actually if the condition is always true, it doesn't
-                // matter.
-                //Write in the thesis that future improvements could consider
-                // that.
-                boolean oneFlowHasACondition = false;
-                for (Element flow : outgoingFlows) {
-                    if (model.hasCondition(flow)) {
-                        oneFlowHasACondition = true;
-                    }
-                }
-
-                //Now that we know that none of the multiple outgoing flows
-                // has a condition we can apply the rule
-                if (! oneFlowHasACondition) {
+            if (outgoingFlows.size() > 1 && allOutHaveNoConditions(outgoingFlows, model)) {
 
                     //Before creating the new parallel gateway, we have to
                     // calculate its future position
@@ -68,15 +52,13 @@ public class Reverse4 {
                     // parallel
                     model.newSequenceFlow(task.getAttribute("id"),
                      newParallelID);
-                }
+
             }
         }
     }
 
 
-    //TODO scrivi nella tesi 
-    //Ogni volta che vedi una task che ha due incoming, mettici un exclusive
-    // gateway merge davanti
+
     static void b (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE4b to model " + model.path);
@@ -124,10 +106,6 @@ public class Reverse4 {
     }
 
 
-    //TODO to write in the thesis:
-    //This starts out like rule 4aR but we can apply regardless of the fact
-    // that the outgoingFlows of a task
-    //has a condition or not
     static void c (Model model) throws XPathExpressionException {
 
         System.out.println("I'm applying rule REVERSE4c to model " + model.path);
@@ -138,14 +116,14 @@ public class Reverse4 {
 
             ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
-            //if it has more than one outgoing Flow then we can add a
-            // parallel in there
-            //BUT only if none of the incoming flows has a condition
+            //if it has more than one outgoing Flow then we can add an
+            // inclusive in there
+            //BUT only if all the outgoing flows have a condition
 
-            if (outgoingFlows.size() > 1 && allOutHaveNoConditions(outgoingFlows,
+            if (outgoingFlows.size() > 1 && allOutHaveConditions(outgoingFlows,
              model)) {
 
-                //Before creating the new parallel gateway, we have to
+                //Before creating the new inclusive gateway, we have to
                 // calculate its future position
 
                 ArrayList<Element> successors = model.getSuccessors(task);
@@ -155,7 +133,7 @@ public class Reverse4 {
 
                 String newParallelID = model.newInclusiveGateway(position);
 
-                //finally here's the newly created parallel gateway
+                //finally here's the newly created inclusive gateway
                 model.findElemById(newParallelID);
 
                 //let's change the two outgoing flows of our task to have the
@@ -181,6 +159,23 @@ public class Reverse4 {
 
         for (Element flow : outgoingFlows) {
             if (model.hasCondition(flow)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Checks if all the flows contained in outgoingFlows have no conditions
+     * @param outgoingFlows
+     * @param model
+     * @return true if none has a condition, false otherwise.
+     */
+    private static boolean allOutHaveConditions (ArrayList<Element> outgoingFlows, Model model) {
+
+        for (Element flow : outgoingFlows) {
+            if (!model.hasCondition(flow)) {
                 return false;
             }
         }
