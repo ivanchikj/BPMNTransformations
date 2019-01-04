@@ -24,7 +24,8 @@ TODO:
 
         HIGH PRIORITY:
     
-            Se ci sono due lanes, ci sono anche due processi. Considerare questa cosa, è importante, credo che rompi qualcosa, probabilmente devo aggiungere un for loop e in model avere un array di processi invece che un field per il processo.
+            Se ci sono due pools, ci sono anche due processi. Basta che quando creo nuovi elementi controllo in quale process sono, lo uso come argomento del metodo. E per sapere in quale process sono, basta che nel primo loop di ogni regola mi salvo la variabile string processID del process in cui si trova l'elemento di partenza.
+            Le lanes invece funzionano già ora.
 
             Il programma non riconosce i folder se non finiscono con '\'
 

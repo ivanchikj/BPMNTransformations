@@ -182,9 +182,6 @@ public class Report {
     }
 
 
-    /**
-     * TODO mettere degli if "== 0" per non aggiungere roba inutile.
-     */
     void createCountText(){
 
         countText += "Number of times rules have been applied: " + newline;
