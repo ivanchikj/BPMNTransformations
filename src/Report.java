@@ -90,7 +90,7 @@ public class Report {
         body += newline;
         body += "Starting model: " + startingModel + newline;
         body += newline;
-        body += "Rules applied: " + ruleString + newline;
+        body += "Rule applied: " + ruleString + newline;
         body += newline;
         body += "Successful: " + outcome + newline;
         body += newline;
@@ -103,8 +103,8 @@ public class Report {
             body += newline;
         } else {
             body += "the application of the rule(s) " + ruleString + " on " +
-            "model " + startingModel + " was unsuccessful. The resulting " +
-            "model is " + "identical to the starting model and will not be " + "saved";
+            "model " + startingModel + " was unsuccessful as the model did " +
+             "not contain the target structure(s) relative to " + ruleString;
         }
         body += newline;
     }

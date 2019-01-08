@@ -349,7 +349,8 @@ public class Execution {
         String ruleString = "";
         for (Parameter p : parameters) {
             Model end = m;
-            ruleString += p.rule;
+            ruleString += p.rule; // TODO maybe this has to be updated only if
+            // the transformation is successful
             Transformation t = new Transformation(end, p);
             end = t.resultingModel;
             if (t.successful) {
@@ -359,7 +360,7 @@ public class Execution {
                 applyPermRec(end); // let's go further applying the rules on
                 // the successful model
             }
-            report.addOutcome(m.name, end.name, ruleString, t.successful);
+            report.addOutcome(m.name, end.name, p.rule, t.successful);
         }
     }
 
@@ -382,10 +383,9 @@ public class Execution {
      */
     private void applyPermNoRec (Model m, ArrayList<Parameter> parameters) {
 
-        String ruleString = "";
         for (Parameter p : parameters) {
             Model end = m;
-            ruleString += p.rule;
+            //the transformation is successful
             Transformation t = new Transformation(end, p);
             end = t.resultingModel;
             if (t.successful) {
@@ -397,7 +397,7 @@ public class Execution {
                 applyPermNoRec(end, newParamList); // let's go further
                 // applying the rules on the successful models.
             }
-            report.addOutcome(m.name, end.name, ruleString, t.successful);
+            report.addOutcome(m.name, end.name, p.rule, t.successful);
         }
     }
 

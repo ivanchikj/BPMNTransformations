@@ -267,7 +267,6 @@ public class Main {
     private static ArrayList<Parameter> initializeParams (String input) {
 
         String paramString = findParameters(input);
-        System.out.println("CIAO");
         System.out.println(paramString);
         if (paramString == null){
             paramString = "-1-2-3-4";

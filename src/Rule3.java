@@ -22,18 +22,18 @@ public class Rule3 {
         } else {
             // going through all of the parallelGateways in the model:
             for (Element oldParallel : parallelGatewayInstances) {
-
+                Element process = (Element) oldParallel.getParentNode();
                 System.out.println("The id of the element is " + oldParallel.getAttribute("id"));
 
                 Coordinates oldParallelCoordinates =
                  model.getPosition(oldParallel);
 
                 String newInclusiveGatewayId =
-                 model.newInclusiveGateway(oldParallelCoordinates);
+                 model.newInclusiveGateway(oldParallelCoordinates, process);
                 Element newInclusiveGateway =
                  model.findElemById(newInclusiveGatewayId);
 
-                model.replaceElement(oldParallel, newInclusiveGateway);
+                model.replaceElement(oldParallel, newInclusiveGateway, process);
 
                 ArrayList<Element> outgoingFlows =
                  model.getOutgoingFlows(newInclusiveGateway);
@@ -95,7 +95,7 @@ public class Rule3 {
 
             // going through all of the parallelGateways in the model:
             for (Element oldExclusive : exclusiveGatewayInstances) {
-
+                Element process = (Element) oldExclusive.getParentNode();
 //
 
                 System.out.println("working on " + oldExclusive.getAttribute(
@@ -108,10 +108,11 @@ public class Rule3 {
                 // creating the substitute element in the position of the old
                 // one
                 String newInclusiveGatewayId =
-                 model.newInclusiveGateway(oldParallelCoordinates);
+                 model.newInclusiveGateway(oldParallelCoordinates, process);
                 Element newInclusiveGateway =
                  model.findElemById(newInclusiveGatewayId);
-                model.replaceElement(oldExclusive, newInclusiveGateway);
+                model.replaceElement(oldExclusive, newInclusiveGateway,
+                 process);
 
                 //Here I dont need to distinguish between those that are
                 // merges and those that are not.
@@ -380,12 +381,12 @@ public class Rule3 {
             target.printInfo(); //UNLOCKTHIS
             Element firstParallel = target.firstParallel;
             Element firstMeetingPoint = target.firstMeetingPoint;
-
+            Element process = (Element) firstParallel.getParentNode();
             Coordinates c1 = model.getPosition(firstParallel);
             Coordinates c2 = model.getPosition(firstMeetingPoint);
 
-            String newInclusiveID = model.newInclusiveGateway(c1);
-            String newMPID = model.newInclusiveGateway(c2);
+            String newInclusiveID = model.newInclusiveGateway(c1, process);
+            String newMPID = model.newInclusiveGateway(c2, process);
 //
             String oldParallelID = firstParallel.getAttribute("id");
             String oldMPID = firstMeetingPoint.getAttribute("id");
@@ -425,9 +426,9 @@ public class Rule3 {
             Element newInclusive = model.findElemById(newInclusiveID);
             Element newMP = model.findElemById(newMPID);
 
-            model.replaceElement(firstParallel, newInclusive);
+            model.replaceElement(firstParallel, newInclusive, process);
 
-            model.replaceElement(firstMeetingPoint, newMP);
+            model.replaceElement(firstMeetingPoint, newMP, process);
 
             //let's clear the resulting multiple empty paths among the two
             // inclusive but one

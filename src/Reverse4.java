@@ -21,6 +21,7 @@ public class Reverse4 {
         ArrayList<Element> tasks = model.findElementsByType("task");
 
         for (Element task : tasks) {
+            Element process = (Element) task.getParentNode();
 
             ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
@@ -37,7 +38,8 @@ public class Reverse4 {
                     Coordinates position =
                      model.calculatePositionOfNewNode(task, successors);
 
-                    String newParallelID = model.newParallelGateway(position);
+                    String newParallelID = model.newParallelGateway(position,
+                     process);
 
                     //finally here's the newly created parallel gateway
                     //Element newParall = model.findElemById(newParallelID);
@@ -51,7 +53,7 @@ public class Reverse4 {
                     //let's now create a new flow from the task to the new
                     // parallel
                     model.newSequenceFlow(task.getAttribute("id"),
-                     newParallelID);
+                     newParallelID, process);
 
             }
         }
@@ -72,6 +74,7 @@ public class Reverse4 {
         ArrayList<Element> tasks = model.findElementsByType("task");
 
         for (Element task : tasks) {
+            Element process = (Element) task.getParentNode();
 
             ArrayList<Element> incomingFlows = model.getIncomingFlows(task);
 
@@ -88,7 +91,8 @@ public class Reverse4 {
                 Coordinates position =
                  model.calculatePositionOfNewNode(predecessors, task);
 
-                String newExclusiveID = model.newExclusiveGateway(position);
+                String newExclusiveID = model.newExclusiveGateway(position,
+                 process);
 
                 //finally here's the newly created exclusive gateway
                 //Element newExclus = model.findElemById(newExclusiveID);
@@ -100,7 +104,8 @@ public class Reverse4 {
                 }
 
                 //let's now create a new flow from the task to the new exclusive
-                model.newSequenceFlow(newExclusiveID, task.getAttribute("id"));
+                model.newSequenceFlow(newExclusiveID, task.getAttribute("id")
+                , process);
             }
         }
     }
@@ -113,7 +118,7 @@ public class Reverse4 {
         ArrayList<Element> tasks = model.findElementsByType("task");
 
         for (Element task : tasks) {
-
+            Element process = (Element) task.getParentNode();
             ArrayList<Element> outgoingFlows = model.getOutgoingFlows(task);
 
             //if it has more than one outgoing Flow then we can add an
@@ -131,7 +136,8 @@ public class Reverse4 {
                 Coordinates position = model.calculatePositionOfNewNode(task,
                  successors);
 
-                String newParallelID = model.newInclusiveGateway(position);
+                String newParallelID = model.newInclusiveGateway(position,
+                 process);
 
                 //finally here's the newly created inclusive gateway
                 model.findElemById(newParallelID);
@@ -143,7 +149,8 @@ public class Reverse4 {
                 }
 
                 //let's now create a new flow from the task to the new parallel
-                model.newSequenceFlow(task.getAttribute("id"), newParallelID);
+                model.newSequenceFlow(task.getAttribute("id"), newParallelID,
+                 process);
             }
         }
     }

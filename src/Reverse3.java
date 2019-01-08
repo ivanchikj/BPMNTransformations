@@ -37,6 +37,7 @@ public class Reverse3 {
         }
 
         for (Element inclusiveSplit : inclusiveGateways) {
+            Element process = (Element) inclusiveSplit.getParentNode();
             //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
 
 //            System.out.println("I'm analyzing inclusive gateway " +
@@ -63,10 +64,11 @@ public class Reverse3 {
                     // the
                     // old one
                     String newParallelSplitId =
-                     model.newParallelGateway(oldInclusiveSplitCoordinates);
+                     model.newParallelGateway(oldInclusiveSplitCoordinates,
+                      process);
                     Element newParallelSplit =
                      model.findElemById(newParallelSplitId);
-                    model.replaceElement(inclusiveSplit, newParallelSplit);
+                    model.replaceElement(inclusiveSplit, newParallelSplit, process);
 
                     ArrayList<Element> outgoingFlows =
                      model.getOutgoingFlows(newParallelSplit);
@@ -85,11 +87,11 @@ public class Reverse3 {
                      model.getPosition(firstMandatoryDeepSuccessor);
 
                     String newParallelMergeId =
-                     model.newParallelGateway(oldInclusiveMergeCoordinates);
+                     model.newParallelGateway(oldInclusiveMergeCoordinates, process);
                     Element newParallelMerge =
                      model.findElemById(newParallelMergeId);
                     model.replaceElement(firstMandatoryDeepSuccessor,
-                     newParallelMerge);
+                     newParallelMerge, process);
                 }
             }
         }
@@ -136,6 +138,7 @@ public class Reverse3 {
 
         for (Element inclusiveSplit : inclusiveGateways) {
             //Element inclusiveSplit = (Element) inclusiveGateways.item(i);
+            Element process = (Element) inclusiveSplit.getParentNode();
 
             System.out.println("I'm analyzing inclusive gateway " + inclusiveSplit.getAttribute("id"));
 
@@ -157,10 +160,12 @@ public class Reverse3 {
                     // the
                     // old one
                     String newExclusiveSplitId =
-                     model.newExclusiveGateway(oldInclusiveSplitCoordinates);
+                     model.newExclusiveGateway(oldInclusiveSplitCoordinates,
+                      process);
                     Element newExclusiveSplit =
                      model.findElemById(newExclusiveSplitId);
-                    model.replaceElement(inclusiveSplit, newExclusiveSplit);
+                    model.replaceElement(inclusiveSplit, newExclusiveSplit,
+                     process);
 
                     //Unlike in reverse3a we don't need to delete the split's
                     // outgoing flows.
@@ -171,11 +176,11 @@ public class Reverse3 {
                      model.getPosition(firstMandatoryDeepSuccessor);
 
                     String newExclusiveMergeId =
-                     model.newExclusiveGateway(oldInclusiveMergeCoordinates);
+                     model.newExclusiveGateway(oldInclusiveMergeCoordinates, process);
                     Element newExclusiveMerge =
                      model.findElemById(newExclusiveMergeId);
                     model.replaceElement(firstMandatoryDeepSuccessor,
-                     newExclusiveMerge);
+                     newExclusiveMerge, process);
                 }
             }
         }
@@ -215,6 +220,8 @@ public class Reverse3 {
             // 1 is now at index 0.
             // That why we use the same index every time until the list is
             // empty.
+            Element process = (Element) oldInclusive.getParentNode();
+
 
             System.out.println("working on the " + (i + 1) + "nd " +
             "inclusiveGateway");
@@ -225,11 +232,11 @@ public class Reverse3 {
 
             //creating the substitute element in the position of the old one
             String newExclusiveGatewayId =
-             model.newInclusiveGateway(oldInclusiveCoordinates);
+             model.newInclusiveGateway(oldInclusiveCoordinates, process);
             Element newExclusiveGateway =
              model.findElemById(newExclusiveGatewayId);
             //replacing the two elements
-            model.replaceElement(oldInclusive, newExclusiveGateway);
+            model.replaceElement(oldInclusive, newExclusiveGateway, process);
 
             //Here I don't need to distinguish between those that are merges
             // and those that are not.
@@ -348,7 +355,7 @@ public class Reverse3 {
 
         Element inclusive = target.firstInclusive;
         Element mp = target.firstMeetingPoint;
-
+        Element process = (Element) inclusive.getParentNode();
         ArrayList<Element> outFlows = model.getOutgoingFlows(inclusive);
         ArrayList<Element> inFlows = model.getIncomingFlows(mp);
 
@@ -375,7 +382,7 @@ public class Reverse3 {
 
             Coordinates c = model.calculatePositionOfNewNode(inclusive,
              succsOfGroup);
-            String newExclGatSplitID = model.newExclusiveGateway(c);
+            String newExclGatSplitID = model.newExclusiveGateway(c, process);
             //the flows must now have the new exclusive gat as a source.
             for (Element flow : group) {
                 model.setSource(flow.getAttribute("id"), newExclGatSplitID);
@@ -405,7 +412,7 @@ public class Reverse3 {
             }
 
             Coordinates c2 = model.calculatePositionOfNewNode(predsOfGroup, mp);
-            String newExclGatMergeID = model.newExclusiveGateway(c2);
+            String newExclGatMergeID = model.newExclusiveGateway(c2, process);
 
             //the flows must now have the new exclusive gat as a source.
             for (Element flow : inFlowsThatMatch) {
@@ -427,8 +434,8 @@ public class Reverse3 {
             //now we must create two new sequence flows, one from the
             //inclusive to the split, and one from the split to the mp.
             model.newSequenceFlow(inclusive.getAttribute("id"),
-             newExclGatSplitID);
-            model.newSequenceFlow(newExclGatMergeID, mp.getAttribute("id"));
+             newExclGatSplitID, process);
+            model.newSequenceFlow(newExclGatMergeID, mp.getAttribute("id"), process);
 
             i++;
         }

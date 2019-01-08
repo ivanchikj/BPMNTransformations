@@ -35,7 +35,7 @@ public class Model {
 
 
     public Document doc; // This is the xml representation of my model
-    private Element process; //This is the process view of the model
+    //private Element process; //This is the process view of the model
     // TODO
     // delete the process as a field, as there might be more than one so it
     // is best to find out the correct process inside the methods.
@@ -93,8 +93,10 @@ public class Model {
 
         this.tagStyle = this.findOutTagStyle();
 
-        this.process = (Element) doc.getElementsByTagName(this.style("process"
-        )).item(0); // TODO what happens if there's more than one process?
+//        this.process = (Element) doc.getElementsByTagName(this.style("process"
+//        )).item(0);
+
+
         //System.out.println("		I'm working on the following Process: " +
         // process.getAttribute("id"));//UNLOCKTHIS
 
@@ -283,7 +285,7 @@ public class Model {
 //        return id;
 //    }
 
-    String newInclusiveGateway (Coordinates c) {
+    String newInclusiveGateway (Coordinates c, Element process) {
 
         String x = c.x;
         String y = c.y;
@@ -293,7 +295,7 @@ public class Model {
         Element newNode = doc.createElement(this.style("inclusiveGateway"));
         newNode.setAttribute("id", id);
         //newNode.setAttribute("name", "NEW");
-        this.process.appendChild(newNode);
+        process.appendChild(newNode);
 
         // BPMNDI VIEW
         Element newNodeDI = doc.createElement(this.style("bpmndi:BPMNShape"));
@@ -314,7 +316,7 @@ public class Model {
     }
 
 
-    String newParallelGateway (Coordinates c) {
+    String newParallelGateway (Coordinates c, Element process) {
 
         String x = c.x;
         String y = c.y;
@@ -323,7 +325,7 @@ public class Model {
         Element newElem = doc.createElement(this.style("parallelGateway"));
         newElem.setAttribute("id", id);
         //newElem.setAttribute("name", "NEW");
-        this.process.appendChild(newElem);
+        process.appendChild(newElem);
 
         // BPMNDI VIEW
         Element newElemDI = doc.createElement(this.style("bpmndi:BPMNShape"));
@@ -345,7 +347,7 @@ public class Model {
     }
 
 
-    String newExclusiveGateway (Coordinates c) {
+    String newExclusiveGateway (Coordinates c, Element process) {
 
         String x = c.x;
         String y = c.y;
@@ -387,7 +389,8 @@ public class Model {
      * @return the id of the newly created sequenceFlow
      */
     @SuppressWarnings ("UnusedReturnValue")
-    String newSequenceFlow (String sourceID, String targetID) throws XPathExpressionException {
+    String newSequenceFlow (String sourceID, String targetID,
+     Element process) throws XPathExpressionException {
 
         String id = newId();
         Element flow = doc.createElement(this.style("sequenceFlow"));
@@ -1090,7 +1093,7 @@ public class Model {
      * @param newElem the old Element (will be deleted)
      * @param oldElem the new Element
      */
-    void replaceElement (Element oldElem, Element newElem) throws XPathExpressionException {
+    void replaceElement (Element oldElem, Element newElem, Element process) throws XPathExpressionException {
 
         //It's also useful to have the bpmndi ready to edit:
         Element newElementBPMNDI = findBPMNDI(newElem.getAttribute("id"));

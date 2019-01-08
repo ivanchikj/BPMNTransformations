@@ -86,18 +86,17 @@ class TravelAgencyTest {
 
 
     @Test
-    void withALoop () throws ParserConfigurationException,
-            SAXException, IOException, XPathExpressionException {
+    void withALoop () throws ParserConfigurationException, SAXException,
+     IOException, XPathExpressionException {
 
         Model base = new Model("./tests/TestModels/TravelAgency" +
-                "/withALoop.bpmn.xml");
+        "/withALoop.bpmn.xml");
         //the model against which all others will be tested.
 
         Model onlyPositionsAreDifferent = new Model("./tests/TestModels" +
-                "/TravelAgency/withALoopEqual.bpmn.xml");
+        "/TravelAgency/withALoopEqual.bpmn.xml");
         assertFalse(TravelAgency.modelsAreDifferent(base,
-                onlyPositionsAreDifferent));
-
+         onlyPositionsAreDifferent));
 
         //The position of the BPMN symbols should not matter. As such, it
         // should be equal to the base model.
@@ -105,19 +104,19 @@ class TravelAgencyTest {
     }
 
 
-
     @Test
-    void twoEnds () throws ParserConfigurationException,
-            SAXException, IOException, XPathExpressionException {
+    void twoEnds () throws ParserConfigurationException, SAXException,
+     IOException, XPathExpressionException {
 
-        Model base = new Model("./tests/TestModels/TravelAgency" +
-                "/twoEnds.bpmn.xml");
+        Model base =
+         new Model("./tests/TestModels/TravelAgency" + "/twoEnds" + ".bpmn" +
+          ".xml");
         //the model against which all others will be tested.
 
         Model onlyPositionsAreDifferent = new Model("./tests/TestModels" +
-                "/TravelAgency/twoEndsEqual.bpmn.xml");
+        "/TravelAgency/twoEndsEqual.bpmn.xml");
         assertFalse(TravelAgency.modelsAreDifferent(base,
-                onlyPositionsAreDifferent));
+         onlyPositionsAreDifferent));
         //The position of the BPMN symbols should not matter. As such, it
         // should be equal to the base model.
         TravelAgency ta = new TravelAgency(base);
@@ -135,6 +134,27 @@ class TravelAgencyTest {
 
         Model onlyTypesAreDifferent = new Model("./tests/TestModels" +
         "/TravelAgency/onlyTypesAreDifferent.bpmn.xml");
+        assertTrue(TravelAgency.modelsAreDifferent(base,
+         onlyTypesAreDifferent));
+        //The type of the models matters: as such it is a different model
+        // from the original.
+
+    }
+
+
+    /**
+     * Only one element type is different, in the second pool.
+     */
+    @Test
+    void twoPools () throws XPathExpressionException,
+     ParserConfigurationException, SAXException, IOException {
+
+        Model base = new Model("./tests/TestModels/TravelAgency" + "/TwoPools" +
+         ".bpmn.xml");
+        //the model against which all others will be tested.
+
+        Model onlyTypesAreDifferent = new Model("./tests/TestModels" +
+        "/TravelAgency/TwoPoolsOneDifferent.bpmn.xml");
         assertTrue(TravelAgency.modelsAreDifferent(base,
          onlyTypesAreDifferent));
         //The type of the models matters: as such it is a different model

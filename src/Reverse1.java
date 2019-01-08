@@ -62,6 +62,7 @@ class Reverse1 {
 
         //ok now we have our list of candidates
         for (Element parallel : candidates) {
+            Element process = (Element) parallel.getParentNode();
             ArrayList<Element> incomingFlows = model.getIncomingFlows(parallel);
 
             ArrayList<Element> predecessors = model.getPredecessors(parallel);
@@ -104,7 +105,7 @@ class Reverse1 {
                 Coordinates position =
                  model.calculatePositionOfNewNode(myPredecessors, parallel);
 
-                String newParallelID = model.newParallelGateway(position);
+                String newParallelID = model.newParallelGateway(position, process);
                 Element newParallel = model.findElemById(newParallelID);
 
                 // newParallel.setAttribute("name", "NEW");//UNLOCKTHIS
@@ -113,7 +114,7 @@ class Reverse1 {
                 //I can connect it to the original parallel
 
                 model.newSequenceFlow(newParallelID, parallel.getAttribute(
-                "id"));
+                "id"), process);
 
                 //now I can connect the element in myPredecessors to the new
                 // Parallel
@@ -168,6 +169,7 @@ class Reverse1 {
 
         //ok now we have our list of candidates
         for (Element inclusive : candidates) {
+            Element process = (Element) inclusive.getParentNode();
             ArrayList<Element> incomingFlows =
              model.getIncomingFlows(inclusive);
 
@@ -211,7 +213,7 @@ class Reverse1 {
                 Coordinates position =
                  model.calculatePositionOfNewNode(myPredecessors, inclusive);
 
-                String newInclusiveID = model.newInclusiveGateway(position);
+                String newInclusiveID = model.newInclusiveGateway(position, process);
                 Element newInclusive = model.findElemById(newInclusiveID);
 
                 // newInclusive.setAttribute("name", "NEW");//UNLOCKTHIS
@@ -220,7 +222,7 @@ class Reverse1 {
                 //I can connect it to the original inclusive
 
                 model.newSequenceFlow(newInclusiveID, inclusive.getAttribute(
-                "id"));
+                "id"), process);
 
                 //now I can connect the element in myPredecessors to the new
                 // inclusive
@@ -278,6 +280,8 @@ class Reverse1 {
             ArrayList<Element> incomingFlows =
              model.getIncomingFlows(exclusive);
 
+            Element process = (Element) exclusive.getParentNode();
+
             ArrayList<Element> predecessors = model.getPredecessors(exclusive);
 
             //now we have to create some new exclusives
@@ -318,7 +322,8 @@ class Reverse1 {
                 Coordinates position =
                  model.calculatePositionOfNewNode(myPredecessors, exclusive);
 
-                String newExclusiveID = model.newExclusiveGateway(position);
+                String newExclusiveID = model.newExclusiveGateway(position,
+                 process);
                 Element newExclusive = model.findElemById(newExclusiveID);
 
                 // newExclusive.setAttribute("name", "NEW");//UNLOCKTHIS
@@ -327,7 +332,7 @@ class Reverse1 {
                 //I can connect it to the original exclusive
 
                 model.newSequenceFlow(newExclusiveID, exclusive.getAttribute(
-                "id"));
+                "id"), process);
 
                 //now I can connect the element in myPredecessors to the new
                 // Exclusives
