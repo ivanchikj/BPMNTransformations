@@ -1,4 +1,5 @@
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ public class Execution {
     ArrayList<Parameter> parameters;
     boolean recursive;
     boolean permutations;
+    boolean deleteDoubles;
     //public ArrayList<Transformation> activities;
     ArrayList<Model> resultingModels;
 
@@ -43,7 +45,8 @@ public class Execution {
      */
     public Execution (String originalInput, boolean isAFolder,
      ArrayList<Model> startingModels, String folderPath, boolean permutations
-     , boolean recursive, ArrayList<Parameter> parameters) throws Exception {
+     , boolean recursive, ArrayList<Parameter> parameters,
+      boolean deleteDoubles) throws Exception {
         //From input, let's get parameters and an array of models
         this.input = originalInput;
         this.isAFolder = isAFolder;
@@ -58,23 +61,31 @@ public class Execution {
         //noinspection ResultOfMethodCallIgnored
         new File(this.outputPath).mkdirs();
         //TODO:
-//        Quando fai due esecuzioni nello stesso minuto,  i file della seconda esecuzione vengono aggiunti nella cartella della prima.
+//        Quando fai due esecuzioni nello stesso minuto,  i file della
+//        seconda esecuzione vengono aggiunti nella cartella della prima.
 //
-//        Non voglio aggiungere i secondi al nome della cartella perché diventa brutto,
+//        Non voglio aggiungere i secondi al nome della cartella perché
+//        diventa brutto,
 //
-//> Aggiungere un controllo, se la cartella esiste già crearne una con (1) tra parentesi nel nome. Fare in modo che automaticamente se esiste già la cartella 1 viene creata la due e così via.
+//> Aggiungere un controllo, se la cartella esiste già crearne una con (1)
+// tra parentesi nel nome. Fare in modo che automaticamente se esiste già la
+// cartella 1 viene creata la due e così via.
         this.recursive = recursive;
         this.permutations = permutations;
+        this.deleteDoubles = deleteDoubles;
 
         //analyzeInput();
 
         printExecutionStatus();
-        if (this.startingModels.size() == 0){
+        if (this.startingModels.size() == 0) {
             System.err.println("There are no starting Models to transform");
             System.exit(0);
         }
         this.report = new Report(this);
         decideWhatToDo(); //and do it
+        if (deleteDoubles) {
+            removeRedundantModels(resultingModels);
+        }
         saveResultingModels();
         this.report.addResultingModels(this.resultingModels);
         saveTheReport();
@@ -107,6 +118,7 @@ public class Execution {
 
 
     private void saveTheReport () throws IOException {
+
         report.compose();
         report.saveToFile(outputPath);
     }
@@ -173,6 +185,7 @@ public class Execution {
         System.out.println();
         System.out.println("Output Location: " + outputPath);
         System.out.println();
+        System.out.println("Delete duplicates: " + deleteDoubles);
         System.out.println("-------------------------------");
     }
 
@@ -239,7 +252,7 @@ public class Execution {
                 //out = true;
                 ruleString.append(param.rule).append(" ");
                 this.report.addOutcome(startingName, m.name,
-                 ruleString.toString(), true);
+                 param.rule, true);
                 resultingModels.add(m);
             } else {
                 parameters.remove(param); //if I couldn't apply the rule this
@@ -365,9 +378,8 @@ public class Execution {
     }
 
 
-
-
-    /** //TODO tradurre in inglese
+    /**
+     * //TODO tradurre in inglese
      * //            Permutations but no recursion:
      * //
      * //            Per ogni modello del mio pool (input: Model, rulePool):
@@ -400,5 +412,42 @@ public class Execution {
             report.addOutcome(m.name, end.name, p.rule, t.successful);
         }
     }
+
+
+    /**
+     * If the parameter "deleteDoubles" is true, this method checks for
+     * duplicates inside the field resultingModels and only saves one copy of
+     * each model.
+     * TODO this method could be sped up, right now it checks every resulting
+     *  model against every resulting model, even if the starting models are
+     *  different for the two! It would be more efficient to test the
+     *  resulting models only against those that are genereated from the same
+     *  starting model. Since every model has a
+     * @param models
+     * @throws XPathExpressionException
+     */
+
+    private void removeRedundantModels (ArrayList<Model> models) throws XPathExpressionException {
+
+        ArrayList<Model> remaining = new ArrayList<>();
+
+        for (Model m1 : models) {
+            boolean foundAMatch = false;
+            for (Model m2 : remaining) {
+                if (! TravelAgency.modelsAreDifferent(m1, m2)) {
+                    foundAMatch = true;
+                }
+            }
+            if (! foundAMatch) {
+                remaining.add(m1);
+            }
+        }
+        int d = this.resultingModels.size() - remaining.size();
+        this.resultingModels = remaining;
+
+        System.out.println("I deleted " + d + " models when removing " +
+        "duplicates");
+    }
+
 
 }

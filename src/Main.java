@@ -213,6 +213,7 @@ public class Main {
         ArrayList<Model> startingModels = new ArrayList<>();
         boolean permutations;
         boolean recursive;
+        boolean deleteDoubles;
         ArrayList<Parameter> parameters;
         //searchForRecursive();
         //searchForPermutations();
@@ -234,6 +235,7 @@ public class Main {
         boolean[] executionType = findExecutionType(input);
         permutations = executionType[0];
         recursive = executionType[1];
+        deleteDoubles = executionType[2];
 
 //        private String removePathFromInput() {
 //            //I'm removing the path from the input, to have just the string
@@ -255,7 +257,7 @@ public class Main {
         try {
             areRulesOpposite(parameters);
             new Execution(input, isAFolder, startingModels, folderPath,
-             permutations, recursive, parameters);
+             permutations, recursive, parameters, deleteDoubles);
         } catch (Exception e) {
             System.err.println("Was not able to create an execution with the "
              + "input provided");
@@ -268,7 +270,7 @@ public class Main {
 
         String paramString = findParameters(input);
         System.out.println(paramString);
-        if (paramString == null){
+        if (paramString == null) {
             paramString = "-1-2-3-4";
         }
         String str = paramString.replaceAll(" ", "");
@@ -378,38 +380,58 @@ public class Main {
 
         boolean permutations = false;
         boolean recursive = false;
+        boolean deleteDoubles = false;
 
-        if (input.toLowerCase().contains("ypyr") || input.toLowerCase().contains("yryp")) {
+        if (input.toLowerCase().contains("ypyrdd") || input.toLowerCase().contains("yrypdd")) {
             permutations = true;
-            //System.out.println("HEY PERMUTATIONS TRUE");
             recursive = true;
-//            System.out.println("HEY RECURSIVE TRUE");
+            deleteDoubles = true;
+        } else if (input.toLowerCase().contains("npnrdd") || input.toLowerCase().contains("nrnpdd")) {
+            //noinspection ConstantConditions
+            permutations = false;
+            recursive = false;
+            deleteDoubles = true;
+        } else if (input.toLowerCase().contains("ypnrdd") || input.toLowerCase().contains("nrypdd")) {
+            permutations = true;
+            recursive = false;
+            deleteDoubles = true;
+        } else if (input.toLowerCase().contains("npyrdd") || input.toLowerCase().contains("yrnpdd")) {
+            //noinspection ConstantConditions
+            permutations = false;
+            recursive = true;
+            deleteDoubles = true;
+        } else if (input.toLowerCase().contains("ypyr") || input.toLowerCase().contains("yryp")) {
+            permutations = true;
+            recursive = true;
+            deleteDoubles = false;
         } else if (input.toLowerCase().contains("npnr") || input.toLowerCase().contains("nrnp")) {
             //noinspection ConstantConditions
             permutations = false;
-//            System.out.println("HEY PERMUTATIONS FALSE");
             recursive = false;
-//            System.out.println("HEY RECURSIVE FALSE");
+            deleteDoubles = false;
         } else if (input.toLowerCase().contains("ypnr") || input.toLowerCase().contains("nryp")) {
             permutations = true;
-//            System.out.println("HEY PERMUTATIONS TRUE");
             recursive = false;
-//            System.out.println("HEY RECURSIVE FALSE");
+            deleteDoubles = false;
         } else if (input.toLowerCase().contains("npyr") || input.toLowerCase().contains("yrnp")) {
             //noinspection ConstantConditions
             permutations = false;
-//            System.out.println("HEY PERMUTATIONS FALSE");
             recursive = true;
-//            System.out.println("HEY RECURSIVE TRUE");
+            deleteDoubles = false;
         } else {
+//        TODO alternativa è usare ypyr ?
+//        permutations = true;
+//        recursive = true;
+//        deleteDoubles = true;
             System.out.println("Your input line is missing the part that " +
             "defines the execution type.");
             System.out.println("Type 'help' to learn how to compose an input");
             askForInput();
         }
-        boolean[] permutationRecursive = new boolean[2];
+        boolean[] permutationRecursive = new boolean[3];
         permutationRecursive[0] = permutations;
         permutationRecursive[1] = recursive;
+        permutationRecursive[2] = deleteDoubles;
 
         return permutationRecursive;
     }
