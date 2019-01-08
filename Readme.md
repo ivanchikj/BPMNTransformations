@@ -130,7 +130,7 @@ Now our input line looks something like this:
 ```
 \Example\bpmnModels\ YPNR
 ```
-If you wish for BPMN-TT to check for duplicates before saving the models and only save one model among the duplicates, add **DD** after the previously listed combinations (e.g. **YPYRDD**)
+* If you wish for BPMN-TT to check for duplicates before saving the models and only save one model among the duplicates, add **DD** after the previously listed combinations (e.g. **YPYRDD**)
 
 #### Selecting the permutation rules:
 
@@ -166,7 +166,7 @@ Some example inputs to get you started:
 ```
 
 ```
-\Example\bpmnModels\ yryp (-R3*2-2)
+\Example\bpmnModels\ yrypdd (-R3*2-2)
 ```
 
 ```
