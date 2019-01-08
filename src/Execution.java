@@ -457,6 +457,14 @@ public class Execution {
         int d = this.resultingModels.size() - remaining.size();
         this.resultingModels = remaining;
 
+        ArrayList<Model> deletedModels = new ArrayList<>();
+        for (Model m : models){
+            if (!remaining.contains(m)){
+                //it means it was deleted
+                deletedModels.add(m);
+            }
+        }
+        report.addDeletedModels(deletedModels);
         System.out.println("I deleted " + d + " models when removing " +
         "duplicates");
     }

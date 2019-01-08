@@ -66,6 +66,16 @@ public class Report {
         this.resultingModels += newline;
     }
 
+    public void addDeletedModels (ArrayList<Model> resultingModels) {
+
+        this.resultingModels += "Deleted models: " + resultingModels.size() + newline;
+        for (Model resultingModel : resultingModels) {
+            this.resultingModels += resultingModel.name + newline;
+        }
+        this.resultingModels += newline;
+        this.resultingModels += newline;
+        this.resultingModels += newline;
+    }
 
     /**
      * @param startingModel  the starting Model in a transformation or in a
@@ -103,8 +113,8 @@ public class Report {
             body += newline;
         } else {
             body += "the application of the rule(s) " + ruleString + " on " +
-            "model " + startingModel + " was unsuccessful as the model did " +
-             "not contain the target structure(s) relative to " + ruleString;
+            "model '" + startingModel + "' was unsuccessful as the model did " +
+             "not contain the target structure(s) relative to rule: " + ruleString;
         }
         body += newline;
     }
