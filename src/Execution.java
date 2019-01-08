@@ -2,6 +2,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +61,17 @@ public class Execution {
         this.folderPath = folderPath;
         this.outputPath = folderPath + "output " + executionMoment + "/";
         //noinspection ResultOfMethodCallIgnored
-        new File(this.outputPath).mkdirs();
+
+        //Those next lines of code avoid duplicate folders when executions
+        //are launched less than a minute one after the other.
+        String p = this.outputPath;
+        while (Files.exists(Paths.get(p))) {
+            p = p.substring(0, p.length() - 1);
+            p += "*";
+        }
+        new File(p).mkdirs();
+
+
         //TODO:
 //        Quando fai due esecuzioni nello stesso minuto,  i file della
 //        seconda esecuzione vengono aggiunti nella cartella della prima.
@@ -251,8 +263,7 @@ public class Execution {
                 report.count(param);
                 //out = true;
                 ruleString.append(param.rule).append(" ");
-                this.report.addOutcome(startingName, m.name,
-                 param.rule, true);
+                this.report.addOutcome(startingName, m.name, param.rule, true);
                 resultingModels.add(m);
             } else {
                 parameters.remove(param); //if I couldn't apply the rule this
@@ -419,10 +430,11 @@ public class Execution {
      * duplicates inside the field resultingModels and only saves one copy of
      * each model.
      * TODO this method could be sped up, right now it checks every resulting
-     *  model against every resulting model, even if the starting models are
-     *  different for the two! It would be more efficient to test the
-     *  resulting models only against those that are genereated from the same
-     *  starting model. Since every model has a
+     * model against every resulting model, even if the starting models are
+     * different for the two! It would be more efficient to test the
+     * resulting models only against those that are genereated from the same
+     * starting model. Since every model has a
+     *
      * @param models
      * @throws XPathExpressionException
      */

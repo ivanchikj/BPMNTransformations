@@ -43,17 +43,12 @@ TODO:
             Ho provato e non succede niente, sono child elements che lo definiscono, quindi sei a posto.
             Magari metti qualche test dove c'è un start event speciale tanto per fare vedere che il tuo programma funziona lo stesso.
 
-            TODO AGGIUNGI QUESTA COSA NEL PROGRAMMA:
-                The software creates a folder inside the locations of the starting models, called "output" plus the date and time of the execution, e.g. \texttt{output 14-12-2018 1626}. If a folder with the same name already exists, for example because the user launched two consecutive executions in less than a minute, a new folder called (1) will be launched  
-
             Capire perché le label sono al posto giusto anche se io non le modifico mai. Forse le loro coordinate sono relative?
 
             Provare a vedere come sono scritti i modelli di inubit, e eventualmente aggiungere compatibilità con inubit.
 
-            Aggiungere anche il check che le regole non siano opposte, quelle date dall'utente. Nel main, ma dai all'utente la possibilità di continuare.
-
             Clean the console.
 
-            /Users/rubenfolini/BPMNTransformations/tests/TestModels/Rule1/Rule1Classic.bpmn.xml npnr (-1-3-2-r2)
-
             Gestisci le eccezioni con try e catch.
+
+            Se fai tre esecuzioni del programma in breve successione, la terza non funziona e non da messaggio di errore. Perché?

@@ -135,7 +135,7 @@ public class Main {
         String n = System.getProperty("line.separator");
         String mail = "realityhas@gmail.com";//TODO
         String info = "";
-        info += n + "For questions and suggestions write to " + mail + "." + n + "This program has been developed as a master thesis at USI. The " + "author is an inexperienced programmer, so tips and suggestions are " + "very welcome.";
+        info += n + "For questions and suggestions write to " + mail + "." + n + "This program has been developed as a master thesis at USI." + n + "The " + "author is an inexperienced programmer, so tips and suggestions are " + "very welcome.";
 
         System.out.println(info);
     }
@@ -641,10 +641,10 @@ public class Main {
 //
 //    Include all instructions in the help section in the readme.
 
+
     //TODO magari usare il metodo string e text separator per avere un codice
-    // più ordinato.
-
-
+    // più ordinato. Tra l'altro se usi questo metodo, invece di avere
+    // diversi metodi per printInfo e printHelp, puoi
     //@formatter:off
     private static void printHelp () {
 
@@ -676,7 +676,7 @@ public class Main {
         System.out.println("(i.e. apply those same rules in different orders and combinations)");
         System.out.println("or not.");
         System.out.println("You also have to decide whether to activate the recursive behavior or not.");
-        System.out.println("(i.e. allow for one rule to be applied multiple times."); //TODO controllare che ci sia un check nel programma per impedire che una regola e il suo apposto siano nella pool.
+        System.out.println("(i.e. allow for one rule to be applied multiple times.");
         System.out.println("After the path of the file just add one of these 4 different options: ");
         System.out.println();
         System.out.println("        'YPYR' or 'YRYP'   (i.e. Yes Perm. Yes " +
@@ -686,6 +686,11 @@ public class Main {
         System.out.println("        'NPYR' or 'YRNP'   (i.e. No Perm. Yes Rec.)");
         System.out.println();
         System.out.println();
+        System.out.println("If you don't want to have duplicates in the otput" +
+         " models");
+        System.out.println("You can add DD after the previously displayed " +
+          "options");
+        System.out.println("E.g. YPYRDD");
 //
         //System.out.println("WARNING: DO NOT TURN ON PERMUTATIONS WHEN A RULE AND ITS OPPOSITE ARE INSIDE THE PARAMETER POOL");
         //System.out.println(" ARE BOTH IN THE POOL OF RULES TO BE APPLIED TO AVOID INFINITE LOOPS.");
@@ -727,7 +732,7 @@ public class Main {
         System.out.println();
         System.out.println("	 ./ExampleFolder/exampleModel.bpmn.xml YPYR (-1 -R2*3 -3a)"); //TODO così non funziona. Fai in modo che gli spazi non contino
         System.out.println("	 ./ExampleFolder/ NPNR (-1-r2*5)");
-        System.out.println("	 ./ExampleFolder/ YRNP (-1 -2 -3 -4)");
+        System.out.println("	 ./ExampleFolder/ YRNPDD (-1 -2 -3 -4)");
         System.out.println("	 ./ExampleFolder/ NPYR (-2-4)");
 
         System.out.println();
@@ -743,8 +748,8 @@ public class Main {
         // parameters etc)
         //TODO insert an URL with a detailed guide (could be the readme on
         // github)
-        //In that guide the transformations done by the rules (with Ana's
-        // images) should be displayed
+        // In that guide the transformations done by the rules should be
+        // displayed
     }
 
 
