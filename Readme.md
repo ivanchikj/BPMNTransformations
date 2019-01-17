@@ -5,7 +5,7 @@
 [![Usi](Images/logoUsi.png)](https://www.usi.ch/)
 
 
-# Tool for semantics-preserving BPMN transformations
+# Tool for semantics-preserving BPMN transformations (BPMN-TT)
 
 * This program will create semantically equivalent version of BPMN2.0 Models that are given as input
 * The user can select which rules to apply among 8 different semantically equivalent transformations
