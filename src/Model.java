@@ -25,8 +25,6 @@ import java.util.UUID;
 //TODO aggiungere i line breaks negli XML che generi per renderli più leggibili.
 
 
-
-
 //TODO:
 //Invece di chiamare i metodi che fanno la traduzione da signavio a camunda
 // dentro le regole, sarebbe meglio usare la traduzione come prima riga nei
@@ -318,9 +316,8 @@ public class Model {
 
     String newParallelGateway (Coordinates c, Element process) {
 
-        String x = c.x;
-        String y = c.y;
         // PROCESS VIEW
+
         String id = newId();
         Element newElem = doc.createElement(this.style("parallelGateway"));
         newElem.setAttribute("id", id);
@@ -328,17 +325,19 @@ public class Model {
         process.appendChild(newElem);
 
         // BPMNDI VIEW
+
         Element newElemDI = doc.createElement(this.style("bpmndi:BPMNShape"));
 
         newElemDI.setAttribute("bpmnElement", id);
-        newElemDI.setAttribute("id", id + "_di"); // I don't know if this is
-        // mandatory
-        System.out.println(" I created a new Parallel Gateway with the id " + id);
+        newElemDI.setAttribute("id", id + "_di");
 
         Element size = doc.createElement(this.style("Bounds"));
         this.bpmndiPlane.appendChild(newElemDI);
 
         newElemDI.appendChild(size);
+
+        String x = c.x;
+        String y = c.y;
         size.setAttribute("height", "50");
         size.setAttribute("width", "50");
         size.setAttribute("x", x);
@@ -1367,7 +1366,6 @@ public class Model {
 
 
     /**
-     * TODO vedi se funziona e elimina gli altri metodi.
      *
      * @param attribute the attribute name that I'm looking for a certain
      *                  value of

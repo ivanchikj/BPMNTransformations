@@ -52,3 +52,7 @@ TODO:
             Gestisci le eccezioni con try e catch.
 
             Se fai tre esecuzioni del programma in breve successione, la terza non funziona e non da messaggio di errore. Perché?
+
+            Usare un solver invece di Wolfram Alpha (quale ha menzionato il prof? Non lo trovo su internet)
+
+            Usare il metodo giusto per trovare l'immediate post dominator invece del first meeting point.

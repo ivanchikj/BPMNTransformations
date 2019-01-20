@@ -536,6 +536,12 @@ public class Reverse3 {
 
 
     /**
+    *
+    * TODO I thought about it and it should be different. An empty flow and
+     *      a conditional flow should always be considered mutually
+     *      exclusive, but
+     *      two empty flows should not.
+     *
      * This method accepts an array of Strings as an input, containing
      * different conditions.
      * It checks that they are all mutually exclusive.
@@ -632,6 +638,13 @@ public class Reverse3 {
         return allFlowsAreMutuallyExclusive(outgoingFlows, model);
     }
 
+
+    /**
+     * TODO
+     * @param flows
+     * @param model
+     * @return
+     */
 
     private static boolean allFlowsAreMutuallyExclusive (ArrayList<Element> flows, Model model) {
 
